@@ -1,0 +1,1 @@
+find_package(ste QUIET HINTS ${${PROJECT_NAME}_SOURCE_DIR}/addons/StlExtension/cmake)
