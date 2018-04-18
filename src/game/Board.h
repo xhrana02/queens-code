@@ -8,6 +8,7 @@
 #pragma once
 #include "Field.h"
 #include <vector>
+#include <glm/detail/type_vec2.hpp>
 
 using namespace std;
 
@@ -17,7 +18,10 @@ private:
 	Field*** fields;
 	int playfieldHeight;
 	int playfieldWidth;
+
+	vector<Field*> highlightedFields = vector<Field*>();
 public:
+	~Board();
 	Board(int width, int height);
 
 	int PlayableHeight() const
@@ -43,12 +47,27 @@ public:
 		if (x < 0 || x >= ActualWidth() ||
 			y < 0 || y >= ActualHeight())
 		{
-			throw std::exception(
-				"Board.GetField: Coordinates are outside of the board.");
+			return nullptr;
 		}
 		return fields[x][y];
 	}
 
+	Field* GetPlayField(int x, int y) const
+	{
+		if (x < 1 || x > PlayableWidth() ||
+			y < 1 || y > PlayableHeight())
+		{
+			return nullptr;
+		}
+		return fields[x][y];
+	}
+
+	Field* GetFieldFromMouse(vec2 mouse) const;
+	Field* GetPlayFieldFromMouse(vec2 mouse) const;
+
 	vector<Field*> GetAllFields() const;
 
+	void UnhighlightAllFields();
+	void HighlightField(Field* hlField);
+	void HighlightFields(vector<Field*> hlFields);
 };

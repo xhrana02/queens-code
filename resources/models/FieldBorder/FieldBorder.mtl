@@ -1,4 +1,4 @@
-# Blender MTL File: 'None'
+# Blender MTL File: 'FieldBorder.blend'
 # Material Count: 1
 
 newmtl BaseMaterial
@@ -10,4 +10,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 0.500000
 illum 1
-map_Kd RandomNoise_COLOR.png
+map_Kd RandomNoise_COLOR_32.jpg

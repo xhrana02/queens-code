@@ -10,6 +10,7 @@
 #include "Player.h"
 #include "Board.h"
 #include "RenderingObject.h"
+#include <glm/detail/type_vec2.hpp>
 
 using namespace fsg;
 
@@ -17,10 +18,10 @@ enum GameStage { Deploy, Battle, GameOver };
 
 class Game
 {
-	Player* player1;
-	Player* player2;
+	shared_ptr<Player> player1;
+	shared_ptr<Player> player2;
 	GameStage gameStage;
-	Board* gameBoard;
+	shared_ptr<Board> gameBoard;
 
 	vector<shared_ptr<RenderingObject>> environmentObjects;
 
@@ -29,17 +30,17 @@ public:
 
 	Player* GetPlayer1() const
 	{
-		return player1;
+		return player1.get();
 	}
 
 	Player* GetPlayer2() const
 	{
-		return player2;
+		return player2.get();
 	}
 
 	Board* GetGameBoard() const
 	{
-		return gameBoard;
+		return gameBoard.get();
 	}
 
 	int GetMapSize() const
@@ -51,7 +52,9 @@ public:
 		return gameBoard->PlayableWidth();
 	}
 
-	void AddEnvironmentObject(RenderingObject* newObject);
+	void AddEnvironmentObject(shared_ptr<RenderingObject> newObject);
 
 	vector<RenderingObject*> GetObjectsForRendering() const;
+
+	void HandleMouseMovement(vec2 mouse) const;
 };

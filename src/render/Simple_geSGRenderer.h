@@ -7,13 +7,16 @@
 
 #pragma once
 
-#include <QuickRendererBase.h>
+#include "QuickRendererBase.h"
 #include "Camera.h"
 #include "RenderingObject.h"
 
 #include <memory>
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <geGL/geGL.h>
 #include <geGL/OpenGLContext.h>
+#include <QDebug>
 
 using namespace ge::gl;
 
@@ -31,6 +34,10 @@ namespace fsg
 		void SetupGLState() const;
 		void SetMatrices(Camera* camera);
 		void SetObjects(vector<RenderingObject*> newObjects) const;
+		Context* GetGL() const
+		{
+			return gl.get();
+		}
 
 	public slots:
 		void beforeRendering() override;

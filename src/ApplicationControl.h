@@ -21,7 +21,6 @@
 #include "Simple_geSGRenderer.h"
 #include "ModelLoader.h"
 #include "Game.h"
-#include <assimp/camera.h>
 #include "Camera.h"
 #include "CameraControl.h"
 

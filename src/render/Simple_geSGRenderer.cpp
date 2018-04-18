@@ -5,18 +5,12 @@
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
-#include <Simple_geSGRenderer.h>
-#include <geGL/geGL.h>
-#include <geCore/Text.h>
-#include <QOpenGLContext>
-#include <SimpleVT.h>
-#include <QDebug>
-
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <iostream>
+#include "Simple_geSGRenderer.h"
+#include "SimpleVT.h"
 #include "Camera.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include <QOpenGLContext>
+#include <geCore/Text.h>
 
 using namespace std;
 using namespace fsg;

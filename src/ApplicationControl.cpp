@@ -6,8 +6,8 @@
 //----------------------------------------------//
 
 #include "ApplicationControl.h"
-#include "Simple_geSGRenderer.h"
 #include "GameFactory.h"
+#include <iomanip>
 
 /**
  * \brief Constructor for application control class.
@@ -106,6 +106,8 @@ void ApplicationControl::CleanAssets()
 	}
 
 	modelLoader->UnloadAllModels();
+
+	renderer->SetObjects(vector<RenderingObject*>());
 }
 
 void ApplicationControl::ActivateRendering() const
@@ -190,6 +192,8 @@ void ApplicationControl::OnMouseEvent(int buttons, float x, float y)
 	{
 		cameraControl->Pan(deltaX / 110 * panSensitivity, deltaY / 110 * panSensitivity);
 	}
+	auto gameMousePosition = cameraControl->CalculateMousePosition(x, y, mainWindow->width(), mainWindow->height(), renderer->GetGL());
+	activeGame->HandleMouseMovement(gameMousePosition);
 }
 
 void ApplicationControl::OnWheelEvent(float angleDelta) const

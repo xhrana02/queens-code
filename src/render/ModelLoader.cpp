@@ -27,12 +27,12 @@ void ModelLoader::LoadModel(QString modelFileName, string modelName)
 
     LoadImages(model, modelPath);
 
-	loadedModels[modelName] = make_shared<ge::sg::Scene>(*model);
+	loadedModels[modelName] = shared_ptr<Scene>(model);
 }
 
-void fsg::ModelLoader::LoadImages(ge::sg::Scene* scene, string& imageDir) const
+void ModelLoader::LoadImages(Scene* scene, string& imageDir) const
 {
-	auto defaultImage(make_shared<ge::sg::DefaultImage>());
+	auto defaultImage(make_shared<DefaultImage>());
 
 	for (auto model : scene->models)
 	{

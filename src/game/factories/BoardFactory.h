@@ -7,9 +7,10 @@
 
 #pragma once
 #include "Board.h"
+#include "ModelLoader.h"
 
 class BoardFactory
 {
 public:
-	static Board* CreateStandardBoard();
+	static Board* CreateStandardBoard(ModelLoader* modelLoader);
 };

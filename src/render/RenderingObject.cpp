@@ -1,5 +1,5 @@
 //----------------------------------------------//
-//	Author (90%): Pavel Hranáè (xhrana02)		//
+//	Author (85%): Pavel Hranáè (xhrana02)		//
 //	School: Vysoké uèení technické v Brnì		//
 //	Faculty: Fakulta informaèních technologií	//
 //  Date: Spring 2018                           //
@@ -16,18 +16,16 @@ using namespace ge::gl;
 using namespace ge::sg;
 using namespace ge::glsg;
 
-RenderingObject::RenderingObject(Scene* inModel, vec3 inPosition, vec4 inColor)
+RenderingObject::RenderingObject(shared_ptr<Scene> inModel)
 {
-	model = make_shared<Scene>(*inModel);
-	position = inPosition;
-	color = inColor;
+	model = inModel;
 }
 
-void RenderingObject::PrepareObject(Context* context)
+void RenderingObject::PrepareObject(shared_ptr<Context> context)
 {
-	if(context != glContext.get())
+	if(context.get() != glContext.get())
 	{
-		glContext = make_shared<Context>(*context);
+		glContext = context;
 		needToUpdateGLScene = true;
 	}
 	
@@ -67,7 +65,7 @@ void RenderingObject::updateGLScene()
 				}
 			}
 		}
-		VAOContainer[meshIt.first] = VAO;
+		vaoContainer[meshIt.first] = VAO;
 
 		//material
 		auto mat = meshIt.first->material.get();

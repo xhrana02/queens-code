@@ -21,7 +21,7 @@ using namespace ge::sg;
 using namespace ge::gl;
 using namespace std;
 
-GLSceneProcessor::GLSceneProcessor(std::shared_ptr<ge::gl::Context> context)
+GLSceneProcessor::GLSceneProcessor(shared_ptr<Context> context)
    : textureFactory(make_shared<DefaultTextureFactory>())
 {
 }
@@ -30,11 +30,11 @@ GLSceneProcessor::GLSceneProcessor(std::shared_ptr<ge::gl::Context> context)
  * Processes given scene and creates apropriate geGL renderingObjects in given context.
  * \param scene Scene you want to process
  * \param context OpenGL context to use
- * \param textureFactory Factory that is used to create ge::gl::Texture from image. You can suplly your own or use the DefaultTextureFactory. 
+ * \param textureFactory Factory that is used to create Texture from image. You can suplly your own or use the DefaultTextureFactory. 
  *                       If you dont suplly this argument the DefaultTextureFactory is used.
  * \return Returns the GLScene class that holds the dictionaries to map geSG renderingObjects to created geGL renderingObjects.
  */
-std::shared_ptr<ge::glsg::GLScene> GLSceneProcessor::processScene(std::shared_ptr<ge::sg::Scene> scene, std::shared_ptr<ge::gl::Context> context, std::shared_ptr<TextureFactory> textureFactory)
+shared_ptr<GLScene> GLSceneProcessor::processScene(shared_ptr<Scene> scene, shared_ptr<Context> context, shared_ptr<TextureFactory> textureFactory)
 {
 	auto glscene(make_shared<GLScene>());
 	processMeshes(scene, glscene, context);
@@ -50,7 +50,7 @@ std::shared_ptr<ge::glsg::GLScene> GLSceneProcessor::processScene(std::shared_pt
  * \param glscene 
  * \param context 
  */
-void GLSceneProcessor::processMeshes(std::shared_ptr<ge::sg::Scene>& scene, std::shared_ptr<ge::glsg::GLScene>& glscene, std::shared_ptr<ge::gl::Context> context)
+void GLSceneProcessor::processMeshes(shared_ptr<Scene>& scene, shared_ptr<GLScene>& glscene, shared_ptr<Context> context)
 {
 	for(auto model : scene->models)
 	{
@@ -73,7 +73,7 @@ void GLSceneProcessor::processMeshes(std::shared_ptr<ge::sg::Scene>& scene, std:
  * \param context 
  * \param textureFactory 
  */
-void GLSceneProcessor::createTextures(std::shared_ptr<Scene> scene, std::shared_ptr<GLScene> glscene, std::shared_ptr<ge::gl::Context> context, std::shared_ptr<TextureFactory> textureFactory)
+void GLSceneProcessor::createTextures(shared_ptr<Scene> scene, shared_ptr<GLScene> glscene, shared_ptr<Context> context, shared_ptr<TextureFactory> textureFactory)
 {
 	for(auto model : scene->models)
 	{
@@ -82,13 +82,13 @@ void GLSceneProcessor::createTextures(std::shared_ptr<Scene> scene, std::shared_
 			//continue if we already processed this material
 			for(auto materialComponent : material->materialComponents)
 			{
-				if(materialComponent->getType() == ge::sg::MaterialComponent::ComponentType::IMAGE)
+				if(materialComponent->getType() == MaterialComponent::ComponentType::IMAGE)
 				{
 					auto img = static_cast<MaterialImageComponent*>(materialComponent.get());
 					//if the image of MaterialImageComponent hasn't been created
 					if(img && !img->image)
 					{
-						img->image = make_shared<ge::sg::DefaultImage>();
+						img->image = make_shared<DefaultImage>();
 					}
 					glscene->textures[img] = textureFactory->create(img, context);
 				}
@@ -104,7 +104,7 @@ void GLSceneProcessor::createTextures(std::shared_ptr<Scene> scene, std::shared_
  * \param context Context to create texture with.
  * \return Newly created texture.
  */
-std::shared_ptr<ge::gl::Texture> DefaultTextureFactory::create(ge::sg::MaterialImageComponent* img, shared_ptr<Context>& context)
+shared_ptr<Texture> DefaultTextureFactory::create(MaterialImageComponent* img, shared_ptr<Context>& context)
 {
 	auto w = int(img->image->getWidth());
 	auto h = int(img->image->getHeight());

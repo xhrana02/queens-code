@@ -19,8 +19,8 @@ namespace fsg
 		float ClipPlaneNear;
 		float ClipPlaneFar;
 		Camera()
-			: EyePosition(0.f, 0.f, 0.f)
-			, LookAtPosition(0.f, 0.f, 1.f)
+			: EyePosition(1.f, 1.f, 1.f)
+			, LookAtPosition(0.f, 0.f, 0.f)
 			, UpVector(0.f, 1.f, 0.f)
 			, FOVHorizontal(60.f)
 			, ClipPlaneNear(0.1f)

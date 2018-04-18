@@ -28,7 +28,7 @@ void SimpleVT::drawSetup()
 {
 	for (auto object : renderingObjects)
 	{
-		object->PrepareObject(gl.get());
+		object->PrepareObject(gl);
 	}
 }
 
@@ -41,11 +41,14 @@ void SimpleVT::draw()
 
 	for (auto object : renderingObjects)
 	{
+
 		auto colorVector = object->GetColor();
 		program->set4fv("color", value_ptr(colorVector));
 
 		auto modelMatrix = translate(mat4(1.0f), object->GetPosition());
 		program->setMatrix4fv("model", value_ptr(modelMatrix));
+
+		program->set1f("texRepeat", object->TextureRepeat);
 
 		for (auto model : object->GetGLScene()->scene->models)
 		{

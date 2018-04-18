@@ -1,5 +1,5 @@
 //----------------------------------------------//
-//	Author (90%%): Pavel Hranáè (xhrana02)		//
+//	Author (85%): Pavel Hranáè (xhrana02)		//
 //	School: Vysoké uèení technické v Brnì		//
 //	Faculty: Fakulta informaèních technologií	//
 //  Date: Spring 2018                           //
@@ -25,33 +25,31 @@ namespace fsg
 	class RenderingObject
 	{
 		shared_ptr<Scene> model;
-		vec3 position;
-		vec4 color;
+		vec3 position = vec3(0,0,0);
+		vec4 color = vec4(1,1,1,1);
+		vec4 normalColor = vec4(1,1,1,1);
+		vec4 highlightColor = vec4(1,1,1,1);
 
 		shared_ptr<Context> glContext;
 		shared_ptr<GLScene> glScene;
-		unordered_map<Mesh*, shared_ptr<VertexArray>> VAOContainer;
+		unordered_map<Mesh*, shared_ptr<VertexArray>> vaoContainer;
 		unordered_map<Mesh*, shared_ptr<Texture>> diffuseTextureContainer;
 		bool needToUpdateGLScene = false;
 		void updateGLScene();
 		static int semantic2Attribute(AttributeDescriptor::Semantic semantic);
 
 	public:
-		explicit RenderingObject(Scene* inModel)
-			: RenderingObject(inModel, vec3(0,0,0), vec4(1,1,1,1)) {}
-		RenderingObject(Scene* inModel, vec3 inPosition)
-			: RenderingObject(inModel, inPosition, vec4(1, 1, 1, 1)) {}
-		RenderingObject(Scene* inModel, vec4 inColor)
-			: RenderingObject(inModel, vec3(0, 0, 0), inColor) {}
-		RenderingObject(Scene* inModel, vec3 inPosition, vec4 inColor);
+		float TextureRepeat = 1;
+
+		explicit RenderingObject(shared_ptr<Scene> inModel);
 
 		Scene* GetModel() const
 		{
 			return model.get();
 		}
-		void SetModel(Scene* newModel)
+		void SetModel(shared_ptr<Scene> newModel)
 		{
-			model = make_shared<ge::sg::Scene>(*newModel);
+			model = newModel;
 			needToUpdateGLScene = true;
 		}
 
@@ -59,7 +57,7 @@ namespace fsg
 		{
 			return position;
 		}
-		void SetPosition(vec4 newPosition)
+		void SetPosition(vec3 newPosition)
 		{
 			position = newPosition;
 			needToUpdateGLScene = true;
@@ -71,9 +69,22 @@ namespace fsg
 		}
 		void SetColor(vec4 newColor)
 		{
+			normalColor = newColor;
 			color = newColor;
-			needToUpdateGLScene = true;
 		}
+		void SetHighlightColor(vec4 newColor)
+		{
+			highlightColor = newColor;
+		}
+		void Highlight()
+		{
+			color = highlightColor;
+		}
+		void Unhighlight()
+		{
+			color = normalColor;
+		}
+
 
 		shared_ptr<GLScene> GetGLScene() const
 		{
@@ -81,15 +92,13 @@ namespace fsg
 		}
 		shared_ptr<VertexArray> GetVAO(Mesh* mesh)
 		{
-			return VAOContainer[mesh];
+			return vaoContainer[mesh];
 		}
 		shared_ptr<Texture> GetDiffuseTexture(Mesh* mesh)
 		{
 			return diffuseTextureContainer[mesh];
 		}
 
-		void PrepareObject(Context* context);
-
-		char* TEST_NAME = "";
+		void PrepareObject(shared_ptr<Context> context);
 	};
 }
