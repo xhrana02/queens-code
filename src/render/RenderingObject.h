@@ -13,66 +13,59 @@
 #include <geGL/OpenGLContext.h>
 #include "GLScene.h"
 
-using namespace std;
-using namespace glm;
-using namespace ge::gl;
-using namespace ge::sg;
-using namespace ge::glsg;
-
-
 namespace fsg
 {
 	class RenderingObject
 	{
-		shared_ptr<Scene> model;
-		vec3 position = vec3(0,0,0);
-		vec4 color = vec4(1,1,1,1);
-		vec4 normalColor = vec4(1,1,1,1);
-		vec4 highlightColor = vec4(1,1,1,1);
+		std::shared_ptr<ge::sg::Scene> model;
+		glm::vec3 position = glm::vec3(0,0,0);
+		glm::vec4 color = glm::vec4(1,1,1,1);
+		glm::vec4 normalColor = glm::vec4(1,1,1,1);
+		glm::vec4 highlightColor = glm::vec4(1,1,1,1);
 
-		shared_ptr<Context> glContext;
-		shared_ptr<GLScene> glScene;
-		unordered_map<Mesh*, shared_ptr<VertexArray>> vaoContainer;
-		unordered_map<Mesh*, shared_ptr<Texture>> diffuseTextureContainer;
+		std::shared_ptr<ge::gl::Context> glContext;
+		std::shared_ptr<ge::glsg::GLScene> glScene;
+		std::unordered_map<ge::sg::Mesh*, std::shared_ptr<ge::gl::VertexArray>> vaoContainer;
+		std::unordered_map<ge::sg::Mesh*, std::shared_ptr<ge::gl::Texture>> diffuseTextureContainer;
 		bool needToUpdateGLScene = false;
 		void updateGLScene();
-		static int semantic2Attribute(AttributeDescriptor::Semantic semantic);
+		static int semantic2Attribute(ge::sg::AttributeDescriptor::Semantic semantic);
 
 	public:
 		float TextureRepeat = 1;
 
-		explicit RenderingObject(shared_ptr<Scene> inModel);
+		explicit RenderingObject(std::shared_ptr<ge::sg::Scene> inModel);
 
-		Scene* GetModel() const
+		ge::sg::Scene* GetModel() const
 		{
 			return model.get();
 		}
-		void SetModel(shared_ptr<Scene> newModel)
+		void SetModel(std::shared_ptr<ge::sg::Scene> newModel)
 		{
 			model = newModel;
 			needToUpdateGLScene = true;
 		}
 
-		vec3 GetPosition() const
+		glm::vec3 GetPosition() const
 		{
 			return position;
 		}
-		void SetPosition(vec3 newPosition)
+		void SetPosition(glm::vec3 newPosition)
 		{
 			position = newPosition;
 			needToUpdateGLScene = true;
 		}
 
-		vec4 GetColor() const
+		glm::vec4 GetColor() const
 		{
 			return color;
 		}
-		void SetColor(vec4 newColor)
+		void SetColor(glm::vec4 newColor)
 		{
 			normalColor = newColor;
 			color = newColor;
 		}
-		void SetHighlightColor(vec4 newColor)
+		void SetHighlightColor(glm::vec4 newColor)
 		{
 			highlightColor = newColor;
 		}
@@ -86,19 +79,21 @@ namespace fsg
 		}
 
 
-		shared_ptr<GLScene> GetGLScene() const
+		std::shared_ptr<ge::glsg::GLScene> GetGLScene() const
 		{
 			return glScene;
 		}
-		shared_ptr<VertexArray> GetVAO(Mesh* mesh)
+
+		std::shared_ptr<ge::gl::VertexArray> GetVAO(ge::sg::Mesh* mesh)
 		{
 			return vaoContainer[mesh];
 		}
-		shared_ptr<Texture> GetDiffuseTexture(Mesh* mesh)
+
+		std::shared_ptr<ge::gl::Texture> GetDiffuseTexture(ge::sg::Mesh* mesh)
 		{
 			return diffuseTextureContainer[mesh];
 		}
 
-		void PrepareObject(shared_ptr<Context> context);
+		void PrepareObject(std::shared_ptr<ge::gl::Context> context);
 	};
 }

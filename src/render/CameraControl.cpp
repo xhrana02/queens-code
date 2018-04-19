@@ -14,8 +14,10 @@
 #include <glm/detail/func_geometric.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-using namespace std;
 using namespace fsg;
+using namespace std;
+using namespace glm;
+using namespace ge::gl;
 
 CameraControl::CameraControl(Camera* inCamera, int mapSize)
 {

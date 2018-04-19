@@ -7,6 +7,8 @@
 
 #include "Player.h"
 
+using namespace std;
+
 /**
  * \brief Player constructor.
  * \param name Player name.

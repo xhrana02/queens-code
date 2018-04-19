@@ -12,18 +12,18 @@
 #include "RenderingObject.h"
 #include <glm/detail/type_vec2.hpp>
 
-using namespace fsg;
-
 enum GameStage { Deploy, Battle, GameOver };
 
 class Game
 {
-	shared_ptr<Player> player1;
-	shared_ptr<Player> player2;
+	std::shared_ptr<Player> player1;
+	std::shared_ptr<Player> player2;
 	GameStage gameStage;
-	shared_ptr<Board> gameBoard;
+	std::shared_ptr<Board> gameBoard;
 
-	vector<shared_ptr<RenderingObject>> environmentObjects;
+	std::vector<std::shared_ptr<fsg::RenderingObject>> environmentObjects;
+
+	Field* hoveredField = nullptr;
 
 public:
 	Game(Player* player_1, Player* player_2, Board* board);
@@ -52,9 +52,9 @@ public:
 		return gameBoard->PlayableWidth();
 	}
 
-	void AddEnvironmentObject(shared_ptr<RenderingObject> newObject);
+	void AddEnvironmentObject(std::shared_ptr<fsg::RenderingObject> newObject);
 
-	vector<RenderingObject*> GetObjectsForRendering() const;
+	std::vector<fsg::RenderingObject*> GetObjectsForRendering() const;
 
-	void HandleMouseMovement(vec2 mouse) const;
+	void HandleMouseMovement(glm::vec2 mouse) const;
 };

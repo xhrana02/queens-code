@@ -26,8 +26,7 @@ Item {
         anchors.rightMargin: widthUnit
 
         playerText: "Player 1"
-
-        playerName: settings.playerName
+        playerName: settings.player1Name
     }
 
     Rectangle {
@@ -53,6 +52,7 @@ Item {
         anchors.rightMargin: widthUnit
         
         playerText: "Player 2"
+        playerName: settings.player2Name
     }
 
 

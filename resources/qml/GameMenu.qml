@@ -8,50 +8,68 @@
 import QtQuick 2.7
 import QtQuick.Controls 1.4
 
-Item {
-    id: gameMenu
+Rectangle {
+    anchors.fill: parent
+    color: "#D0101010"
 
     FontLoader { id: menuFont; source: "fonts/CinzelDecorative-Regular.ttf" }
 
-    Rectangle {
-        anchors.fill: parent
-        color: "#D0101010"
+    Column {
+        id: gameMenu
 
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: (guiRoot.height / 3 - 100)
+
+        spacing: (guiRoot.height / 30)
+        
         MenuButton {
             id: gameMenuButtonContinue
+
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: (parent.height / 4)
+
             styledText: "Continue"
 
             onClicked: gameOverlay.gameContinue()
         }
+    
+        Item {
+            // force double space
+            width: 1
+            height: 1
+        }
 
         MenuButton {
             id: gameMenuButtonTEMP
+
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: gameMenuButtonContinue.bottom
-            anchors.topMargin: (parent.height / 15)
+
             styledText: "TEMP"
 
             onClicked: guiRoot.consoleWrite("This button does nothing")
         }
 
         MenuButton {
-            id: gameMenuButtonTEMP2
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: gameMenuButtonTEMP.bottom
-            anchors.topMargin: (parent.height / 30)
-            styledText: "TEMP2"
+            id: gameMenuButtonOptions
 
-            onClicked: guiRoot.consoleWrite("This button does nothing")
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            styledText: "Options"
+
+            onClicked: guiRoot.showOptionsMenu()
+        }
+    
+        Item {
+            // force double space
+            width: 1
+            height: 1
         }
 
         MenuButton {
             id: gameMenuButtonToTitle
+
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: gameMenuButtonTEMP2.bottom
-            anchors.topMargin: (parent.height / 15)
+
             styledText: "To title"
 
             onClicked: {
@@ -62,13 +80,12 @@ Item {
 
         MenuButton {
             id: gameMenuButtonQuit
+
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: gameMenuButtonToTitle.bottom
-            anchors.topMargin: (parent.height / 30)
+
             styledText: "Quit"
 
             onClicked: Qt.quit()
         }
     }
-    
 }

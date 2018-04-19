@@ -8,25 +8,18 @@
 #pragma once
 
 #include <QtImageLoader.h>
-#include <QFileInfo>
-#include <iostream>
 #include <AssimpModelLoader.h>
-#include <geSG/DefaultImage.h>
 #include <geSG/Scene.h>
-#include <geSG/Model.h>
-
-using namespace std;
-using namespace ge::sg;
 
 namespace fsg
 {
 	class ModelLoader
 	{
-		unordered_map<string, shared_ptr<Scene>> loadedModels;
+		std::unordered_map<std::string, std::shared_ptr<ge::sg::Scene>> loadedModels;
 	public:
-		void LoadModel(QString modelFileName, string modelName);
-		void LoadImages(Scene* scene, string& imageDir) const;
-		shared_ptr<Scene> GetModel(string modelName);
+		void LoadModel(QString modelFileName, std::string modelName);
+		void LoadImages(ge::sg::Scene* scene, std::string& imageDir) const;
+		std::shared_ptr<ge::sg::Scene> GetModel(std::string modelName);
 		void UnloadAllModels();
 	};
 }

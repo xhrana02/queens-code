@@ -6,15 +6,14 @@
 //----------------------------------------------//
 
 #include "Knight.h"
-#include <list>
 
 Knight::Knight()
 {
 	this->maximumHitPoints = 20;
 }
 
-std::list<int>* Knight::GetListOfAbilites()
+std::vector<Ability>* Knight::GetListOfAbilites()
 {
-	return new std::list<int>();
+	return new std::vector<Ability>();
 }
 

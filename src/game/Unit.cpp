@@ -7,6 +7,9 @@
 
 #include "Unit.h"
 
+using namespace std;
+using namespace fsg;
+
 Unit::Unit()
 {
 	currentHitPoints = maximumHitPoints;

@@ -6,9 +6,16 @@
 //----------------------------------------------//
 
 #include <ModelLoader.h>
+#include <QFileInfo>
+#include <iostream>
+#include <AssimpModelLoader.h>
+#include <geSG/DefaultImage.h>
+#include <geSG/Scene.h>
+#include <geSG/Model.h>
 
 using namespace std;
 using namespace fsg;
+using namespace ge::sg;
 
 void ModelLoader::LoadModel(QString modelFileName, string modelName)
 {

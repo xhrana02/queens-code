@@ -12,5 +12,5 @@
 class GameFactory
 {
 public:
-	static Game* CreateStandardGame(Player* player_1, Player* player_2, ModelLoader* modelLoader);
+	static Game* CreateStandardGame(Player* player_1, Player* player_2, fsg::ModelLoader* modelLoader);
 };

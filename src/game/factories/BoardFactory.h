@@ -12,5 +12,5 @@
 class BoardFactory
 {
 public:
-	static Board* CreateStandardBoard(ModelLoader* modelLoader);
+	static Board* CreateStandardBoard(fsg::ModelLoader* modelLoader);
 };

@@ -18,8 +18,8 @@ private:
 	int positionY;
 	TerrainType terrainType;
 	Unit* unitOnField = nullptr;
-	shared_ptr<RenderingObject> fieldBorder = nullptr;
-	shared_ptr<RenderingObject> fieldTerrain = nullptr;
+	std::shared_ptr<fsg::RenderingObject> fieldBorder = nullptr;
+	std::shared_ptr<fsg::RenderingObject> fieldTerrain = nullptr;
 
 public:
 	Field(int position_x, int position_y) : Field(position_x, position_y, Empty) {}
@@ -30,13 +30,13 @@ public:
 	{
 	}
 
-	vector<RenderingObject*> GetRenderingObjects() const;
+	std::vector<fsg::RenderingObject*> GetRenderingObjects() const;
 
-	void SetFieldBorderObject(shared_ptr<RenderingObject> newObject)
+	void SetFieldBorderObject(std::shared_ptr<fsg::RenderingObject> newObject)
 	{
 		fieldBorder = newObject;
 	}
-	void SetFieldTerrainObject(shared_ptr<RenderingObject> newObject)
+	void SetFieldTerrainObject(std::shared_ptr<fsg::RenderingObject> newObject)
 	{
 		fieldTerrain = newObject;
 	}

@@ -7,6 +7,10 @@
 
 #include "BoardFactory.h"
 
+using namespace fsg;
+using namespace std;
+using namespace glm;
+
 Board* BoardFactory::CreateStandardBoard(ModelLoader* modelLoader)
 {
 	auto newBoard = new Board(15, 15);

@@ -1,5 +1,5 @@
 //----------------------------------------------//
-//	Modified by (25%): Pavel Hranáè (xhrana02)	//
+//	Modified by (50%): Pavel Hranáè (xhrana02)	//
 //	School: Vysoké uèení technické v Brnì		//
 //	Faculty: Fakulta informaèních technologií	//
 //  Date: Spring 2018                           //
@@ -16,8 +16,10 @@
 #include <glm/gtc/matrix_transform.inl>
 #include <glm/gtc/type_ptr.hpp>
 
-using namespace std;
 using namespace fsg;
+using namespace std;
+using namespace glm;
+using namespace ge::gl;
 using namespace ge::sg;
 using namespace ge::glsg;
 

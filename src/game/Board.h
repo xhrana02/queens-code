@@ -10,7 +10,6 @@
 #include <vector>
 #include <glm/detail/type_vec2.hpp>
 
-using namespace std;
 
 class Board
 {
@@ -19,7 +18,7 @@ private:
 	int playfieldHeight;
 	int playfieldWidth;
 
-	vector<Field*> highlightedFields = vector<Field*>();
+	std::vector<Field*> highlightedFields = std::vector<Field*>();
 public:
 	~Board();
 	Board(int width, int height);
@@ -62,12 +61,12 @@ public:
 		return fields[x][y];
 	}
 
-	Field* GetFieldFromMouse(vec2 mouse) const;
-	Field* GetPlayFieldFromMouse(vec2 mouse) const;
+	Field* GetFieldFromMouse(glm::vec2 mouse) const;
+	Field* GetPlayFieldFromMouse(glm::vec2 mouse) const;
 
-	vector<Field*> GetAllFields() const;
+	std::vector<Field*> GetAllFields() const;
 
 	void UnhighlightAllFields();
 	void HighlightField(Field* hlField);
-	void HighlightFields(vector<Field*> hlFields);
+	void HighlightFields(std::vector<Field*> hlFields);
 };

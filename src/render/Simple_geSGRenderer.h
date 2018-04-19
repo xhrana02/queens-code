@@ -18,8 +18,6 @@
 #include <geGL/OpenGLContext.h>
 #include <QDebug>
 
-using namespace ge::gl;
-
 namespace fsg
 {
 	class SimpleVT;
@@ -33,8 +31,9 @@ namespace fsg
 
 		void SetupGLState() const;
 		void SetMatrices(Camera* camera);
-		void SetObjects(vector<RenderingObject*> newObjects) const;
-		Context* GetGL() const
+		void SetObjects(std::vector<RenderingObject*> newObjects) const;
+
+		ge::gl::Context* GetGL() const
 		{
 			return gl.get();
 		}
@@ -44,11 +43,11 @@ namespace fsg
 		void onOGLContextCreated(QOpenGLContext * context) override;
 
 	protected:
-		shared_ptr<Context> gl;
-		shared_ptr<SimpleVT> VT;
+		std::shared_ptr<ge::gl::Context> gl;
+		std::shared_ptr<SimpleVT> VT;
 
-		mat4 perspectiveMatrix;
-		mat4 viewMatrix;
+		glm::mat4 perspectiveMatrix;
+		glm::mat4 viewMatrix;
 
    };
 

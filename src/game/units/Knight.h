@@ -12,5 +12,5 @@ class Knight : public Unit
 {
 public:
 	Knight();
-	std::list<int>* GetListOfAbilites() override;
+	std::vector<Ability>* GetListOfAbilites() override;
 };

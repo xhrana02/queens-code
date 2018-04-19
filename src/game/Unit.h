@@ -6,12 +6,9 @@
 //----------------------------------------------//
 
 #pragma once
-#include <list>
 #include <memory>
 #include "RenderingObject.h"
-
-using namespace std;
-using namespace fsg;
+#include "Ability.h"
 
 class Unit
 {
@@ -30,19 +27,19 @@ protected:
 	int damageReductionHP = 0;
 	int damageReductionEN = 0;
 
-	shared_ptr<RenderingObject> renderingObject;
+	std::shared_ptr<fsg::RenderingObject> renderingObject;
 
 public:
 	virtual ~Unit() = default;
-	virtual list<int>* GetListOfAbilites() = 0;
-	
-	RenderingObject* GetRenderingObject() const
+	virtual std::vector<Ability>* GetListOfAbilites() = 0;
+
+	fsg::RenderingObject* GetRenderingObject() const
 	{
 		return renderingObject.get();
 	}
-	void SetRenderingObject(RenderingObject* newObject)
+	void SetRenderingObject(fsg::RenderingObject* newObject)
 	{
-		renderingObject = shared_ptr<RenderingObject>(newObject);
+		renderingObject = std::shared_ptr<fsg::RenderingObject>(newObject);
 	}
 
 	int GetCurrentHitPoints()

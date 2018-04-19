@@ -1,5 +1,5 @@
 //----------------------------------------------//
-//	Modified by (25%): Pavel Hranáè (xhrana02)	//
+//	Modified by (50%): Pavel Hranáè (xhrana02)	//
 //	School: Vysoké uèení technické v Brnì		//
 //	Faculty: Fakulta informaèních technologií	//
 //  Date: Spring 2018                           //
@@ -11,22 +11,19 @@
 #include <memory>
 #include "RenderingObject.h"
 
-using namespace std;
-using namespace ge::gl;
-
 namespace fsg
 {
 	class SimpleVT : public VisualizationTechnique
 	{
-		vector<RenderingObject*> renderingObjects;
+		std::vector<RenderingObject*> renderingObjects;
 
 	public:
 		void drawSetup() override;
 		void draw() override;
 
-		shared_ptr<Context> gl;
-		shared_ptr<Program> program;
+		std::shared_ptr<ge::gl::Context> gl;
+		std::shared_ptr<ge::gl::Program> program;
 
-		void SetObjects(vector<RenderingObject*> newObjects);
+		void SetObjects(std::vector<RenderingObject*> newObjects);
 	};
 }

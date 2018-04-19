@@ -9,6 +9,9 @@
 #include "GameFactory.h"
 #include <iomanip>
 
+using namespace fsg;
+using namespace std;
+
 /**
  * \brief Constructor for application control class.
  * \param in_app Application created in main.cpp
@@ -37,7 +40,7 @@ void ApplicationControl::SetIcons() const
 
 void ApplicationControl::SetRendering()
 {
-	renderer = new fsg::Simple_geSGRenderer(mainWindow);
+	renderer = new Simple_geSGRenderer(mainWindow);
 	renderingTimer = new QTimer(this);
 	connect(renderingTimer, SIGNAL(timeout()), this, SLOT(Update()));
 	renderingTimer->setSingleShot(false);
@@ -60,12 +63,30 @@ void ApplicationControl::InitWindow()
 	QQmlComponent guiComponent(qmlEngine,
 		QUrl::fromLocalFile(APP_RESOURCES"/qml/GUI.qml"));
 
-	guiRoot = qobject_cast<QQuickItem *>(guiComponent.create());
+	guiRoot = qobject_cast<QQuickItem*>(guiComponent.create());
 	guiRoot->setParentItem(mainWindow->contentItem());
 	qDebug() << guiComponent.errors();
 	qmlEngine->rootContext()->setContextProperty("ApplicationControl", this);
 
 	mainWindow->show();
+}
+
+void ApplicationControl::LoadSettings()
+{
+	auto settings = guiRoot->findChild<QObject*>("settings");
+	auto fullscreen = QQmlProperty::read(settings, "fullscreen").toBool();
+	if (fullscreen)
+	{
+		mainWindow->showFullScreen();
+	}
+	else
+	{
+		mainWindow->showNormal();
+	}
+	rotateSensitivity = QQmlProperty::read(settings, "rotateSensitivity").toDouble() + 0.01;
+	panMouseSensitivity = QQmlProperty::read(settings, "panMouseSensitivity").toDouble() + 0.01;
+	panKeyboardSensitivity = QQmlProperty::read(settings, "panKeyboardSensitivity").toDouble() + 0.01;
+	zoomSensitivity = QQmlProperty::read(settings, "zoomSensitivity").toDouble() + 0.01;
 }
 
 
@@ -132,16 +153,6 @@ void ApplicationControl::ConsoleWrite(const QString message) const
 		Q_ARG(QVariant, message));
 }
 
-/**
-* \brief Invokes a qml function that loads settings.
-*/
-void ApplicationControl::LoadSettings() const
-{
-	QVariant returnedValue;
-	QMetaObject::invokeMethod(guiRoot, "loadSettings",
-		Q_RETURN_ARG(QVariant, returnedValue));
-}
-
 vector<RenderingObject*> ApplicationControl::GetObjectsForRendering() const
 {
 	if(activeGame == nullptr)
@@ -190,7 +201,7 @@ void ApplicationControl::OnMouseEvent(int buttons, float x, float y)
 	else
 	if(((buttons >> 2) & 1) == 1)
 	{
-		cameraControl->Pan(deltaX / 110 * panSensitivity, deltaY / 110 * panSensitivity);
+		cameraControl->Pan(deltaX / 110 * panMouseSensitivity, deltaY / 110 * panMouseSensitivity);
 	}
 	auto gameMousePosition = cameraControl->CalculateMousePosition(x, y, mainWindow->width(), mainWindow->height(), renderer->GetGL());
 	activeGame->HandleMouseMovement(gameMousePosition);
@@ -283,20 +294,20 @@ void ApplicationControl::HandleKeyboardEvents() const
 {
 	if(panUpOnNextUpdate)
 	{
-		cameraControl->Pan(0, panSensitivity / 8);
+		cameraControl->Pan(0, panKeyboardSensitivity / 8);
 	}
 	if (panLeftOnNextUpdate)
 	{
-		cameraControl->Pan(panSensitivity / 8, 0);
+		cameraControl->Pan(panKeyboardSensitivity / 8, 0);
 	}
 
 	if (panDownOnNextUpdate)
 	{
-		cameraControl->Pan(0, -panSensitivity / 8);
+		cameraControl->Pan(0, -panKeyboardSensitivity / 8);
 	}
 
 	if (panRightOnNextUpdate)
 	{
-		cameraControl->Pan(-panSensitivity / 8, 0);
+		cameraControl->Pan(-panKeyboardSensitivity / 8, 0);
 	}
 }

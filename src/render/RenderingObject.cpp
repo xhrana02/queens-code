@@ -10,8 +10,9 @@
 #include "EnumToGL.h"
 #include <geGL/VertexArray.h>
 
-using namespace std;
 using namespace fsg;
+using namespace std;
+using namespace glm;
 using namespace ge::gl;
 using namespace ge::sg;
 using namespace ge::glsg;

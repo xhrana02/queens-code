@@ -7,6 +7,9 @@
 
 #include "Field.h"
 
+using namespace fsg;
+using namespace std;
+
 vector<RenderingObject*> Field::GetRenderingObjects() const
 {
 	auto objects = vector<RenderingObject*>();

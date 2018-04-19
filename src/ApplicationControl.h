@@ -24,7 +24,6 @@
 #include "Camera.h"
 #include "CameraControl.h"
 
-using namespace fsg;
 
 class ApplicationControl : public QObject
 {
@@ -34,17 +33,18 @@ class ApplicationControl : public QObject
 	QQmlEngine* qmlEngine;
 	QQuickItem* guiRoot;
 	QQuickWindow* mainWindow;
-	Simple_geSGRenderer* renderer;
-	ModelLoader* modelLoader = new ModelLoader();
+	fsg::Simple_geSGRenderer* renderer;
+	fsg::ModelLoader* modelLoader = new fsg::ModelLoader();
 
 	QTimer* renderingTimer;
 	Game* activeGame = nullptr;
-	Camera* activeCamera = nullptr;
-	CameraControl* cameraControl = nullptr;
+	fsg::Camera* activeCamera = nullptr;
+	fsg::CameraControl* cameraControl = nullptr;
 
 	float lastMousePositionX = 0.0f;
 	float lastMousePositionY = 0.0f;
-	float panSensitivity = 0.5f;
+	float panMouseSensitivity = 0.5f;
+	float panKeyboardSensitivity = 0.5f;
 	float rotateSensitivity = 0.5f;
 	float zoomSensitivity = 0.5f;
 
@@ -66,10 +66,10 @@ public:
 	void StopRendering() const;
 
 	void ConsoleWrite(const QString message) const;
-	void LoadSettings() const;
 
-	vector<RenderingObject*> GetObjectsForRendering() const;
+	std::vector<fsg::RenderingObject*> GetObjectsForRendering() const;
 
+	Q_INVOKABLE void LoadSettings();
 	Q_INVOKABLE void NewStandardGame(QString p1_name, int p1_layout, QString p2_name, int p2_layout);
 
 	Q_INVOKABLE void OnMouseEvent(int buttons, float x, float y);

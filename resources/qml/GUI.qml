@@ -32,6 +32,7 @@ Item {
         anchors.fill: parent
         source: "images/main_background.jpg"
         fillMode: Image.PreserveAspectCrop
+        z: 3
     }
 
     // Page loaders. Preloads all pages at startup.
@@ -40,6 +41,7 @@ Item {
         anchors.fill: parent
         source: "MainMenu.qml"
         visible: true
+        z: 5
     }
 
     Loader {
@@ -47,6 +49,7 @@ Item {
         anchors.fill: parent
         source: "PlayMenu.qml"
         visible: false
+        z: 5
     }
 
     Loader {
@@ -54,6 +57,7 @@ Item {
         anchors.fill: parent
         source: "OptionsMenu.qml"
         visible: false
+        z: 5
     }
 
     Loader {
@@ -61,6 +65,7 @@ Item {
         anchors.fill: parent
         source: "GameOverlay.qml"
         visible: false
+        z: 1
     }
 
     Rectangle {
@@ -73,6 +78,8 @@ Item {
         border.color: "#E05F581A"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
+
+        z: 10
 
         TextArea {
             id: consoleOutput
@@ -132,8 +139,15 @@ Item {
 
     Settings {
         id: settings
-        property string playerName: "New player"
+        objectName: "settings"
+        property string player1Name: "New player 1"
+        property string player2Name: "New player 2"
         property bool fullscreen: true
+        property real rotateSensitivity: 0.5
+        property real panMouseSensitivity: 0.5
+        property real panKeyboardSensitivity: 0.5
+        property real zoomSensitivity: 0.5
+
     }
 
     Keys.forwardTo: gameActive ? [loaderGameOverlay.item] : [];
@@ -151,11 +165,6 @@ Item {
     function consoleWrite(str) {
         consoleOutput.append(": " + str)
     }
-
-    function loadSettings() {
-        if(settings.fullscreen == true) guiRoot.fullscreen()
-    }
-
 
     function cleanUI() {
         loaderMainMenu.visible    = false
@@ -183,9 +192,20 @@ Item {
     }
 
     function showOptionsMenu() {
-        cleanUI()
+        if (!gameActive) {
+            cleanUI()
+        }
         loaderOptionsMenu.visible = true
         menuBackground.visible    = true
+    }
+
+    function closeOptionsMenu() {
+        if (!gameActive) {
+            showMainMenu()
+        } else {
+            loaderOptionsMenu.visible = false
+            menuBackground.visible    = false
+        }
     }
 
     function showGameOverlay() {

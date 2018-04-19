@@ -8,6 +8,9 @@
 #include "GameFactory.h"
 #include "BoardFactory.h"
 
+using namespace fsg;
+using namespace std;
+
 Game* GameFactory::CreateStandardGame(Player* player_1, Player* player_2, ModelLoader* modelLoader)
 {
 	modelLoader->LoadModel(APP_RESOURCES"/models/GrassyGround/GrassyGround.obj", "GrassyGround");

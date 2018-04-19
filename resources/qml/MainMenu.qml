@@ -7,37 +7,43 @@
 
 import QtQuick 2.7
 
-Item {
+Column {
     id: mainMenu
 
-    Rectangle {
+    FontLoader { id: menuFont; source: "fonts/CinzelDecorative-Regular.ttf" }
+
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.top: parent.top
+    anchors.topMargin: (guiRoot.height / 3 - 100)
+
+    spacing: (guiRoot.height / 30)
+
+
+    Text {
         id: titleText
+        
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: (guiRoot.height / 3 - 100)
-        width: 800
-        height: 100
-        color: "#00000000"
-        Text {
-            FontLoader { id: menuFont; source: "fonts/CinzelDecorative-Regular.ttf" }
-            font.family: menuFont.name
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
-            wrapMode: Text.WordWrap
-            verticalAlignment: Text.AlignTop
-            color: "#5F581A"
-            font.pixelSize: 72
-            font.letterSpacing: 10
-            font.bold: false
-            text: "Queens Regicide"
-        }
+
+        font.family: menuFont.name
+        font.pixelSize: 72
+        font.letterSpacing: 10
+        font.bold: false
+        color: "#4D4500"
+
+        text: "Queens Regicide"
+    }
+
+    Item {
+        // force double space
+        width: 1
+        height: 1
     }
 
     MenuButton {
         id: mainButtonPlay
+        
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: titleText.bottom
-        anchors.topMargin: (guiRoot.height / 15)
+
         styledText: "Play"
 
         onClicked: guiRoot.showPlayMenu()
@@ -45,19 +51,25 @@ Item {
 
     MenuButton {
         id: mainButtonOptions
+        
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: mainButtonPlay.bottom
-        anchors.topMargin: (guiRoot.height / 30)
+
         styledText: "Options"
 
         onClicked: guiRoot.showOptionsMenu()
     }
+    
+    Item {
+        // force double space
+        width: 1
+        height: 1
+    }
 
     MenuButton {
         id: mainButtonQuit
+        
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: mainButtonOptions.bottom
-        anchors.topMargin: (guiRoot.height / 15)
+
         styledText: "Quit"
 
         onClicked: Qt.quit()

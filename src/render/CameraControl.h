@@ -9,9 +9,6 @@
 #include "Camera.h"
 #include <geGL/OpenGLContext.h>
 
-using namespace glm;
-using namespace ge::gl;
-
 namespace fsg
 {
 	class CameraControl
@@ -41,7 +38,7 @@ namespace fsg
 		void Rotate(float x, float y);
 		void Zoom(float zoomChange);
 		void UpdateCamera() const;
-		vec2 CalculateMousePosition(float x, float y, int winWidth, int winHeight, Context* gl) const;
+		glm::vec2 CalculateMousePosition(float x, float y, int winWidth, int winHeight, ge::gl::Context* gl) const;
 	};
 }
 

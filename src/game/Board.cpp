@@ -7,6 +7,9 @@
 
 #include "Board.h"
 
+using namespace std;
+using namespace glm;
+
 Board::~Board()
 {
 	for (auto x = 0; x < ActualWidth(); x++)

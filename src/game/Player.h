@@ -10,14 +10,12 @@
 #include <QObject>
 #include "Unit.h"
 
-using namespace std;
-
 class Player
 {
 	QString _name;
 	int _playerType;
 	int _aiType;
-	std::list<Unit*> _units;
+	std::vector<Unit*> _units;
 
 public:
 	explicit Player(QString name, int code);

@@ -7,13 +7,21 @@
 
 #include "ApplicationControl.h"
 
+using namespace std;
+
 int main(int argc, char** argv)
 {
 	QApplication application(argc, argv);
+	application.setOrganizationName("VUTBR FIT");
+	application.setOrganizationDomain("fit.vutbr.cz");
+	application.setApplicationName("Queens Regicide");
+
 	QQuickWindow mainWindow;
 	QQmlEngine qmlEngine;
 
-	make_shared<ApplicationControl*>(new ApplicationControl(&application, &mainWindow, &qmlEngine));
+	// ApplicationControl needs to exist until the end of the application
+	// ReSharper disable once CppNonReclaimedResourceAcquisition
+	new ApplicationControl(&application, &mainWindow, &qmlEngine);
 
 	#ifdef NDEBUG
 		FreeConsole();

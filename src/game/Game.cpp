@@ -7,6 +7,10 @@
 
 #include "Game.h"
 
+using namespace fsg;
+using namespace std;
+using namespace glm;
+
 /**
  * \brief Game constructor.
  * \param player_1 First player.
@@ -49,13 +53,16 @@ vector<RenderingObject*> Game::GetObjectsForRendering() const
 
 void Game::HandleMouseMovement(vec2 mouse) const
 {
-	auto hoveredField = gameBoard->GetPlayFieldFromMouse(mouse);
-	if(hoveredField != nullptr)
+	auto newHoveredField = gameBoard->GetPlayFieldFromMouse(mouse);
+	if(newHoveredField != hoveredField)
 	{
-		gameBoard->HighlightField(hoveredField);
-	}
-	else
-	{
-		gameBoard->UnhighlightAllFields();
+		if(newHoveredField != nullptr)
+		{
+			gameBoard->HighlightField(newHoveredField);
+		}
+		else
+		{
+			gameBoard->UnhighlightAllFields();
+		}
 	}
 }

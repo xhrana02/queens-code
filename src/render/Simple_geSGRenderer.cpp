@@ -12,8 +12,10 @@
 #include <QOpenGLContext>
 #include <geCore/Text.h>
 
-using namespace std;
 using namespace fsg;
+using namespace std;
+using namespace glm;
+using namespace ge::gl;
 
 Simple_geSGRenderer::Simple_geSGRenderer(QObject* parent)
    : QuickRendererBase(parent)
