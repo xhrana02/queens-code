@@ -10,6 +10,7 @@
 #include <exception>
 #include <math.h>
 #include <QQuickWidget>
+#include <glm/glm.hpp>
 #include <glm/detail/func_trigonometric.hpp>
 #include <glm/detail/func_geometric.hpp>
 #include <glm/gtc/matrix_transform.hpp>

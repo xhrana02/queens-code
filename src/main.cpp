@@ -12,9 +12,6 @@ using namespace std;
 int main(int argc, char** argv)
 {
 	QApplication application(argc, argv);
-	application.setOrganizationName("VUTBR FIT");
-	application.setOrganizationDomain("fit.vutbr.cz");
-	application.setApplicationName("Queens Regicide");
 
 	QQuickWindow mainWindow;
 	QQmlEngine qmlEngine;

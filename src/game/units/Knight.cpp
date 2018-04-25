@@ -12,8 +12,3 @@ Knight::Knight()
 	this->maximumHitPoints = 20;
 }
 
-std::vector<Ability>* Knight::GetListOfAbilites()
-{
-	return new std::vector<Ability>();
-}
-

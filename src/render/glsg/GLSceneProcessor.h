@@ -74,7 +74,6 @@ namespace ge
 
 		private:
 			static void processMeshes(std::shared_ptr<sg::Scene>& scene, std::shared_ptr<glsg::GLScene>& glscene, std::shared_ptr<gl::Context> context);
-			//static void createGLAttribs(sg::Mesh* mesh, std::shared_ptr<glsg::GLScene>& glscene);
 			static void createTextures(std::shared_ptr<sg::Scene> scene, std::shared_ptr<GLScene> glscene, std::shared_ptr<gl::Context> context, std::shared_ptr<TextureFactory> textureFactory);
 		};
 	}

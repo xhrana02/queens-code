@@ -6,10 +6,22 @@
 //----------------------------------------------//
 
 #pragma once
+#include <string>
+
+class Field;
+class Unit;
+class Board;
 
 class Ability
 {
+protected:
+	std::string description;
+	std::string iconName;
+	int costEN = 0;
+	int costHP = 0;
 public:
 	virtual ~Ability() = default;
-	virtual void Effect() = 0;
+	virtual void Effect(Board* board, Unit* abilityUser, Field* target) = 0;
+	virtual bool CanUse(Board* board, Unit* abilityUser, Field* target) = 0;
+	bool CanAfford(Unit* abilityUser) const;
 };

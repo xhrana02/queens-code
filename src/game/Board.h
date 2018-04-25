@@ -8,8 +8,7 @@
 #pragma once
 #include "Field.h"
 #include <vector>
-#include <glm/detail/type_vec2.hpp>
-
+#include <glm/glm.hpp>
 
 class Board
 {
@@ -65,6 +64,12 @@ public:
 	Field* GetPlayFieldFromMouse(glm::vec2 mouse) const;
 
 	std::vector<Field*> GetAllFields() const;
+	std::vector<Field*> GetAllPlayFields() const;
+	std::vector<Field*> GetAllEmptyFields() const;
+
+	std::vector<Field*> GetAllNeighborFields(Field* field) const;
+	std::vector<Field*> GetAllNeighborPlayFields(Field* field) const;
+	std::vector<Field*> GetAllNeighborEmptyFields(Field* field) const;
 
 	void UnhighlightAllFields();
 	void HighlightField(Field* hlField);

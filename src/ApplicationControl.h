@@ -67,7 +67,7 @@ public:
 
 	void ConsoleWrite(const QString message) const;
 
-	std::vector<fsg::RenderingObject*> GetObjectsForRendering() const;
+	void GetObjectsForRendering() const;
 
 	Q_INVOKABLE void LoadSettings();
 	Q_INVOKABLE void NewStandardGame(QString p1_name, int p1_layout, QString p2_name, int p2_layout);

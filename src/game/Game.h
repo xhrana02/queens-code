@@ -10,7 +10,11 @@
 #include "Player.h"
 #include "Board.h"
 #include "RenderingObject.h"
-#include <glm/detail/type_vec2.hpp>
+#include <glm/glm.hpp>
+
+namespace fsg {
+	class Simple_geSGRenderer;
+}
 
 enum GameStage { Deploy, Battle, GameOver };
 
@@ -54,7 +58,7 @@ public:
 
 	void AddEnvironmentObject(std::shared_ptr<fsg::RenderingObject> newObject);
 
-	std::vector<fsg::RenderingObject*> GetObjectsForRendering() const;
+	void GetObjectsForRendering(fsg::Simple_geSGRenderer* renderer) const;
 
-	void HandleMouseMovement(glm::vec2 mouse) const;
+	void HandleMouseMovement(glm::vec2 mouse);
 };

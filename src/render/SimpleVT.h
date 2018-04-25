@@ -8,22 +8,19 @@
 #pragma once
 
 #include <VisualizationTechnique.h>
-#include <memory>
 #include "RenderingObject.h"
+#include <memory>
+#include <glm/glm.hpp>
 
 namespace fsg
 {
-	class SimpleVT : public VisualizationTechnique
+	class SimpleVT
 	{
-		std::vector<RenderingObject*> renderingObjects;
-
+		void drawSetup(RenderingObject* object) const;
 	public:
-		void drawSetup() override;
-		void draw() override;
+		void draw(RenderingObject* object) const;
 
 		std::shared_ptr<ge::gl::Context> gl;
 		std::shared_ptr<ge::gl::Program> program;
-
-		void SetObjects(std::vector<RenderingObject*> newObjects);
 	};
 }

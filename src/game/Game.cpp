@@ -6,6 +6,7 @@
 //----------------------------------------------//
 
 #include "Game.h"
+#include "Simple_geSGRenderer.h"
 
 using namespace fsg;
 using namespace std;
@@ -30,8 +31,9 @@ void Game::AddEnvironmentObject(shared_ptr<RenderingObject> newObject)
 	environmentObjects.push_back(newObject);
 }
 
-vector<RenderingObject*> Game::GetObjectsForRendering() const
+void Game::GetObjectsForRendering(Simple_geSGRenderer* renderer) const
 {
+	// RENDERING OBJECTS
 	auto objects = vector<RenderingObject*>();
 
 	for (auto envObject : environmentObjects)
@@ -39,8 +41,7 @@ vector<RenderingObject*> Game::GetObjectsForRendering() const
 		objects.push_back(envObject.get());
 	}
 
-	auto fields = gameBoard->GetAllFields();
-	for (auto field : fields)
+	for (auto field : gameBoard->GetAllFields())
 	{
 		for (auto fieldObject : field->GetRenderingObjects())
 		{
@@ -48,10 +49,23 @@ vector<RenderingObject*> Game::GetObjectsForRendering() const
 		}
 	}
 
-	return objects;
+	renderer->SetObjects(objects);
+
+	// INFO BARS (HEALTH BAR, ENERGY BAR)
+	for (auto unit : player1->GetUnits())
+	{
+		unit->UpdateInfoBar(renderer->GetPerspectiveMatrix(), renderer->GetViewMatrix(),
+			renderer->GetWindowWidth(), renderer->GetWindowHeight());
+	}
+	for (auto unit : player2->GetUnits())
+	{
+		unit->UpdateInfoBar(renderer->GetPerspectiveMatrix(), renderer->GetViewMatrix(),
+			renderer->GetWindowWidth(), renderer->GetWindowHeight());
+	}
+
 }
 
-void Game::HandleMouseMovement(vec2 mouse) const
+void Game::HandleMouseMovement(vec2 mouse)
 {
 	auto newHoveredField = gameBoard->GetPlayFieldFromMouse(mouse);
 	if(newHoveredField != hoveredField)
@@ -65,4 +79,5 @@ void Game::HandleMouseMovement(vec2 mouse) const
 			gameBoard->UnhighlightAllFields();
 		}
 	}
+	hoveredField = newHoveredField;
 }

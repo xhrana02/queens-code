@@ -6,15 +6,18 @@
 //----------------------------------------------//
 
 #pragma once
-#include <memory>
-#include "RenderingObject.h"
 #include "Ability.h"
+#include "RenderingObject.h"
+#include <memory>
+#include <QObject>
+
+class QQuickItem;
+class QQmlEngine;
+class Field;
 
 class Unit
 {
 protected:
-	Unit();
-
 	int currentHitPoints = 0;
 	int maximumHitPoints = 0;
 	int currentEnergy = 0;
@@ -24,23 +27,31 @@ protected:
 	void checkCurrentEnergy();
 
 	int damageReduction = 0;
-	int damageReductionHP = 0;
-	int damageReductionEN = 0;
+
+	std::vector<Ability*> abilities = std::vector<Ability*>();
+
+	Field* occupiedField = nullptr;
 
 	std::shared_ptr<fsg::RenderingObject> renderingObject;
+	QQuickItem* infobar = nullptr;
 
+	float GetRenderingPosX() const;
+	float GetRenderingPosZ() const;
 public:
-	virtual ~Unit() = default;
-	virtual std::vector<Ability>* GetListOfAbilites() = 0;
+	~Unit();
 
 	fsg::RenderingObject* GetRenderingObject() const
 	{
 		return renderingObject.get();
 	}
-	void SetRenderingObject(fsg::RenderingObject* newObject)
+	void SetRenderingObject(std::shared_ptr<fsg::RenderingObject> newObject)
 	{
-		renderingObject = std::shared_ptr<fsg::RenderingObject>(newObject);
+		renderingObject = newObject;
 	}
+	void UpdateRenderingObjectPosition() const;
+
+	void CreateInfoBar(QQmlEngine* engine, QQuickItem* guiRoot);
+	void UpdateInfoBar(glm::mat4 perspective, glm::mat4 view, int winWidth, int winHeight) const;
 
 	int GetCurrentHitPoints()
 	{
@@ -61,12 +72,27 @@ public:
 		return maximumEnergy;
 	}
 
+	int ReduceHP(int amount);
+	int ReduceEN(int amount);
+
 	bool IsUnitAlive() const
 	{
 		return currentHitPoints > 0;
 	}
 
-	int TakeDamage(int damage);
-	int TakeDamageHP(int damage, bool noReductions = false);
-	int TakeDamageEN(int damage, bool noReductions = false);
+	int TakeDamage(int damageNormal, int damageEN = 0, int damageHP = 0);
+
+	std::vector<Ability*> GetAbilites() const
+	{
+		return abilities;
+	}
+
+	Field* GetOccupiedField() const
+	{
+		return occupiedField;
+	}
+	void SetOccupiedField(Field* newField)
+	{
+		occupiedField = newField;
+	}
 };

@@ -6,7 +6,7 @@
 //----------------------------------------------//
 
 #pragma once
-#include <glm/detail/type_vec3.hpp>
+#include <glm/glm.hpp>
 
 namespace fsg
 {
@@ -23,7 +23,7 @@ namespace fsg
 			, LookAtPosition(0.f, 0.f, 0.f)
 			, UpVector(0.f, 1.f, 0.f)
 			, FOVHorizontal(60.f)
-			, ClipPlaneNear(0.1f)
+			, ClipPlaneNear(0.5f)
 			, ClipPlaneFar(1000.f)
 		{}
 	};

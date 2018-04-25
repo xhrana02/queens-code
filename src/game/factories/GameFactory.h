@@ -9,8 +9,11 @@
 #include "Game.h"
 #include "ModelLoader.h"
 
+class QQuickItem;
+class ApplicationControl;
+
 class GameFactory
 {
 public:
-	static Game* CreateStandardGame(Player* player_1, Player* player_2, fsg::ModelLoader* modelLoader);
+	static Game* CreateStandardGame(Player* player_1, Player* player_2, fsg::ModelLoader* modelLoader, QQmlEngine* engine, QQuickItem* guiRoot);
 };

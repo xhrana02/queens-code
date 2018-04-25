@@ -25,13 +25,33 @@ namespace fsg
 	class Simple_geSGRenderer : public QuickRendererBase
 	{
 		Q_OBJECT
-
+		std::vector<RenderingObject*> renderingObjects;
 	public:
 		explicit Simple_geSGRenderer(QObject * parent = nullptr);
 
 		void SetupGLState() const;
 		void SetMatrices(Camera* camera);
-		void SetObjects(std::vector<RenderingObject*> newObjects) const;
+		glm::mat4 GetPerspectiveMatrix() const
+		{
+			return perspectiveMatrix;
+		}
+		glm::mat4 GetViewMatrix() const
+		{
+			return viewMatrix;
+		}
+		int GetWindowWidth() const
+		{
+			return _qqw->width();
+		}
+		int GetWindowHeight() const
+		{
+			return _qqw->height();
+		}
+
+		void SetObjects(std::vector<RenderingObject*> newObjects)
+		{
+			renderingObjects = newObjects;
+		};
 
 		ge::gl::Context* GetGL() const
 		{

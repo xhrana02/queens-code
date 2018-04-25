@@ -7,22 +7,33 @@
 
 #pragma once
 
-#include <QObject>
 #include "Unit.h"
+#include <QObject>
 
 class Player
 {
-	QString _name;
-	int _playerType;
-	int _aiType;
-	std::vector<Unit*> _units;
+	QString name;
+	int playerType;
+	int aiType;
+	std::vector<Unit*> units;
 
 public:
-	explicit Player(QString name, int code);
+	~Player();
+	explicit Player(QString inName, int inCode);
 
-	QString GetName() const { return _name; }
+	QString GetName() const { return name; }
 
 	void DecodePlayerType(int code);
+
+	std::vector<Unit*> GetUnits() const
+	{
+		return units;
+	}
+	void AddNewUnit(Unit* newUnit)
+	{
+		units.push_back(newUnit);
+	}
+
 };
 
 enum PlayerType {Human, AI};

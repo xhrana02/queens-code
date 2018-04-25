@@ -6,10 +6,13 @@
 //----------------------------------------------//
 
 #pragma once
-#include "Unit.h"
+#include "Field.h"
+#include "Board.h"
 
-class Knight : public Unit
+class Pathfinding
 {
 public:
-	Knight();
+	static std::vector<Field*> FindPath(Board* board, Field* origin, Field* target);
+	static std::vector<Field*> ReconstructPath(std::unordered_map<Field*, Field*> cameFrom, Field* current);
+	static int HeuristicCostEstimate(Field* origin, Field* target);
 };

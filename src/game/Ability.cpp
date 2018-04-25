@@ -6,3 +6,17 @@
 //----------------------------------------------//
 
 #include "Ability.h"
+#include "Unit.h"
+
+bool Ability::CanAfford(Unit* abilityUser) const
+{
+	if (abilityUser->GetCurrentEnergy() < costEN)
+	{
+		return false;
+	}
+	if (abilityUser->GetCurrentHitPoints() < costHP)
+	{
+		return false;
+	}
+	return true;
+}

@@ -8,6 +8,7 @@
 #include "ApplicationControl.h"
 #include "GameFactory.h"
 #include <iomanip>
+#include <thread>
 
 using namespace fsg;
 using namespace std;
@@ -59,6 +60,11 @@ void ApplicationControl::InitWindow()
 	mainWindow->resize(1280, 720);
 
 	mainWindow->setMinimumSize(QSize(960, 540));
+
+	// MSAA 4x
+	auto format = QSurfaceFormat();
+	format.setSamples(4);
+	mainWindow->setFormat(format);
 
 	QQmlComponent guiComponent(qmlEngine,
 		QUrl::fromLocalFile(APP_RESOURCES"/qml/GUI.qml"));
@@ -153,13 +159,15 @@ void ApplicationControl::ConsoleWrite(const QString message) const
 		Q_ARG(QVariant, message));
 }
 
-vector<RenderingObject*> ApplicationControl::GetObjectsForRendering() const
+/**
+ * \brief Provides rendering objects to the renderer.
+ */
+void ApplicationControl::GetObjectsForRendering() const
 {
-	if(activeGame == nullptr)
+	if(activeGame != nullptr)
 	{
-		return {};
+		activeGame->GetObjectsForRendering(renderer);
 	}
-	return activeGame->GetObjectsForRendering();
 }
 
 /**
@@ -174,7 +182,7 @@ void ApplicationControl::NewStandardGame(QString p1_name, int p1_layout, QString
 	auto player1 = new Player(p1_name, p1_layout);
 	auto player2 = new Player(p2_name, p2_layout);
 	ConsoleWrite("... " + player1->GetName() + " vs " + player2->GetName());
-	activeGame = GameFactory::CreateStandardGame(player1, player2, modelLoader);
+	activeGame = GameFactory::CreateStandardGame(player1, player2, modelLoader, qmlEngine, guiRoot);
 
 	activeCamera = new fsg::Camera();
 	cameraControl = new fsg::CameraControl(activeCamera, activeGame->GetMapSize());
@@ -203,6 +211,7 @@ void ApplicationControl::OnMouseEvent(int buttons, float x, float y)
 	{
 		cameraControl->Pan(deltaX / 110 * panMouseSensitivity, deltaY / 110 * panMouseSensitivity);
 	}
+
 	auto gameMousePosition = cameraControl->CalculateMousePosition(x, y, mainWindow->width(), mainWindow->height(), renderer->GetGL());
 	activeGame->HandleMouseMovement(gameMousePosition);
 }
@@ -233,6 +242,12 @@ void ApplicationControl::OnKeyPressed(unsigned int key)
 	case 32: // D
 	case 333: // Right arrow
 		panRightOnNextUpdate = true;
+		break;
+	case 74: // NumMinus-
+		cameraControl->Zoom(-0.5 * zoomSensitivity);
+		break;
+	case 78: // NumPlus+
+		cameraControl->Zoom(0.5 * zoomSensitivity);
 		break;
 	default: // Unhandled keys
 		break;
@@ -268,21 +283,19 @@ void ApplicationControl::OnKeyReleased(unsigned int key)
 void ApplicationControl::Update() const
 {
 	HandleKeyboardEvents();
-	renderer->SetObjects(GetObjectsForRendering());
 	renderer->SetMatrices(activeCamera);
+	GetObjectsForRendering();
 	mainWindow->update();
 }
 
 void ApplicationControl::GamePause() const
 {
 	StopRendering();
-	// TODO
 }
 
 void ApplicationControl::GameContinue() const
 {
 	ActivateRendering();
-	// TODO
 }
 
 void ApplicationControl::GameEnd()
@@ -296,6 +309,7 @@ void ApplicationControl::HandleKeyboardEvents() const
 	{
 		cameraControl->Pan(0, panKeyboardSensitivity / 8);
 	}
+
 	if (panLeftOnNextUpdate)
 	{
 		cameraControl->Pan(panKeyboardSensitivity / 8, 0);

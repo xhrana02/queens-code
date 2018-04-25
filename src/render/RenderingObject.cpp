@@ -9,6 +9,7 @@
 #include "GLSceneProcessor.h"
 #include "EnumToGL.h"
 #include <geGL/VertexArray.h>
+#include <geCore/StandardSemanticsNames.h>
 
 using namespace fsg;
 using namespace std;
@@ -62,7 +63,7 @@ void RenderingObject::updateGLScene()
 				if (attribLocation != -1)
 				{
 					VAO->addAttrib(glattrib.BO, attribLocation, glattrib.attributeDescriptor->numComponents,
-					               ge::glsg::translateEnum(glattrib.attributeDescriptor->type), GLsizei(glattrib.attributeDescriptor->stride));
+						translateEnum(glattrib.attributeDescriptor->type), GLsizei(glattrib.attributeDescriptor->stride));
 				}
 			}
 		}
@@ -76,7 +77,7 @@ void RenderingObject::updateGLScene()
 			if (comp->getType() == MaterialComponent::ComponentType::IMAGE)
 			{
 				auto imageComponent = static_cast<MaterialImageComponent*>(comp.get());
-				diffuseTextureContainer[meshIt.first] = glScene->textures[imageComponent];
+				textureContainer[meshIt.first] = glScene->textures[imageComponent];
 			}
 		}
 	}
@@ -91,6 +92,7 @@ int RenderingObject::semantic2Attribute(AttributeDescriptor::Semantic semantic)
 	switch (semantic)
 	{
 		case AttributeDescriptor::Semantic::position: return 0;
+		case AttributeDescriptor::Semantic::normal: return 1;
 		case AttributeDescriptor::Semantic::texcoord: return 2;
 		default: return -1;
 	}

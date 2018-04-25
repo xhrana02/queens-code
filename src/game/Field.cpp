@@ -33,10 +33,25 @@ void Field::MoveUnitToThisField(Unit* unit)
 {
 	if (IsFieldOccupied())
 	{
-		throw std::exception(
-			"Field.MoveUnitToThisField: Invalid move, field is occupied.");
+		throw exception("Field.MoveUnitToThisField: Invalid move, field is occupied.");
+	}
+	auto previousField = unit->GetOccupiedField();
+	if(previousField != nullptr)
+	{
+		previousField->UnitLeavesThisField();
 	}
 	unitOnField = unit;
+	unit->SetOccupiedField(this);
+	unit->UpdateRenderingObjectPosition();
+
+	fieldBorder->SetColors(unit->GetRenderingObject()->GetNormalColor(), unit->GetRenderingObject()->GetHighlightColor());
+}
+
+void Field::UnitLeavesThisField()
+{
+	unitOnField->SetOccupiedField(nullptr);
+	unitOnField = nullptr;
+	fieldBorder->SetColors(BORDER_NORMAL_COLOR, BORDER_HIGHLIGHT_COLOR);
 }
 
 void Field::HighlightField() const
@@ -44,6 +59,14 @@ void Field::HighlightField() const
 	if(fieldBorder)
 	{
 		fieldBorder->Highlight();
+	}
+	if(fieldTerrain)
+	{
+		fieldTerrain->Highlight();
+	}
+	if(unitOnField != nullptr)
+	{
+		unitOnField->GetRenderingObject()->Highlight();
 	}
 }
 
@@ -53,4 +76,13 @@ void Field::UnhighlightField() const
 	{
 		fieldBorder->Unhighlight();
 	}
+	if(fieldTerrain)
+	{
+		fieldTerrain->Unhighlight();
+	}
+	if(unitOnField != nullptr)
+	{
+		unitOnField->GetRenderingObject()->Unhighlight();
+	}
 }
+

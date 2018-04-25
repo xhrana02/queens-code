@@ -6,10 +6,16 @@
 //----------------------------------------------//
 
 #pragma once
-#include "Unit.h"
 
-class Knight : public Unit
+#include "Ability.h"
+#include <vector>
+
+class Movement : public Ability
 {
+	std::vector<Field*> calculatedPath;
+	int calculatedCost = 0;
 public:
-	Knight();
+	Movement();
+	void Effect(Board* board, Unit* abilityUser, Field* target) override;
+	bool CanUse(Board* board, Unit* abilityUser, Field* target) override;
 };

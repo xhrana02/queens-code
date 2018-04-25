@@ -8,18 +8,26 @@
 #include "Player.h"
 
 using namespace std;
+using namespace fsg;
+
+Player::~Player()
+{
+	for (auto unit : units)
+	{
+		delete unit;
+	}
+}
 
 /**
  * \brief Player constructor.
- * \param name Player name.
- * \param code Player code.
+ * \param inName Player inName.
+ * \param inCode Player inCode.
  */
-Player::Player(QString name, int code)
+Player::Player(QString inName, int inCode)
 {
-	_name = name;
-	DecodePlayerType(code);
+	name = inName;
+	DecodePlayerType(inCode);
 }
-
 
 /**
  * \brief Decodes player's type from a code.
@@ -29,27 +37,26 @@ void Player::DecodePlayerType(int code)
 {
 	auto lastDigit = code % 10;
 	if (lastDigit > 0){
-		_playerType = AI;
+		playerType = AI;
 		switch(lastDigit)
 		{
 		case 1:
-			_aiType = Easy;
+			aiType = Easy;
 			return;
 		case 2:
-			_aiType = Normal;
+			aiType = Normal;
 			return;
 		case 3:
-			_aiType = Hard;
+			aiType = Hard;
 			return;
 		case 4:
-			_aiType = Custom;
+			aiType = Custom;
 			return;
 		default: 
-			throw std::exception(
-				"Player.DecodePlayerType: Invalid player code.");
+			throw exception("Player.DecodePlayerType: Invalid player code.");
 		}
 	}
 
-	_playerType = Human;
-	_aiType = None;
+	playerType = Human;
+	aiType = None;
 }

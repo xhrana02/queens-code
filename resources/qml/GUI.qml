@@ -167,36 +167,36 @@ Item {
     }
 
     function cleanUI() {
-        loaderMainMenu.visible    = false
-        loaderPlayMenu.visible    = false
-        loaderOptionsMenu.visible = false
-        loaderGameOverlay.visible = false
+        loaderMainMenu.visible      = false
+        loaderPlayMenu.visible      = false
+        loaderOptionsMenu.visible   = false
+        loaderGameOverlay.visible   = false
 
-        menuBackground.visible    = false
+        menuBackground.visible      = false
         if (gameActive) {
             gameEnd()
         }
-        gameActive                = false
+        gameActive                  = false
     }
 
     function showMainMenu() {
         cleanUI()
-        loaderMainMenu.visible    = true
-        menuBackground.visible    = true
+        loaderMainMenu.visible      = true
+        menuBackground.visible      = true
     }
 
     function showPlayMenu() {
         cleanUI()
-        loaderPlayMenu.visible    = true
-        menuBackground.visible    = true
+        loaderPlayMenu.visible      = true
+        menuBackground.visible      = true
     }
 
     function showOptionsMenu() {
         if (!gameActive) {
             cleanUI()
         }
-        loaderOptionsMenu.visible = true
-        menuBackground.visible    = true
+        loaderOptionsMenu.visible   = true
+        menuBackground.visible      = true
     }
 
     function closeOptionsMenu() {
@@ -210,8 +210,8 @@ Item {
 
     function showGameOverlay() {
         cleanUI()
-        loaderGameOverlay.visible = true
-        gameActive                = true
+        loaderGameOverlay.visible   = true
+        gameActive                  = true
     }
 
 }

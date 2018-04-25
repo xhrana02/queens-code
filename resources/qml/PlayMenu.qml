@@ -135,7 +135,6 @@ Item {
                     loaderStandardSetup.item.player2name(), loaderStandardSetup.item.player2type()
                 )
                 guiRoot.showGameOverlay()
-                // TODO
                 break
             case "Scenario":
                 guiRoot.consoleWrite("Starting a custom scenario game:")

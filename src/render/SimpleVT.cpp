@@ -24,55 +24,45 @@ using namespace ge::sg;
 using namespace ge::glsg;
 
 /**
- * Prepares renderingObjects before rendering.
+ * Prepares a rendering object before rendering.
  */
-void SimpleVT::drawSetup()
+void SimpleVT::drawSetup(RenderingObject* object) const
 {
-	for (auto object : renderingObjects)
-	{
-		object->PrepareObject(gl);
-	}
+	object->PrepareObject(gl);
+
+	auto colorVector = object->GetColor();
+	program->set4fv("color", value_ptr(colorVector));
+
+	auto translationMatrix = translate(mat4(1.0f), object->position);
+	auto rotationMatrix = rotate(mat4(1.0f), radians(object->rotation), vec3(0.0f, 1.0f, 0.0f));
+	auto modelMatrix = translationMatrix * rotationMatrix;
+	program->setMatrix4fv("modelMatrix", value_ptr(modelMatrix));
+
+	program->set1f("texRepeat", object->TextureRepeat);
 }
 
 /**
  * Use provided shader and draws the provided scene.
  */
-void SimpleVT::draw()
+void SimpleVT::draw(RenderingObject* object) const
 {
-	program->use();
+	drawSetup(object);
 
-	for (auto object : renderingObjects)
+	for (auto model : object->GetGLScene()->scene->models)
 	{
-
-		auto colorVector = object->GetColor();
-		program->set4fv("color", value_ptr(colorVector));
-
-		auto modelMatrix = translate(mat4(1.0f), object->GetPosition());
-		program->setMatrix4fv("model", value_ptr(modelMatrix));
-
-		program->set1f("texRepeat", object->TextureRepeat);
-
-		for (auto model : object->GetGLScene()->scene->models)
+		for (auto mesh : model->meshes)
 		{
-			for (auto mesh : model->meshes)
-			{
-				auto texture = object->GetDiffuseTexture(mesh.get()).get();
-				texture->bind(0);
+			auto texture = object->GetTexture(mesh.get()).get();
+			texture->bind(0);
 
-				auto VAO = object->GetVAO(mesh.get()).get();
-				VAO->bind();
+			auto VAO = object->GetVAO(mesh.get()).get();
+			VAO->bind();
 
-				gl->glDrawElements(translateEnum(mesh->primitive), GLsizei(mesh->count),
-					translateEnum(mesh->getAttribute(AttributeDescriptor::Semantic::indices)->type), nullptr);
+			gl->glDrawElements(translateEnum(mesh->primitive), GLsizei(mesh->count),
+				translateEnum(mesh->getAttribute(AttributeDescriptor::Semantic::indices)->type), nullptr);
 
-				VAO->unbind();
-			}
+			VAO->unbind();
 		}
 	}
-}
-
-void SimpleVT::SetObjects(vector<RenderingObject*> newObjects)
-{
-	renderingObjects = newObjects;
 }
 

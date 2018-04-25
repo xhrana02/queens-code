@@ -6,10 +6,15 @@
 //----------------------------------------------//
 
 #pragma once
-#include "Unit.h"
+#include "Queen.h"
+#include "Movement.h"
 
-class Knight : public Unit
+Queen::Queen()
 {
-public:
-	Knight();
-};
+	this->maximumHitPoints = 10;
+	currentHitPoints = maximumHitPoints;
+	currentEnergy = maximumEnergy;
+	abilities.push_back(new Movement());
+}
+
+

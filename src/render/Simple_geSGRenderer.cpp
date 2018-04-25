@@ -43,21 +43,18 @@ void Simple_geSGRenderer::beforeRendering()
 {
 	SetupGLState();
 
-	VT->program->setMatrix4fv("projection", value_ptr(perspectiveMatrix));
-	VT->program->setMatrix4fv("view", value_ptr(viewMatrix));
+	VT->program->setMatrix4fv("projectionMatrix", value_ptr(perspectiveMatrix));
+	VT->program->setMatrix4fv("viewMatrix", value_ptr(viewMatrix));
+	VT->program->set3fv("lightPos", value_ptr(vec3(200.0f, 1000.0f, 100.0f)));
+	VT->program->set4fv("lightCol", value_ptr(vec4(1.0f, 1.0f, 0.9f, 1.0f)));
 
-	VT->drawSetup();
-	VT->draw();
+	VT->program->use();
+	for (auto object : renderingObjects)
+	{
+		VT->draw(object);
+	}
 
 	_qqw->resetOpenGLState();
-}
-
-/**
- * Passes down a new set of rendering objects.
- */
-void Simple_geSGRenderer::SetObjects(vector<RenderingObject*> newObjects) const
-{
-	VT->SetObjects(newObjects);
 }
 
 void Simple_geSGRenderer::onOGLContextCreated(QOpenGLContext* context)
@@ -71,9 +68,9 @@ void Simple_geSGRenderer::onOGLContextCreated(QOpenGLContext* context)
 
 	//load shaders
 	string shaderDir(APP_RESOURCES"/shaders/");
-	auto simple_vs(make_shared<Shader>(GL_VERTEX_SHADER, ge::core::loadTextFile(shaderDir + "vs.glsl")));
-	auto simple_fs(make_shared<Shader>(GL_FRAGMENT_SHADER, ge::core::loadTextFile(shaderDir + "fs.glsl")));
-	auto prog = make_shared<Program>(simple_vs, simple_fs);
+	auto draw_vs(make_shared<Shader>(GL_VERTEX_SHADER, ge::core::loadTextFile(shaderDir + "draw_vs.glsl")));
+	auto draw_fs(make_shared<Shader>(GL_FRAGMENT_SHADER, ge::core::loadTextFile(shaderDir + "draw_fs.glsl")));
+	auto prog = make_shared<Program>(draw_vs, draw_fs);
 	VT->program = prog;
 
 	context->doneCurrent();
@@ -93,7 +90,7 @@ void Simple_geSGRenderer::SetMatrices(Camera* camera)
 
 	perspectiveMatrix = perspective(
 		radians(camera->FOVHorizontal),
-		static_cast<float>(_qqw->width()) / static_cast<float>(_qqw->height()),
+		static_cast<float>(GetWindowWidth()) / static_cast<float>(GetWindowHeight()),
 		camera->ClipPlaneNear,
 		camera->ClipPlaneFar);
 
