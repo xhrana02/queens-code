@@ -10,7 +10,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 
 Button {
-    id: buttonid
+    id: buttonRoot
     
     property string styledText
 
@@ -19,12 +19,12 @@ Button {
     style: ButtonStyle {
         background: Rectangle {
             border.width: 2
-            border.color: buttonid.hovered ? "#7F7948" : "#5F581A"
+            border.color: buttonRoot.hovered ? "#7F7948" : "#5F581A"
             gradient: Gradient {
-                GradientStop { position: 0 ; color: buttonid.pressed ?  "#978D6A" : "#A89D76"}
-                GradientStop { position: 0.25 ; color: buttonid.pressed ? "#D8CA97" : "#F0E0A8"}
-                GradientStop { position: 0.75 ; color: buttonid.pressed ? "#D8CA97" : "#F0E0A8"}
-                GradientStop { position: 1 ; color: buttonid.pressed ? "#978D6A" : "#A89D76"}
+                GradientStop { position: 0 ; color: buttonRoot.pressed ?  "#978D6A" : "#A89D76"}
+                GradientStop { position: 0.25 ; color: buttonRoot.pressed ? "#D8CA97" : "#F0E0A8"}
+                GradientStop { position: 0.75 ; color: buttonRoot.pressed ? "#D8CA97" : "#F0E0A8"}
+                GradientStop { position: 1 ; color: buttonRoot.pressed ? "#978D6A" : "#A89D76"}
             }
 
             
@@ -34,14 +34,14 @@ Button {
     Text {
         id: textid
         FontLoader { id: menuFont; source: "fonts/CinzelDecorative-Regular.ttf" }
-        color: buttonid.hovered ? "#716A33" : "#4D4500"
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
+        color: buttonRoot.hovered ? "#716A33" : "#4D4500"
+        anchors.horizontalCenter: buttonRoot.horizontalCenter
+        anchors.verticalCenter: buttonRoot.verticalCenter
         wrapMode: Text.WordWrap
         verticalAlignment: Text.AlignTop
         font.pixelSize: 20
         font.bold: true
         font.family: menuFont.name
-        text: parent.styledText
+        text: buttonRoot.styledText
     }
 }

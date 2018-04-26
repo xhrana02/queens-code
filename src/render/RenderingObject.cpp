@@ -23,6 +23,41 @@ RenderingObject::RenderingObject(shared_ptr<Scene> inModel)
 	model = inModel;
 }
 
+void RenderingObject::SetColors(glm::vec4 normal, glm::vec4 highlight)
+{
+	normalColor = normal;
+	highlightColor = highlight;
+	color = normalColor;
+}
+
+void RenderingObject::Highlight()
+{
+	if(!selected)
+	{
+		color = highlightColor;
+	}
+}
+
+void RenderingObject::Unhighlight()
+{
+	if(!selected)
+	{
+		color = normalColor;
+	}
+}
+
+void RenderingObject::Select()
+{
+	selected = true;
+	color = highlightColor;
+}
+
+void RenderingObject::Unselect()
+{
+	selected = false;
+	color = normalColor;
+}
+
 void RenderingObject::PrepareObject(shared_ptr<Context> context)
 {
 	if(context.get() != glContext.get())

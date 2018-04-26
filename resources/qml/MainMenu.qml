@@ -18,7 +18,6 @@ Column {
 
     spacing: (guiRoot.height / 30)
 
-
     Text {
         id: titleText
         

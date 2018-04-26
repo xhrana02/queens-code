@@ -9,7 +9,7 @@ import QtQuick 2.7
 import QtQuick.Controls 1.4
 
 Item {
-    id: infobar
+    id: infoBar
 
     width: 120
     height: 38
@@ -135,16 +135,16 @@ Item {
     }
 
     function update(x, y, z, hp, maxhp, en, maxen) {
-        infobar.visible = true
-        infobar.x = x
-        infobar.y = y
-        infobar.z = z
+        infoBar.visible = true
+        infoBar.x = x
+        infoBar.y = y
+        infoBar.z = z
         hpBar.width = barWidth * hp / maxhp
         enBar.width = barWidth * en / maxen
         hpNumbers.text = hp + "/" + maxhp
         enNumbers.text = en + "/" + maxen
         
-        infobar.scale = z * 2.5
+        infoBar.scale = z * 2.5
         if (z < 0.2) {
             hpNumbers.visible = false
             enNumbers.visible = false
@@ -155,6 +155,6 @@ Item {
     }
 
     function hide() {
-        infobar.visible = false
+        infoBar.visible = false
     }
 }

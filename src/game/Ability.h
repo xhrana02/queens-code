@@ -6,22 +6,54 @@
 //----------------------------------------------//
 
 #pragma once
-#include <string>
+#include <QString>
 
 class Field;
 class Unit;
 class Board;
+class Game;
 
 class Ability
 {
 protected:
-	std::string description;
-	std::string iconName;
+	QString name;
+	QString iconPath;
+	QString description;
+	bool isPassive = false;
 	int costEN = 0;
 	int costHP = 0;
+
+	Game* game = nullptr;
 public:
 	virtual ~Ability() = default;
-	virtual void Effect(Board* board, Unit* abilityUser, Field* target) = 0;
+	virtual bool Effect(Board* board, Unit* abilityUser, Field* target) = 0;
 	virtual bool CanUse(Board* board, Unit* abilityUser, Field* target) = 0;
 	bool CanAfford(Unit* abilityUser) const;
+
+	QString GetName() const
+	{
+		return name;
+	}
+
+	QString GetIconPath() const
+	{
+		return iconPath;
+	}
+
+	QString GetDescription() const
+	{
+		return description;
+	}
+
+	bool IsPassive() const
+	{
+		return isPassive;
+	}
+
+	void SetGame(Game* activeGame)
+	{
+		game = activeGame;
+	}
+	bool LockGame();
+	virtual bool LockedIteration() = 0;
 };

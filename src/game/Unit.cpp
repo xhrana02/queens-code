@@ -20,7 +20,7 @@ using namespace glm;
 */
 float Unit::GetRenderingPosX() const
 {
-	return occupiedField->GetX() - ((occupiedField->GetBoard()->PlayableWidth() + 1) / 2.0f);
+	return occupiedField->GetX() - (occupiedField->GetBoard()->PlayableWidth() + 1) / 2.0f;
 }
 
 /**
@@ -33,16 +33,30 @@ float Unit::GetRenderingPosZ() const
 
 Unit::~Unit()
 {
-	for (auto ability : abilities)
-	{
-		delete ability;
-	}
-	infobar->deleteLater();
+	infoBar->deleteLater();
+	abilitiesBar->deleteLater();
 }
 
 void Unit::UpdateRenderingObjectPosition() const
 {
 	renderingObject->position = vec3(GetRenderingPosX(), 0.0f, GetRenderingPosZ());
+}
+
+void Unit::SetCustomRenderingObjectPosition(float x, float z, float up) const
+{
+	renderingObject->position = vec3(x, up, z);
+}
+
+void Unit::CreateInfoBar(QQmlEngine* engine, QQuickItem* guiRoot)
+{
+	if(infoBar != nullptr)
+	{
+		infoBar->deleteLater();
+	}
+	QQmlComponent component(engine,
+		QUrl::fromLocalFile(APP_RESOURCES"/qml/UnitInfoBar.qml"));
+	infoBar = qobject_cast<QQuickItem*>(component.create());
+	infoBar->setParentItem(guiRoot);
 }
 
 void Unit::UpdateInfoBar(mat4 perspective, mat4 view, int winWidth, int winHeight) const
@@ -56,12 +70,12 @@ void Unit::UpdateInfoBar(mat4 perspective, mat4 view, int winWidth, int winHeigh
 	QVariant returnedValue;
 	if (posvec.z < 0 || posvec.z > 1)
 	{
-		QMetaObject::invokeMethod(infobar, "hide",
+		QMetaObject::invokeMethod(infoBar, "hide",
 			Q_RETURN_ARG(QVariant, returnedValue));
 	}
 	else
 	{
-		QMetaObject::invokeMethod(infobar, "update",
+		QMetaObject::invokeMethod(infoBar, "update",
 			Q_RETURN_ARG(QVariant, returnedValue),
 			Q_ARG(QVariant, posX),
 			Q_ARG(QVariant, posY),
@@ -69,17 +83,54 @@ void Unit::UpdateInfoBar(mat4 perspective, mat4 view, int winWidth, int winHeigh
 			Q_ARG(QVariant, currentHitPoints),
 			Q_ARG(QVariant, GetMaximumHitPoints()),
 			Q_ARG(QVariant, currentEnergy),
-			Q_ARG(QVariant, GetMaximumEnergy()) );
+			Q_ARG(QVariant, GetMaximumEnergy())
+		);
 	}
 
 }
 
-void Unit::CreateInfoBar(QQmlEngine* engine, QQuickItem* guiRoot)
+void Unit::CreateAbilitiesBar(QQmlEngine* engine, QQuickItem* guiRoot)
 {
+	if(abilitiesBar != nullptr)
+	{
+		abilitiesBar->deleteLater();
+	}
 	QQmlComponent component(engine,
-		QUrl::fromLocalFile(APP_RESOURCES"/qml/UnitInfoBar.qml"));
-	infobar = qobject_cast<QQuickItem*>(component.create());
-	infobar->setParentItem(guiRoot);
+		QUrl::fromLocalFile(APP_RESOURCES"/qml/UnitAbilitiesBar.qml"));
+	abilitiesBar = qobject_cast<QQuickItem*>(component.create());
+	abilitiesBar->setParentItem(guiRoot);
+	QVariant returnedValue;
+	auto slot = 0;
+	for (auto ability : abilities)
+	{
+		slot++;
+		QMetaObject::invokeMethod(abilitiesBar, "setAbility",
+			Q_RETURN_ARG(QVariant, returnedValue),
+			Q_ARG(QVariant, slot),
+			Q_ARG(QVariant, ability->GetName()),
+			Q_ARG(QVariant, ability->GetIconPath()),
+			Q_ARG(QVariant, ability->GetDescription()),
+			Q_ARG(QVariant, !ability->IsPassive())
+		);
+	}
+}
+
+void Unit::Select()
+{
+	renderingObject->Select();
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(abilitiesBar, "show",
+		Q_RETURN_ARG(QVariant, returnedValue));
+}
+
+void Unit::Unselect()
+{
+	renderingObject->Unselect();
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(abilitiesBar, "unselectAll",
+		Q_RETURN_ARG(QVariant, returnedValue));
+	QMetaObject::invokeMethod(abilitiesBar, "hide",
+		Q_RETURN_ARG(QVariant, returnedValue));
 }
 
 void Unit::checkCurrentHitPoints()

@@ -14,8 +14,14 @@ class Movement : public Ability
 {
 	std::vector<Field*> calculatedPath;
 	int calculatedCost = 0;
+
+	int animationProgress = 0;
+	int animationGoal = 0;
+	Unit* animationUnit = nullptr;
+	std::vector<Field*> animationPath;
 public:
 	Movement();
-	void Effect(Board* board, Unit* abilityUser, Field* target) override;
+	bool Effect(Board* board, Unit* abilityUser, Field* target) override;
 	bool CanUse(Board* board, Unit* abilityUser, Field* target) override;
+	bool LockedIteration() override;
 };

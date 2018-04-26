@@ -7,6 +7,7 @@
 
 #include "Ability.h"
 #include "Unit.h"
+#include "Game.h"
 
 bool Ability::CanAfford(Unit* abilityUser) const
 {
@@ -19,4 +20,14 @@ bool Ability::CanAfford(Unit* abilityUser) const
 		return false;
 	}
 	return true;
+}
+
+bool Ability::LockGame()
+{
+	if (game != nullptr)
+	{
+		game->LockGame(this);
+		return true;
+	}
+	return false;
 }

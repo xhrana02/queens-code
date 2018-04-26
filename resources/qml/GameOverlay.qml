@@ -22,11 +22,18 @@ Item {
         acceptedButtons: Qt.AllButtons
         
         onPositionChanged: {
-            ApplicationControl.OnMouseEvent(mouse.buttons, mouse.x, mouse.y)
+            ApplicationControl.OnMouseMovement(mouse.buttons, mouse.x, mouse.y)
+            mouse.accepted = true
+        }
+        
+        onPressed: {
+            ApplicationControl.OnMouseClick(mouse.buttons, mouse.x, mouse.y)
+            mouse.accepted = true
         }
 
         onWheel: {
             ApplicationControl.OnWheelEvent(wheel.angleDelta.y)
+            wheel.accepted = true
         }
     }
 

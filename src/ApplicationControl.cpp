@@ -13,6 +13,9 @@
 using namespace fsg;
 using namespace std;
 
+////////////////////////////////////////////////////////////////////////////////
+// CTOR, INIT, CLEAN
+
 /**
  * \brief Constructor for application control class.
  * \param in_app Application created in main.cpp
@@ -95,20 +98,6 @@ void ApplicationControl::LoadSettings()
 	zoomSensitivity = QQmlProperty::read(settings, "zoomSensitivity").toDouble() + 0.01;
 }
 
-
-/**
- * \brief Second initialization part of application control class (connections to qml).
- */
-void ApplicationControl::QtConnect() const
-{
-	connect(qmlEngine, SIGNAL(quit()), application, SLOT(quit()));
-	connect(guiRoot, SIGNAL(fullscreen()), mainWindow, SLOT(showFullScreen()));
-	connect(guiRoot, SIGNAL(windowed()), mainWindow, SLOT(showNormal()));
-	connect(guiRoot, SIGNAL(gamePause()), this, SLOT(GamePause()));
-	connect(guiRoot, SIGNAL(gameContinue()), this, SLOT(GameContinue()));
-	connect(guiRoot, SIGNAL(gameEnd()), this, SLOT(GameEnd()));
-}
-
 /**
  * \brief Cleans some game-specific variables.
  */
@@ -137,6 +126,37 @@ void ApplicationControl::CleanAssets()
 	renderer->SetObjects(vector<RenderingObject*>());
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// CONNECTIONS TO QML
+
+/**
+* \brief Second initialization part of application control class (connections to qml).
+*/
+void ApplicationControl::QtConnect() const
+{
+	connect(qmlEngine, SIGNAL(quit()), application, SLOT(quit()));
+	connect(guiRoot, SIGNAL(fullscreen()), mainWindow, SLOT(showFullScreen()));
+	connect(guiRoot, SIGNAL(windowed()), mainWindow, SLOT(showNormal()));
+	connect(guiRoot, SIGNAL(gamePause()), this, SLOT(GamePause()));
+	connect(guiRoot, SIGNAL(gameContinue()), this, SLOT(GameContinue()));
+	connect(guiRoot, SIGNAL(gameEnd()), this, SLOT(GameEnd()));
+}
+
+/**
+* \brief Sends a custom message to be printed in the in-game console.
+* \param message 
+*/
+void ApplicationControl::ConsoleWrite(const QString message) const
+{
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(guiRoot, "consoleWrite",
+		Q_RETURN_ARG(QVariant, returnedValue),
+		Q_ARG(QVariant, message));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// RENDERING
+
 void ApplicationControl::ActivateRendering() const
 {
 	renderingTimer->start();
@@ -148,20 +168,8 @@ void ApplicationControl::StopRendering() const
 }
 
 /**
- * \brief Sends a custom message to be printed in the in-game console.
- * \param message 
- */
-void ApplicationControl::ConsoleWrite(const QString message) const
-{
-	QVariant returnedValue;
-	QMetaObject::invokeMethod(guiRoot, "consoleWrite",
-		Q_RETURN_ARG(QVariant, returnedValue),
-		Q_ARG(QVariant, message));
-}
-
-/**
- * \brief Provides rendering objects to the renderer.
- */
+* \brief Provides rendering objects to the renderer.
+*/
 void ApplicationControl::GetObjectsForRendering() const
 {
 	if(activeGame != nullptr)
@@ -169,6 +177,9 @@ void ApplicationControl::GetObjectsForRendering() const
 		activeGame->GetObjectsForRendering(renderer);
 	}
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// GAME
 
 /**
  * \brief Creates a new standard game and sets it as active.
@@ -193,27 +204,57 @@ void ApplicationControl::NewStandardGame(QString p1_name, int p1_layout, QString
 	ConsoleWrite("... Game setup complete.");
 }
 
-void ApplicationControl::OnMouseEvent(int buttons, float x, float y)
+void ApplicationControl::AbilitySelected(QString abilityName)
+{
+	ConsoleWrite("DEBUG: ABILITY SELECTED, NAME = " + abilityName);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// MOUSE EVENTS
+
+void ApplicationControl::OnMouseMovement(int buttons, float x, float y)
 {
 	auto deltaX = x - lastMousePositionX;
 	auto deltaY = y - lastMousePositionY;
 	lastMousePositionX = x;
 	lastMousePositionY = y;
+	auto mouseGamePosition = cameraControl->CalculateMousePosition(x, y, renderer);
+
+	activeGame->HandleMouseMovement(mouseGamePosition);
+
 	// LMB held =  buttons       & 1
 	// RMB held = (buttons >> 1) & 1
 	// MMB held = (buttons >> 2) & 1
-	if(((buttons >> 1) & 1) == 1)
-	{
-		cameraControl->Rotate(deltaX / 3 * rotateSensitivity, deltaY / 3 * rotateSensitivity);
-	}
-	else
 	if(((buttons >> 2) & 1) == 1)
 	{
-		cameraControl->Pan(deltaX / 110 * panMouseSensitivity, deltaY / 110 * panMouseSensitivity);
+		// MMB (Mouse3)
+		if (shiftHeld)
+		{
+			cameraControl->Pan(deltaX / 110 * panMouseSensitivity, deltaY / 110 * panMouseSensitivity);
+		}
+		else
+		{
+			cameraControl->Rotate(deltaX / 3 * rotateSensitivity, deltaY / 3 * rotateSensitivity);
+		}
 	}
+}
 
-	auto gameMousePosition = cameraControl->CalculateMousePosition(x, y, mainWindow->width(), mainWindow->height(), renderer->GetGL());
-	activeGame->HandleMouseMovement(gameMousePosition);
+void ApplicationControl::OnMouseClick(int buttons, float x, float y) const
+{
+	auto mouseGamePosition = cameraControl->CalculateMousePosition(x, y, renderer);
+	// LMB held =  buttons       & 1
+	// RMB held = (buttons >> 1) & 1
+	// MMB held = (buttons >> 2) & 1
+	if((buttons & 1) == 1)
+	{
+		// LMB (Mouse1)
+		activeGame->HandleMouseClick(mouseGamePosition, LMB);
+	}
+	if(((buttons >> 1) & 1) == 1)
+	{
+		// RMB (Mouse2)
+		activeGame->HandleMouseClick(mouseGamePosition, RMB);
+	}
 }
 
 void ApplicationControl::OnWheelEvent(float angleDelta) const
@@ -222,11 +263,20 @@ void ApplicationControl::OnWheelEvent(float angleDelta) const
 	cameraControl->Zoom(angleDelta / 120 * zoomSensitivity);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// KEYBOARD EVENTS
+
 void ApplicationControl::OnKeyPressed(unsigned int key)
 {
 	qDebug() << "Key" << key << "pressed.";
 	switch(key)
 	{
+	case 42: // Left shift
+		shiftHeld = true;
+		break;
+	case 54: // Right shift
+		shiftHeld = true;
+		break;
 	case 17: // W
 	case 328: // Up arrow
 		panUpOnNextUpdate = true;
@@ -243,11 +293,23 @@ void ApplicationControl::OnKeyPressed(unsigned int key)
 	case 333: // Right arrow
 		panRightOnNextUpdate = true;
 		break;
+	case 72: // Num8
+		rotateUpOnNextUpdate = true;
+		break;
+	case 75: // Num4
+		rotateLeftOnNextUpdate = true;
+		break;
+	case 77: // Num6
+		rotateRightOnNextUpdate = true;
+		break;
+	case 80: // Num2
+		rotateDownOnNextUpdate = true;
+		break;
 	case 74: // NumMinus-
-		cameraControl->Zoom(-0.5 * zoomSensitivity);
+		zoomOutOnNextUpdate = true;
 		break;
 	case 78: // NumPlus+
-		cameraControl->Zoom(0.5 * zoomSensitivity);
+		zoomInOnNextUpdate = true;
 		break;
 	default: // Unhandled keys
 		break;
@@ -259,6 +321,12 @@ void ApplicationControl::OnKeyReleased(unsigned int key)
 	qDebug() << "Key" << key << "released.";
 	switch (key)
 	{
+	case 42: // Left shift
+		shiftHeld = false;
+		break;
+	case 54: // Right shift
+		shiftHeld = false;
+		break;
 	case 17: // W
 	case 328: // Up arrow
 		panUpOnNextUpdate = false;
@@ -275,16 +343,78 @@ void ApplicationControl::OnKeyReleased(unsigned int key)
 	case 333: // Right arrow
 		panRightOnNextUpdate = false;
 		break;
+	case 72: // Num8
+		rotateUpOnNextUpdate = false;
+		break;
+	case 75: // Num4
+		rotateLeftOnNextUpdate = false;
+		break;
+	case 77: // Num6
+		rotateRightOnNextUpdate = false;
+		break;
+	case 80: // Num2
+		rotateDownOnNextUpdate = false;
+		break;
+	case 74: // NumMinus-
+		zoomOutOnNextUpdate = false;
+		break;
+	case 78: // NumPlus+
+		zoomInOnNextUpdate = false;
+		break;
 	default: // Unhandled keys
 		break;
 	}
 }
 
+void ApplicationControl::HandleKeyboardEvents() const
+{
+	if(panUpOnNextUpdate) {
+		cameraControl->Pan(0, panKeyboardSensitivity / 10.0);
+	}
+	if (panLeftOnNextUpdate) {
+		cameraControl->Pan(panKeyboardSensitivity / 10.0, 0);
+	}
+	if (panDownOnNextUpdate) {
+		cameraControl->Pan(0, -panKeyboardSensitivity / 10.0);
+	}
+	if (panRightOnNextUpdate) {
+		cameraControl->Pan(-panKeyboardSensitivity / 10.0, 0);
+	}
+	if (rotateUpOnNextUpdate) {
+		cameraControl->Rotate(0, 1.25 * rotateSensitivity);
+	}
+	if (rotateLeftOnNextUpdate) {
+		cameraControl->Rotate(2.0 * rotateSensitivity, 0);
+	}
+	if (rotateRightOnNextUpdate) {
+		cameraControl->Rotate(-2.0 * rotateSensitivity, 0);
+	}
+	if (rotateDownOnNextUpdate) {
+		cameraControl->Rotate(0, -1.25 * rotateSensitivity);
+	}
+	if (zoomOutOnNextUpdate) {
+		cameraControl->Zoom(-0.2 * zoomSensitivity);
+	}
+	if (zoomInOnNextUpdate) {
+		cameraControl->Zoom(0.2 * zoomSensitivity);
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC SLOTS
+
+/**
+ * \brief Called every 16 ms to update the camera and the rendered scene.
+ */
 void ApplicationControl::Update() const
 {
+	// check if any relevant keys are held
 	HandleKeyboardEvents();
+	// update the view and perspective (projection) matrix based on camera's values
 	renderer->SetMatrices(activeCamera);
+	// update the list of rendered objects
 	GetObjectsForRendering();
+	// force redraw
 	mainWindow->update();
 }
 
@@ -301,27 +431,4 @@ void ApplicationControl::GameContinue() const
 void ApplicationControl::GameEnd()
 {
 	CleanAssets();
-}
-
-void ApplicationControl::HandleKeyboardEvents() const
-{
-	if(panUpOnNextUpdate)
-	{
-		cameraControl->Pan(0, panKeyboardSensitivity / 8);
-	}
-
-	if (panLeftOnNextUpdate)
-	{
-		cameraControl->Pan(panKeyboardSensitivity / 8, 0);
-	}
-
-	if (panDownOnNextUpdate)
-	{
-		cameraControl->Pan(0, -panKeyboardSensitivity / 8);
-	}
-
-	if (panRightOnNextUpdate)
-	{
-		cameraControl->Pan(-panKeyboardSensitivity / 8, 0);
-	}
 }

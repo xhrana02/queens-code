@@ -48,10 +48,18 @@ class ApplicationControl : public QObject
 	float rotateSensitivity = 0.5f;
 	float zoomSensitivity = 0.5f;
 
+	// held keyboard buttons
+	bool shiftHeld = false;
 	bool panUpOnNextUpdate = false;
 	bool panLeftOnNextUpdate = false;
 	bool panDownOnNextUpdate = false;
 	bool panRightOnNextUpdate = false;
+	bool rotateUpOnNextUpdate = false;
+	bool rotateLeftOnNextUpdate = false;
+	bool rotateRightOnNextUpdate = false;
+	bool rotateDownOnNextUpdate = false;
+	bool zoomInOnNextUpdate = false;
+	bool zoomOutOnNextUpdate = false;
 
 public:
 	explicit ApplicationControl(QApplication* in_app, QQuickWindow* in_win, QQmlEngine* in_eng);
@@ -64,18 +72,22 @@ public:
 
 	void ActivateRendering() const;
 	void StopRendering() const;
+	void GetObjectsForRendering() const;
 
 	void ConsoleWrite(const QString message) const;
 
-	void GetObjectsForRendering() const;
-
 	Q_INVOKABLE void LoadSettings();
 	Q_INVOKABLE void NewStandardGame(QString p1_name, int p1_layout, QString p2_name, int p2_layout);
+	Q_INVOKABLE void AbilitySelected(QString abilityName);
 
-	Q_INVOKABLE void OnMouseEvent(int buttons, float x, float y);
+	Q_INVOKABLE void OnMouseMovement(int buttons, float x, float y);
+	Q_INVOKABLE void OnMouseClick(int buttons, float x, float y) const;
 	Q_INVOKABLE void OnWheelEvent(float angleDelta) const;
 	Q_INVOKABLE void OnKeyPressed(unsigned int key);
 	Q_INVOKABLE void OnKeyReleased(unsigned int key);
+
+private:
+	void HandleKeyboardEvents() const;
 
 public slots:
 	void Update() const;
@@ -83,7 +95,4 @@ public slots:
 	void GamePause() const;
 	void GameContinue() const;
 	void GameEnd();
-
-private:
-	void HandleKeyboardEvents() const;
 };

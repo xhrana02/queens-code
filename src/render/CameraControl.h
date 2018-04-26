@@ -7,10 +7,11 @@
 
 #pragma once
 #include "Camera.h"
-#include <geGL/OpenGLContext.h>
 
 namespace fsg
 {
+	class Simple_geSGRenderer;
+
 	class CameraControl
 	{
 		Camera* camera = nullptr;
@@ -38,7 +39,7 @@ namespace fsg
 		void Rotate(float x, float y);
 		void Zoom(float zoomChange);
 		void UpdateCamera() const;
-		glm::vec2 CalculateMousePosition(float x, float y, int winWidth, int winHeight, ge::gl::Context* gl) const;
+		glm::vec2 CalculateMousePosition(float x, float y, Simple_geSGRenderer* renderer) const;
 	};
 }
 

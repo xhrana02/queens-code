@@ -20,6 +20,7 @@ Item {
     property var bigHorizontalMargin: (guiRoot.width / 30)
     property var smallHorizontalMargin: (guiRoot.width / 40)
     property var labelsColor: "#FFFCE6"
+    property var sliderWidth: 275
 
     FontLoader { id: menuFont; source: "fonts/CinzelDecorative-Regular.ttf" }
 
@@ -230,19 +231,21 @@ Item {
         Slider {
             id: optionsRotateSensitivitySlider
 
-            width: 200
+            width: sliderWidth
             stepSize: 0.05
 
             value: settings.rotateSensitivity
         }
         
         Text {
+            id: optionsRotateSensitivityInfo
+
             font.family: menuFont.name
             font.pixelSize: 17
             font.bold: true
             color: optionsMenu.labelsColor
 
-            text: optionsRotateSensitivitySlider.value * 100 + "%"
+            text: Math.round(optionsRotateSensitivitySlider.value * 100) + "%"
         }
 
         // PAN MOUSE
@@ -260,19 +263,21 @@ Item {
         Slider {
             id: optionsPanMouseSensitivitySlider
 
-            width: 200
+            width: sliderWidth
             stepSize: 0.05
 
             value: settings.panMouseSensitivity
         }
         
         Text {
+            id: optionsPanMouseSensitivityInfo
+
             font.family: menuFont.name
             font.pixelSize: 17
             font.bold: true
             color: optionsMenu.labelsColor
 
-            text: optionsZoomSensitivitySlider.value * 100 + "%"
+            text: Math.round(optionsPanMouseSensitivitySlider.value * 100) + "%"
         }
 
         // PAN KEYBOARD
@@ -290,19 +295,21 @@ Item {
         Slider {
             id: optionsPanKeyboardSensitivitySlider
 
-            width: 200
+            width: sliderWidth
             stepSize: 0.05
 
             value: settings.panKeyboardSensitivity
         }
         
         Text {
+            id: optionsPanKeyboardSensitivityInfo
+
             font.family: menuFont.name
             font.pixelSize: 17
             font.bold: true
             color: optionsMenu.labelsColor
 
-            text: optionsZoomSensitivitySlider.value * 100 + "%"
+            text: Math.round(optionsPanKeyboardSensitivitySlider.value * 100) + "%"
         }
         
         // ZOOM
@@ -320,19 +327,21 @@ Item {
         Slider {
             id: optionsZoomSensitivitySlider
 
-            width: 200
+            width: sliderWidth
             stepSize: 0.05
 
             value: settings.zoomSensitivity
         }
         
         Text {
+            id: optionsZoomSensitivityInfo
+
             font.family: menuFont.name
             font.pixelSize: 17
             font.bold: true
             color: optionsMenu.labelsColor
 
-            text: optionsZoomSensitivitySlider.value * 100 + "%"
+            text: Math.round(optionsZoomSensitivitySlider.value * 100) + "%"
         }
 
     }
@@ -389,6 +398,13 @@ Item {
     // CONTROL BUTTONS END
 
     // FUNCTIONS
+    // function updateSliders() {
+    //     optionsRotateSensitivityInfo.text = optionsRotateSensitivitySlider.value * 100 + "%"
+    //     optionsPanMouseSensitivityInfo.text = optionsPanMouseSensitivitySlider.value * 100 + "%"
+    //     optionsPanKeyboardSensitivityInfo.text = optionsPanKeyboardSensitivitySlider.value * 100 + "%"
+    //     optionsZoomSensitivityInfo.text = optionsZoomSensitivitySlider.value * 100 + "%"
+    // }
+
     function cleanUI() {
         optionsPlayer1NameInput.focus = false
         optionsPlayer2NameInput.focus = false

@@ -31,29 +31,57 @@ Game* GameFactory::CreateStandardGame(Player* player_1, Player* player_2, ModelL
 	auto p1Color = vec4(0.75f, 0.1f, 0.1f, 1.0f);
 	auto p1HighlightColor = vec4(0.9f, 0.2f, 0.2f, 1.0f);
 
+	vector<Unit*> p1Units;
+
 	// QUEEN
 	auto p1Queen = new Queen();
-	auto p1QueenRO = make_shared<RenderingObject>(modelLoader->GetModel("UnitQueen"));
-	p1QueenRO->SetColors(p1Color, p1HighlightColor);
-	p1Queen->SetRenderingObject(p1QueenRO);
-	p1Queen->CreateInfoBar(engine, guiRoot);
+	p1Queen->SetRenderingObject(make_shared<RenderingObject>(modelLoader->GetModel("UnitQueen")));
+	p1Units.push_back(p1Queen);
+
+	// PLAYER 1 UNITS COMMON COMMANDS
+	for (auto unit : p1Units)
+	{
+		unit->GetRenderingObject()->SetColors(p1Color, p1HighlightColor);
+		unit->CreateInfoBar(engine, guiRoot);
+		unit->CreateAbilitiesBar(engine, guiRoot);
+		player_1->AddNewUnit(unit);
+		for (auto ability : unit->GetAbilites())
+		{
+			ability->SetGame(newGame);
+		}
+	}
+
+	// PLAYER 1 UNITS POSITIONS
 	newGame->GetGameBoard()->GetPlayField(8, 1)->MoveUnitToThisField(p1Queen);
-	player_1->AddNewUnit(p1Queen);
 
 	// PLAYER 2 UNITS
 	auto p2Color = vec4(0.2f, 0.2f, 0.8f, 1.0f);
 	auto p2HighlightColor = vec4(0.3f, 0.3f, 0.95f, 1.0f);
 	auto p2Rotation = 180.0f;
 
+	vector<Unit*> p2Units;
+
 	// QUEEN
 	auto p2Queen = new Queen();
-	auto p2QueenRO = make_shared<RenderingObject>(modelLoader->GetModel("UnitQueen"));
-	p2QueenRO->SetColors(p2Color, p2HighlightColor);
-	p2QueenRO->rotation = p2Rotation;
-	p2Queen->SetRenderingObject(p2QueenRO);
-	p2Queen->CreateInfoBar(engine, guiRoot);
+	p2Queen->SetRenderingObject(make_shared<RenderingObject>(modelLoader->GetModel("UnitQueen")));
+	p2Units.push_back(p2Queen);
+
+	// PLAYER 2 UNITS COMMON COMMANDS
+	for (auto unit : p2Units)
+	{
+		unit->GetRenderingObject()->SetColors(p2Color, p2HighlightColor);
+		unit->GetRenderingObject()->rotation = p2Rotation;
+		unit->CreateInfoBar(engine, guiRoot);
+		unit->CreateAbilitiesBar(engine, guiRoot);
+		player_2->AddNewUnit(unit);
+		for (auto ability : unit->GetAbilites())
+		{
+			ability->SetGame(newGame);
+		}
+	}
+
+	// PLAYER 2 UNITS POSITIONS
 	newGame->GetGameBoard()->GetPlayField(8, 15)->MoveUnitToThisField(p2Queen);
-	player_2->AddNewUnit(p2Queen);
 
 	return newGame;
 }

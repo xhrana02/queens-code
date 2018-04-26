@@ -17,6 +17,7 @@ namespace fsg {
 }
 
 enum GameStage { Deploy, Battle, GameOver };
+enum MouseButton { LMB, RMB, MMB };
 
 class Game
 {
@@ -28,6 +29,10 @@ class Game
 	std::vector<std::shared_ptr<fsg::RenderingObject>> environmentObjects;
 
 	Field* hoveredField = nullptr;
+	Unit* selectedUnit = nullptr;
+
+	bool locked = false;
+	std::vector<Ability*> lockingAbilities;
 
 public:
 	Game(Player* player_1, Player* player_2, Board* board);
@@ -47,18 +52,15 @@ public:
 		return gameBoard.get();
 	}
 
-	int GetMapSize() const
-	{
-		if(gameBoard->PlayableHeight() > gameBoard->PlayableWidth())
-		{
-			return gameBoard->PlayableHeight();
-		}
-		return gameBoard->PlayableWidth();
-	}
+	int GetMapSize() const;
 
 	void AddEnvironmentObject(std::shared_ptr<fsg::RenderingObject> newObject);
 
 	void GetObjectsForRendering(fsg::Simple_geSGRenderer* renderer) const;
 
 	void HandleMouseMovement(glm::vec2 mouse);
+	void HandleMouseClick(glm::vec2 mouse, MouseButton button);
+
+	void LockGame(Ability* lockingAbility);
+	void LockingIteration();
 };

@@ -20,6 +20,7 @@ namespace fsg
 		glm::vec4 color = glm::vec4(1,1,1,1);
 		glm::vec4 normalColor = glm::vec4(1,1,1,1);
 		glm::vec4 highlightColor = glm::vec4(1,1,1,1);
+		bool selected = false;
 
 		std::shared_ptr<ge::gl::Context> glContext;
 		std::shared_ptr<ge::glsg::GLScene> glScene;
@@ -58,20 +59,11 @@ namespace fsg
 		{
 			return highlightColor;
 		}
-		void SetColors(glm::vec4 normal, glm::vec4 highlight)
-		{
-			normalColor = normal;
-			highlightColor = highlight;
-			color = normalColor;
-		}
-		void Highlight()
-		{
-			color = highlightColor;
-		}
-		void Unhighlight()
-		{
-			color = normalColor;
-		}
+		void SetColors(glm::vec4 normal, glm::vec4 highlight);
+		void Highlight();
+		void Unhighlight();
+		void Select();
+		void Unselect();
 
 		std::shared_ptr<ge::glsg::GLScene> GetGLScene() const
 		{

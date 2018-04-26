@@ -14,6 +14,7 @@
 #include <glm/detail/func_trigonometric.hpp>
 #include <glm/detail/func_geometric.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "Simple_geSGRenderer.h"
 
 using namespace fsg;
 using namespace std;
@@ -140,21 +141,15 @@ void CameraControl::UpdateCamera() const
 		sinf(radians(rotationX));
 }
 
-vec2 CameraControl::CalculateMousePosition(float x, float y, int winWidth, int winHeight, Context* gl) const
+vec2 CameraControl::CalculateMousePosition(float x, float y, Simple_geSGRenderer* renderer) const
 {
+	auto winWidth = renderer->GetWindowWidth();
+	auto winHeight = renderer->GetWindowHeight();
+	auto view = renderer->GetViewMatrix();
+	auto projection = renderer->GetPerspectiveMatrix();
+
 	y = winHeight - y - 1;
 
-	auto projection = perspective(
-		radians(camera->FOVHorizontal),
-		static_cast<float>(winWidth) / static_cast<float>(winHeight),
-		camera->ClipPlaneNear,
-		camera->ClipPlaneFar);
-
-	auto view = lookAt(
-		camera->EyePosition,
-		camera->LookAtPosition,
-		camera->UpVector);
-	
 	auto wc1 = unProject(vec3(x, y, 0.f), view, projection, vec4(0, 0, winWidth, winHeight));
 	auto wc2 = unProject(vec3(x, y, 1.f), view, projection, vec4(0, 0, winWidth, winHeight));
 	auto dwcy = wc2.y - wc1.y;

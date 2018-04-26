@@ -18,6 +18,8 @@ class Field;
 class Unit
 {
 protected:
+	std::string name;
+
 	int currentHitPoints = 0;
 	int maximumHitPoints = 0;
 	int currentEnergy = 0;
@@ -28,12 +30,13 @@ protected:
 
 	int damageReduction = 0;
 
-	std::vector<Ability*> abilities = std::vector<Ability*>();
+	std::vector<std::shared_ptr<Ability>> abilities = std::vector<std::shared_ptr<Ability>>();
 
 	Field* occupiedField = nullptr;
 
 	std::shared_ptr<fsg::RenderingObject> renderingObject;
-	QQuickItem* infobar = nullptr;
+	QQuickItem* infoBar = nullptr;
+	QQuickItem* abilitiesBar = nullptr;
 
 	float GetRenderingPosX() const;
 	float GetRenderingPosZ() const;
@@ -49,9 +52,19 @@ public:
 		renderingObject = newObject;
 	}
 	void UpdateRenderingObjectPosition() const;
+	void SetCustomRenderingObjectPosition(float x, float z, float up) const;
 
 	void CreateInfoBar(QQmlEngine* engine, QQuickItem* guiRoot);
 	void UpdateInfoBar(glm::mat4 perspective, glm::mat4 view, int winWidth, int winHeight) const;
+	void CreateAbilitiesBar(QQmlEngine* engine, QQuickItem* guiRoot);
+
+	void Select();
+	void Unselect();
+
+	std::string GetName() const
+	{
+		return name;
+	}
 
 	int GetCurrentHitPoints()
 	{
@@ -82,7 +95,7 @@ public:
 
 	int TakeDamage(int damageNormal, int damageEN = 0, int damageHP = 0);
 
-	std::vector<Ability*> GetAbilites() const
+	std::vector<std::shared_ptr<Ability>> GetAbilites() const
 	{
 		return abilities;
 	}
