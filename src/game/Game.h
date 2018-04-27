@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "GameEnums.h"
 #include "Player.h"
 #include "Board.h"
 #include "RenderingObject.h"
@@ -16,13 +17,16 @@ namespace fsg {
 	class Simple_geSGRenderer;
 }
 
-enum GameStage { Deploy, Battle, GameOver };
-enum MouseButton { LMB, RMB, MMB };
+class ApplicationControl;
 
 class Game
 {
+	ApplicationControl* appControl;
+	bool isRealGame = false;
+
 	std::shared_ptr<Player> player1;
 	std::shared_ptr<Player> player2;
+	Player* activePlayer = nullptr;
 	GameStage gameStage;
 	std::shared_ptr<Board> gameBoard;
 
@@ -33,18 +37,43 @@ class Game
 
 	bool locked = false;
 	std::vector<Ability*> lockingAbilities;
+	Unit* selectUnitAfterUnlock = nullptr;
+	bool endTurnAfterUnlock = false;
 
 public:
-	Game(Player* player_1, Player* player_2, Board* board);
+	explicit Game(std::shared_ptr<Board> inBoard) : Game(nullptr, inBoard){}
+	Game(ApplicationControl* inAppControl, std::shared_ptr<Board> inBoard);
+
+	void ThisIsRealGame()
+	{
+		isRealGame = true;
+	}
+	bool IsRealGame() const
+	{
+		return isRealGame;
+	}
+
+	void StartGame() const;
+
+	void AddPlayer(std::shared_ptr<Player> newPlayer);
 
 	Player* GetPlayer1() const
 	{
 		return player1.get();
 	}
-
 	Player* GetPlayer2() const
 	{
 		return player2.get();
+	}
+	Player* GetNextPlayer() const;
+
+	void SetActivePlayer(Player* newActivePlayer)
+	{
+		activePlayer = newActivePlayer;
+	}
+	Player* GetActivePlayer() const
+	{
+		return activePlayer;
 	}
 
 	Board* GetGameBoard() const
@@ -60,7 +89,18 @@ public:
 
 	void HandleMouseMovement(glm::vec2 mouse);
 	void HandleMouseClick(glm::vec2 mouse, MouseButton button);
+	void HoverField(Field* newHoveredField);
+	void SelectField(Field* clickedField);
+	void SelectUnit(Unit* newSelectedUnit);
+	void UnselectUnit();
+	void UseAbility(Field* clickedField);
+	void SelectAbility(int slot) const;
+	void OnAbilitySelected(int slot) const;
+	void EndTurn();
 
 	void LockGame(Ability* lockingAbility);
-	void LockingIteration();
+	void UnlockGame();
+	void LockedIteration();
+
+	void IterationEvents();
 };

@@ -50,56 +50,30 @@ void CameraControl::Pan(float x, float z)
 	positionX +=
 		- sinf(radians(rotationX)) * x
 		- cosf(radians(rotationX)) * z;
-	if (positionX < positionXMin)
-	{
-		positionX = positionXMin;
-	}
-	else
-	if (positionX > positionXMax)
-	{
-		positionX = positionXMax;
-	}
 
 	positionZ +=
 		  cosf(radians(rotationX)) * x
 		- sinf(radians(rotationX)) * z;
-	if (positionZ < positionZMin)
-	{
-		positionZ = positionZMin;
-	}
-	else
-	if (positionZ > positionZMax)
-	{
-		positionZ = positionZMax;
-	}
 
+	CheckPositionBounds();
+	UpdateCamera();
+}
+
+void CameraControl::PanToPosition(float x, float z)
+{
+	positionX = x;
+	positionZ = z;
+
+	CheckPositionBounds();
 	UpdateCamera();
 }
 
 void CameraControl::Rotate(float x, float y)
 {
 	rotationX += x;
-	if (rotationX < 0)
-	{
-		rotationX += 360;
-	}
-	else
-	if (rotationX > 360)
-	{
-		rotationX -= 360;
-	}
-
 	rotationY += y;
-	if (rotationY < rotationYMin)
-	{
-		rotationY = rotationYMin;
-	}
-	else
-	if (rotationY > rotationYMax)
-	{
-		rotationY = rotationYMax;
-	}
 
+	CheckRotationBounds();
 	UpdateCamera();
 }
 
@@ -110,6 +84,58 @@ void CameraControl::Zoom(float zoomChange)
 {
 	distance -= zoomChange;
 
+	CheckDistanceBounds();
+	UpdateCamera();
+}
+
+void CameraControl::CheckPositionBounds()
+{
+	if (positionX < positionXMin)
+	{
+		positionX = positionXMin;
+	}
+	else
+	if (positionX > positionXMax)
+	{
+		positionX = positionXMax;
+	}
+
+	if (positionZ < positionZMin)
+	{
+		positionZ = positionZMin;
+	}
+	else
+	if (positionZ > positionZMax)
+	{
+		positionZ = positionZMax;
+	}
+}
+
+void CameraControl::CheckRotationBounds()
+{
+	if (rotationX < 0)
+	{
+		rotationX += 360;
+	}
+	else
+	if (rotationX > 360)
+	{
+		rotationX -= 360;
+	}
+
+	if (rotationY < rotationYMin)
+	{
+		rotationY = rotationYMin;
+	}
+	else
+	if (rotationY > rotationYMax)
+	{
+		rotationY = rotationYMax;
+	}
+}
+
+void CameraControl::CheckDistanceBounds()
+{
 	if (distance < distanceMin)
 	{
 		distance = distanceMin;
@@ -119,8 +145,6 @@ void CameraControl::Zoom(float zoomChange)
 	{
 		distance = distanceMax;
 	}
-
-	UpdateCamera();
 }
 
 void CameraControl::UpdateCamera() const

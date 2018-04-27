@@ -9,6 +9,6 @@
 
 Knight::Knight()
 {
-	this->maximumHitPoints = 20;
+	this->maximumHP = 20;
 }
 

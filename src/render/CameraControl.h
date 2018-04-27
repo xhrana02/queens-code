@@ -36,8 +36,12 @@ namespace fsg
 	public:
 		explicit CameraControl(Camera* inCamera, int mapSize);
 		void Pan(float x, float z);
+		void PanToPosition(float x, float z);
 		void Rotate(float x, float y);
 		void Zoom(float zoomChange);
+		void CheckPositionBounds();
+		void CheckRotationBounds();
+		void CheckDistanceBounds();
 		void UpdateCamera() const;
 		glm::vec2 CalculateMousePosition(float x, float y, Simple_geSGRenderer* renderer) const;
 	};

@@ -23,24 +23,49 @@ RenderingObject::RenderingObject(shared_ptr<Scene> inModel)
 	model = inModel;
 }
 
-void RenderingObject::SetColors(glm::vec4 normal, glm::vec4 highlight)
+void RenderingObject::SetColors(vec4 normal, vec4 halflight, vec4 highlight)
 {
 	normalColor = normal;
+	halflightColor = halflight;
 	highlightColor = highlight;
 	color = normalColor;
 }
 
 void RenderingObject::Highlight()
 {
-	if(!selected)
-	{
-		color = highlightColor;
-	}
+	highlighted = true;
+	color = highlightColor;
 }
 
 void RenderingObject::Unhighlight()
 {
+	highlighted = false;
 	if(!selected)
+	{
+		if(!halflighted)
+		{
+			color = normalColor;
+		}
+		else
+		{
+			color = halflightColor;
+		}
+	}
+}
+
+void RenderingObject::Halflight()
+{
+	halflighted = true;
+	if(!selected && !highlighted)
+	{
+		color = halflightColor;
+	}
+}
+
+void RenderingObject::Unhalflight()
+{
+	halflighted = false;
+	if(!selected && !highlighted)
 	{
 		color = normalColor;
 	}
@@ -55,7 +80,17 @@ void RenderingObject::Select()
 void RenderingObject::Unselect()
 {
 	selected = false;
-	color = normalColor;
+	if(!highlighted)
+	{
+		if(!halflighted)
+		{
+			color = normalColor;
+		}
+		else
+		{
+			color = halflightColor;
+		}
+	}
 }
 
 void RenderingObject::PrepareObject(shared_ptr<Context> context)

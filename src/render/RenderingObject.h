@@ -17,9 +17,12 @@ namespace fsg
 	class RenderingObject
 	{
 		std::shared_ptr<ge::sg::Scene> model;
-		glm::vec4 color = glm::vec4(1,1,1,1);
-		glm::vec4 normalColor = glm::vec4(1,1,1,1);
+		glm::vec4 color = glm::vec4(0.88f,0.88f,0.88f,1);
+		glm::vec4 normalColor = glm::vec4(0.88f,0.88f,0.88f,1);
+		glm::vec4 halflightColor = glm::vec4(0.94f,0.94f,0.94f,1);
 		glm::vec4 highlightColor = glm::vec4(1,1,1,1);
+		bool highlighted = false;
+		bool halflighted = false;
 		bool selected = false;
 
 		std::shared_ptr<ge::gl::Context> glContext;
@@ -55,13 +58,19 @@ namespace fsg
 		{
 			return normalColor;
 		}
+		glm::vec4 GetHalflightColor() const
+		{
+			return halflightColor;
+		}
 		glm::vec4 GetHighlightColor() const
 		{
 			return highlightColor;
 		}
-		void SetColors(glm::vec4 normal, glm::vec4 highlight);
+		void SetColors(glm::vec4 normal, glm::vec4 halflight, glm::vec4 highlight);
 		void Highlight();
 		void Unhighlight();
+		void Halflight();
+		void Unhalflight();
 		void Select();
 		void Unselect();
 

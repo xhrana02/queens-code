@@ -44,14 +44,18 @@ void Field::MoveUnitToThisField(Unit* unit)
 	unit->SetOccupiedField(this);
 	unit->UpdateRenderingObjectPosition();
 
-	fieldBorder->SetColors(unit->GetRenderingObject()->GetNormalColor(), unit->GetRenderingObject()->GetHighlightColor());
+	fieldBorder->SetColors(
+		unit->GetRenderingObject()->GetNormalColor(),
+		unit->GetRenderingObject()->GetHalflightColor(),
+		unit->GetRenderingObject()->GetHighlightColor()
+	);
 }
 
 void Field::UnitLeavesThisField()
 {
 	unitOnField->SetOccupiedField(nullptr);
 	unitOnField = nullptr;
-	fieldBorder->SetColors(BORDER_NORMAL_COLOR, BORDER_HIGHLIGHT_COLOR);
+	fieldBorder->SetColors(BORDER_NORMAL_COLOR, BORDER_HALFLIGHT_COLOR, BORDER_HIGHLIGHT_COLOR);
 }
 
 void Field::HighlightField() const
@@ -64,7 +68,7 @@ void Field::HighlightField() const
 	{
 		fieldTerrain->Highlight();
 	}
-	if(unitOnField != nullptr)
+	if(unitOnField)
 	{
 		unitOnField->GetRenderingObject()->Highlight();
 	}
@@ -80,9 +84,41 @@ void Field::UnhighlightField() const
 	{
 		fieldTerrain->Unhighlight();
 	}
-	if(unitOnField != nullptr)
+	if(unitOnField)
 	{
 		unitOnField->GetRenderingObject()->Unhighlight();
+	}
+}
+
+void Field::HalflightField() const
+{
+	if(fieldBorder)
+	{
+		fieldBorder->Halflight();
+	}
+	if(fieldTerrain)
+	{
+		fieldTerrain->Halflight();
+	}
+	if(unitOnField)
+	{
+		unitOnField->GetRenderingObject()->Halflight();
+	}
+}
+
+void Field::UnhalflightField() const
+{
+	if(fieldBorder)
+	{
+		fieldBorder->Unhalflight();
+	}
+	if(fieldTerrain)
+	{
+		fieldTerrain->Unhalflight();
+	}
+	if(unitOnField)
+	{
+		unitOnField->GetRenderingObject()->Unhalflight();
 	}
 }
 

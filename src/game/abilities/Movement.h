@@ -8,20 +8,21 @@
 #pragma once
 
 #include "Ability.h"
-#include <vector>
+#include <forward_list>
 
 class Movement : public Ability
 {
-	std::vector<Field*> calculatedPath;
+	std::forward_list<Field*> calculatedPath;
 	int calculatedCost = 0;
 
 	int animationProgress = 0;
 	int animationGoal = 0;
 	Unit* animationUnit = nullptr;
-	std::vector<Field*> animationPath;
+	std::forward_list<Field*> animationPath;
 public:
 	Movement();
 	bool Effect(Board* board, Unit* abilityUser, Field* target) override;
 	bool CanUse(Board* board, Unit* abilityUser, Field* target) override;
 	bool LockedIteration() override;
+	void OnSelected(Board* board, Unit* abilityUser) override;
 };

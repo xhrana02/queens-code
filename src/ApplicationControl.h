@@ -64,6 +64,11 @@ class ApplicationControl : public QObject
 public:
 	explicit ApplicationControl(QApplication* in_app, QQuickWindow* in_win, QQmlEngine* in_eng);
 
+	fsg::CameraControl* GetCameraControl() const
+	{
+		return cameraControl;
+	}
+
 	void SetIcons() const;
 	void SetRendering();
 	void InitWindow();
@@ -75,10 +80,13 @@ public:
 	void GetObjectsForRendering() const;
 
 	void ConsoleWrite(const QString message) const;
+	void OnAbilityUsed() const;
+	void OnTurnBegin() const;
 
 	Q_INVOKABLE void LoadSettings();
-	Q_INVOKABLE void NewStandardGame(QString p1_name, int p1_layout, QString p2_name, int p2_layout);
-	Q_INVOKABLE void AbilitySelected(QString abilityName);
+	Q_INVOKABLE void NewStandardGame(QString p1Name, int p1Code, QString p2Name, int p2Code);
+	Q_INVOKABLE void AbilitySelected(int slot) const;
+	Q_INVOKABLE void EndTurn() const;
 
 	Q_INVOKABLE void OnMouseMovement(int buttons, float x, float y);
 	Q_INVOKABLE void OnMouseClick(int buttons, float x, float y) const;

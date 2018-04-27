@@ -11,13 +11,12 @@ using namespace fsg;
 using namespace std;
 using namespace glm;
 
-Board* BoardFactory::CreateStandardBoard(ModelLoader* modelLoader)
+shared_ptr<Board> BoardFactory::CreateStandardBoard(ModelLoader* modelLoader)
 {
-	auto newBoard = new Board(15, 15);
+	auto newBoard = make_shared<Board>(15, 15);
 
 	auto throneObject = make_shared<RenderingObject>(modelLoader->GetModel("Throne"));
 	throneObject->TextureRepeat = 10;
-	throneObject->SetColors(vec4(0.85f, 0.85f, 0.85f, 1.0f), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	newBoard->GetField(8, 8)->SetFieldTerrainObject(throneObject);
 
 	auto positionModifierX = (newBoard->PlayableWidth() + 1) / 2;
@@ -46,7 +45,6 @@ Board* BoardFactory::CreateStandardBoard(ModelLoader* modelLoader)
 		field->SetTerrainType(Wall);
 		auto newWallObject = make_shared<RenderingObject>(modelLoader->GetModel("StoneWall"));
 		newWallObject->position = vec3(field->GetX() - positionModifierX, 0.0f, field->GetY() - positionModifierY);
-		newWallObject->SetColors(vec4(0.85f, 0.85f, 0.85f, 1.0f), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		field->SetFieldTerrainObject(newWallObject);
 	}
 
@@ -57,7 +55,7 @@ Board* BoardFactory::CreateStandardBoard(ModelLoader* modelLoader)
 			auto field = newBoard->GetField(x, y);
 			auto newBorderObject = make_shared<RenderingObject>(modelLoader->GetModel("FieldBorder"));
 			newBorderObject->position = vec3(field->GetX() - positionModifierX, 0.0f, field->GetY() - positionModifierY);
-			newBorderObject->SetColors(BORDER_NORMAL_COLOR, BORDER_HIGHLIGHT_COLOR);
+			newBorderObject->SetColors(BORDER_NORMAL_COLOR, BORDER_HALFLIGHT_COLOR, BORDER_HIGHLIGHT_COLOR);
 			field->SetFieldBorderObject(newBorderObject);
 		}
 	}

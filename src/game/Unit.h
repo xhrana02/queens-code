@@ -6,6 +6,7 @@
 //----------------------------------------------//
 
 #pragma once
+#include "GameEnums.h"
 #include "Ability.h"
 #include "RenderingObject.h"
 #include <memory>
@@ -14,23 +15,42 @@
 class QQuickItem;
 class QQmlEngine;
 class Field;
+class ApplicationControl;
 
 class Unit
 {
 protected:
+	ApplicationControl* appControl = nullptr;
+
 	std::string name;
+	PlayerID ownerID = Player1;
 
-	int currentHitPoints = 0;
-	int maximumHitPoints = 0;
-	int currentEnergy = 0;
-	int &maximumEnergy = currentHitPoints;
-
+	int currentHP = 0;
+	int maximumHP = 0;
+	int currentEN = 0;
+	int &maximumEN = currentHP;
 	void checkCurrentHitPoints();
 	void checkCurrentEnergy();
 
 	int damageReduction = 0;
+	int regenerationHP = 0;
+	int regenerationEN = 3;
+	int restHP = 1;
+	int restEN = 3;
+
+	void regenerate();
+	void rest();
+
+	bool stunned = false;
+	int stunDuration = 0;
+	bool restless = false;
+	int restlessDuration = 0;
+
+	bool movedThisTurn = false;
 
 	std::vector<std::shared_ptr<Ability>> abilities = std::vector<std::shared_ptr<Ability>>();
+	int selectedAbilitySlot = 0;
+	Ability* selectedAbility = nullptr;
 
 	Field* occupiedField = nullptr;
 
@@ -38,11 +58,16 @@ protected:
 	QQuickItem* infoBar = nullptr;
 	QQuickItem* abilitiesBar = nullptr;
 
-	float GetRenderingPosX() const;
-	float GetRenderingPosZ() const;
 public:
 	~Unit();
+	void SetAppControl(ApplicationControl* inAppControl)
+	{
+		appControl = inAppControl;
+	}
+	void SendToConsole(QString message) const;
 
+	float GetRenderingPosX() const;
+	float GetRenderingPosZ() const;
 	fsg::RenderingObject* GetRenderingObject() const
 	{
 		return renderingObject.get();
@@ -54,50 +79,9 @@ public:
 	void UpdateRenderingObjectPosition() const;
 	void SetCustomRenderingObjectPosition(float x, float z, float up) const;
 
-	void CreateInfoBar(QQmlEngine* engine, QQuickItem* guiRoot);
-	void UpdateInfoBar(glm::mat4 perspective, glm::mat4 view, int winWidth, int winHeight) const;
-	void CreateAbilitiesBar(QQmlEngine* engine, QQuickItem* guiRoot);
-
-	void Select();
-	void Unselect();
-
 	std::string GetName() const
 	{
 		return name;
-	}
-
-	int GetCurrentHitPoints()
-	{
-		checkCurrentHitPoints();
-		return currentHitPoints;
-	}
-	int GetMaximumHitPoints() const
-	{
-		return maximumHitPoints;
-	}
-	int GetCurrentEnergy()
-	{
-		checkCurrentEnergy();
-		return currentEnergy;
-	}
-	int GetMaximumEnergy() const
-	{
-		return maximumEnergy;
-	}
-
-	int ReduceHP(int amount);
-	int ReduceEN(int amount);
-
-	bool IsUnitAlive() const
-	{
-		return currentHitPoints > 0;
-	}
-
-	int TakeDamage(int damageNormal, int damageEN = 0, int damageHP = 0);
-
-	std::vector<std::shared_ptr<Ability>> GetAbilites() const
-	{
-		return abilities;
 	}
 
 	Field* GetOccupiedField() const
@@ -108,4 +92,65 @@ public:
 	{
 		occupiedField = newField;
 	}
+	Board* GetBoard() const;
+
+	PlayerID GetOwner() const
+	{
+		return ownerID;
+	}
+	void SetOwner(PlayerID player)
+	{
+		ownerID = player;
+	}
+
+	void CreateInfoBar(QQmlEngine* engine, QQuickItem* guiRoot);
+	void UpdateInfoBar(glm::mat4 perspective, glm::mat4 view, int winWidth, int winHeight) const;
+	void CreateAbilitiesBar(QQmlEngine* engine, QQuickItem* guiRoot);
+
+	void Select(bool isEnemy = false) const;
+	void Unselect() const;
+	void SelectAbility(int slot) const;
+	void OnAbilitySelected(int slot);
+	void RefreshAbilityHalflight();
+	bool UseSelectedAbility(Field* target);
+
+	int GetCurrentHitPoints()
+	{
+		checkCurrentHitPoints();
+		return currentHP;
+	}
+	int GetMaximumHitPoints() const
+	{
+		return maximumHP;
+	}
+	int GetCurrentEnergy()
+	{
+		checkCurrentEnergy();
+		return currentEN;
+	}
+	int GetMaximumEnergy() const
+	{
+		return maximumEN;
+	}
+
+	int ReduceHP(int amount);
+	int ReduceEN(int amount);
+	int RegainHP(int amount);
+	int RegainEN(int amount);
+
+	bool IsUnitAlive() const
+	{
+		return currentHP > 0;
+	}
+
+	int TakeDamage(int damageNormal, int damageEN = 0, int damageHP = 0);
+	int Heal(int healHP, int healEN = 0);
+
+	std::vector<std::shared_ptr<Ability>> GetAbilites() const
+	{
+		return abilities;
+	}
+
+	void OnTurnBegin();
+	void OnTurnEnd();
 };

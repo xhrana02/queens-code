@@ -214,5 +214,13 @@ Item {
         gameActive                  = true
     }
 
+    function onTurnBegin() {
+        loaderGameOverlay.item.onTurnBegin()
+    }
+
+    function onAbilityUsed() {
+        loaderGameOverlay.item.onAbilityUsed()
+    }
+
 }
 

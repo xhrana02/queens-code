@@ -154,6 +154,20 @@ void ApplicationControl::ConsoleWrite(const QString message) const
 		Q_ARG(QVariant, message));
 }
 
+void ApplicationControl::OnAbilityUsed() const
+{
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(guiRoot, "onAbilityUsed",
+		Q_RETURN_ARG(QVariant, returnedValue));
+}
+
+void ApplicationControl::OnTurnBegin() const
+{
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(guiRoot, "onTurnBegin",
+		Q_RETURN_ARG(QVariant, returnedValue));
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // RENDERING
 
@@ -184,29 +198,34 @@ void ApplicationControl::GetObjectsForRendering() const
 /**
  * \brief Creates a new standard game and sets it as active.
  */
-void ApplicationControl::NewStandardGame(QString p1_name, int p1_layout, QString p2_name, int p2_layout)
+void ApplicationControl::NewStandardGame(QString p1Name, int p1Code, QString p2Name, int p2Code)
 {
 	ConsoleWrite("... Game setup started.");
 
 	CleanAssets();
 
-	auto player1 = new Player(p1_name, p1_layout);
-	auto player2 = new Player(p2_name, p2_layout);
-	ConsoleWrite("... " + player1->GetName() + " vs " + player2->GetName());
-	activeGame = GameFactory::CreateStandardGame(player1, player2, modelLoader, qmlEngine, guiRoot);
+	activeGame = GameFactory::CreateStandardGame(this, p1Name, p1Code, p2Name, p2Code, modelLoader, qmlEngine, guiRoot);
+	ConsoleWrite("... " + activeGame->GetPlayer1()->GetName() + " vs " + activeGame->GetPlayer2()->GetName());
 
-	activeCamera = new fsg::Camera();
-	cameraControl = new fsg::CameraControl(activeCamera, activeGame->GetMapSize());
+	activeCamera = new Camera();
+	cameraControl = new CameraControl(activeCamera, activeGame->GetMapSize());
 	cameraControl->UpdateCamera();
 
 	ActivateRendering();
 
+	activeGame->StartGame();
+
 	ConsoleWrite("... Game setup complete.");
 }
 
-void ApplicationControl::AbilitySelected(QString abilityName)
+void ApplicationControl::AbilitySelected(int slot) const
 {
-	ConsoleWrite("DEBUG: ABILITY SELECTED, NAME = " + abilityName);
+	activeGame->OnAbilitySelected(slot);
+}
+
+void ApplicationControl::EndTurn() const
+{
+	activeGame->EndTurn();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -311,6 +330,21 @@ void ApplicationControl::OnKeyPressed(unsigned int key)
 	case 78: // NumPlus+
 		zoomInOnNextUpdate = true;
 		break;
+	case 2: // 1
+		activeGame->SelectAbility(1);
+		break;
+	case 3: // 2
+		activeGame->SelectAbility(2);
+		break;
+	case 4: // 3
+		activeGame->SelectAbility(3);
+		break;
+	case 5: // 4
+		activeGame->SelectAbility(4);
+		break;
+	case 6: // 5
+		activeGame->SelectAbility(5);
+		break;
 	default: // Unhandled keys
 		break;
 	}
@@ -408,6 +442,8 @@ void ApplicationControl::HandleKeyboardEvents() const
  */
 void ApplicationControl::Update() const
 {
+	// execute events that need to be executed every iteration
+	activeGame->IterationEvents();
 	// check if any relevant keys are held
 	HandleKeyboardEvents();
 	// update the view and perspective (projection) matrix based on camera's values

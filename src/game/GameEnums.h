@@ -6,11 +6,9 @@
 //----------------------------------------------//
 
 #pragma once
-#include "Board.h"
-#include "ModelLoader.h"
 
-class BoardFactory
-{
-public:
-	static std::shared_ptr<Board> CreateStandardBoard(fsg::ModelLoader* modelLoader);
-};
+enum GameStage { Deploy, Battle, GameOver };
+enum MouseButton { LMB, RMB, MMB };
+enum PlayerID { Player1, Player2 };
+enum PlayerType {Human, AI};
+enum AIType {None, Easy, Normal, Hard, Custom};

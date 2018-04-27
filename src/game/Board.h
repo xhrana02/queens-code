@@ -18,6 +18,7 @@ private:
 	int playfieldWidth;
 
 	std::vector<Field*> highlightedFields = std::vector<Field*>();
+	std::vector<Field*> halflightedFields = std::vector<Field*>();
 public:
 	~Board();
 	Board(int width, int height);
@@ -74,4 +75,7 @@ public:
 	void UnhighlightAllFields();
 	void HighlightField(Field* hlField);
 	void HighlightFields(std::vector<Field*> hlFields);
+
+	void UnhalflightAllFields();
+	void HalflightFields(std::vector<Field*> hlFields);
 };

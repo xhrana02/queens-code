@@ -11,17 +11,19 @@ import QtQuick.Controls 1.4
 Item {
     id: abilityRoot
 
-    width: 0
+    width: 60
     height: 60
 
     property string name
     property string iconSource
     property string description
-    property bool selectable
+    property bool selectable: false
     property bool selected: false
+    property int slot
 
     property var borderColor: "#5F581A"
     property var borderSelectedColor: "#FFFF99"
+    property var textColor: "#FFFCE6"
 
     Rectangle {
         id: abilityIconContainer
@@ -29,7 +31,7 @@ Item {
         anchors.fill: parent
         
         color: "#00000000"
-        border.width: abilityRoot.selectable ? 5 : 0
+        border.width: abilityRoot.selectable ? 2 : 0
         border.color: abilityRoot.selected ? abilityRoot.borderSelectedColor : abilityRoot.borderColor
         radius: 1
 
@@ -37,10 +39,39 @@ Item {
             id: abilityIcon
 
             anchors.fill: parent
+            anchors.margins: 0
             fillMode: Image.Stretch
 
             source: abilityRoot.iconSource
         }
+    }
+
+    Rectangle {
+        id: abilityShortcutContainer
+        
+        x: parent.x - 4
+        y: parent.y - 4
+        width: 20
+        height: 20
+
+        color: "#5F581A"
+        border.width: abilityRoot.selectable ? 2 : 0
+        border.color: abilityRoot.selected ? abilityRoot.borderSelectedColor : abilityRoot.borderColor
+        radius: 1
+
+        Text {
+            id: abilityShortcutText
+
+            anchors.fill: parent
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            font.pixelSize: 14
+            color: abilityRoot.textColor
+
+            text: abilityRoot.slot
+        }
+
     }
 
     Rectangle {
@@ -69,7 +100,7 @@ Item {
             textFormat: Text.StyledText
             wrapMode: Text.Wrap
             font.pixelSize: 13
-            color: "#FFFCE6"
+            color: abilityRoot.textColor
 
             text: abilityRoot.description
         }
@@ -92,17 +123,17 @@ Item {
         }
 
         onClicked: {
-            if (abilityRoot.selectable) {
-                abilityRoot.select()
-            }
+            abilityRoot.select()
             mouse.accepted = true
         }
     }
 
     function select() {
-        ApplicationControl.AbilitySelected(abilityRoot.name)
-        abilitiesBar.unselectAll()
-        abilityRoot.selected = true
+        if (abilityRoot.selectable) {
+            abilitiesBar.unselectAll()
+            abilityRoot.selected = true
+            ApplicationControl.AbilitySelected(slot)
+        }
     }
 
     function unselect() {

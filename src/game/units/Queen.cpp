@@ -12,9 +12,9 @@
 Queen::Queen()
 {
 	name = "Queen";
-	this->maximumHitPoints = 10;
-	currentHitPoints = maximumHitPoints;
-	currentEnergy = maximumEnergy;
+	this->maximumHP = 10;
+	currentHP = maximumHP;
+	currentEN = maximumEN;
 	abilities.push_back(std::make_shared<Movement>());
 }
 

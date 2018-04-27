@@ -87,9 +87,9 @@ vector<Field*> Board::GetAllFields() const
 vector<Field*> Board::GetAllPlayFields() const
 {
 	auto allPlayFields = vector<Field*>();
-	for (auto x = 1; x < PlayableWidth(); x++)
+	for (auto x = 1; x <= PlayableWidth(); x++)
 	{
-		for (auto y = 1; y < PlayableHeight(); y++)
+		for (auto y = 1; y <= PlayableHeight(); y++)
 		{
 			allPlayFields.push_back(fields[x][y]);
 		}
@@ -100,9 +100,9 @@ vector<Field*> Board::GetAllPlayFields() const
 vector<Field*> Board::GetAllEmptyFields() const
 {
 	auto allEmptyFields = vector<Field*>();
-	for (auto x = 1; x < PlayableWidth(); x++)
+	for (auto x = 1; x <= PlayableWidth(); x++)
 	{
-		for (auto y = 1; y < PlayableHeight(); y++)
+		for (auto y = 1; y <= PlayableHeight(); y++)
 		{
 			if(!fields[x][y]->IsFieldOccupied())
 			{
@@ -133,8 +133,8 @@ vector<Field*> Board::GetAllNeighborFields(Field* field) const
 			auto x = fieldX + modX;
 			auto y = fieldY + modY;
 
-			if (x < 0 || x >= ActualWidth() - 1 ||
-				y < 0 || y >= ActualHeight() - 1)
+			if (x < 0 || x >= ActualWidth() ||
+				y < 0 || y >= ActualHeight() )
 			{
 				// skip non-existing fields
 				continue;
@@ -167,8 +167,8 @@ vector<Field*> Board::GetAllNeighborPlayFields(Field* field) const
 			auto x = fieldX + modX;
 			auto y = fieldY + modY;
 
-			if (x < 1 || x >= PlayableWidth() ||
-				y < 1 || y >= PlayableHeight())
+			if (x < 1 || x > PlayableWidth() ||
+				y < 1 || y > PlayableHeight())
 			{
 				// skip non-existing and border fields
 				continue;
@@ -201,8 +201,8 @@ vector<Field*> Board::GetAllNeighborEmptyFields(Field* field) const
 			auto x = fieldX + modX;
 			auto y = fieldY + modY;
 
-			if (x < 1 || x >= PlayableWidth() ||
-				y < 1 || y >= PlayableHeight())
+			if (x < 1 || x > PlayableWidth() ||
+				y < 1 || y > PlayableHeight() )
 			{
 				// skip non-existing and border fields
 				continue;
@@ -214,7 +214,7 @@ vector<Field*> Board::GetAllNeighborEmptyFields(Field* field) const
 				continue;
 			}
 
-			if (modX != modY)
+			if (modX == 0 || modY == 0)
 			{
 				// perpendicular directions
 				neighbors.push_back(fields[x][y]);
@@ -256,6 +256,25 @@ void Board::HighlightFields(vector<Field*> hlFields)
 	{
 		hlField->HighlightField();
 		highlightedFields.push_back(hlField);
+	}
+}
+
+void Board::UnhalflightAllFields()
+{
+	for (auto hlField : halflightedFields)
+	{
+		hlField->UnhalflightField();
+	}
+	halflightedFields = vector<Field*>();
+}
+
+void Board::HalflightFields(vector<Field*> hlFields)
+{
+	UnhalflightAllFields();
+	for (auto hlField : hlFields)
+	{
+		hlField->HalflightField();
+		halflightedFields.push_back(hlField);
 	}
 }
 

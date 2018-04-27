@@ -10,13 +10,28 @@
 #include "Field.h"
 #include <QtQml>
 #include <QQuickItem>
+#include "../ApplicationControl.h"
 
 using namespace std;
 using namespace fsg;
 using namespace glm;
 
+Unit::~Unit()
+{
+	infoBar->deleteLater();
+	abilitiesBar->deleteLater();
+}
+
+void Unit::SendToConsole(QString message) const
+{
+	if (appControl != nullptr)
+	{
+		appControl->ConsoleWrite(message);
+	}
+}
+
 /**
-* \brief Rendering position X (in both rendering and game coords).
+* \brief Rendering position X.
 */
 float Unit::GetRenderingPosX() const
 {
@@ -24,17 +39,11 @@ float Unit::GetRenderingPosX() const
 }
 
 /**
- * \brief Rendering position Z (in rendering coords, Y in game coords).
- */
+* \brief Rendering position Z (Z in rendering coords, Y in game coords).
+*/
 float Unit::GetRenderingPosZ() const
 {
 	return occupiedField->GetY() - (occupiedField->GetBoard()->PlayableHeight() + 1) / 2.0f;
-}
-
-Unit::~Unit()
-{
-	infoBar->deleteLater();
-	abilitiesBar->deleteLater();
 }
 
 void Unit::UpdateRenderingObjectPosition() const
@@ -45,6 +54,20 @@ void Unit::UpdateRenderingObjectPosition() const
 void Unit::SetCustomRenderingObjectPosition(float x, float z, float up) const
 {
 	renderingObject->position = vec3(x, up, z);
+}
+
+Board* Unit::GetBoard() const
+{
+	if(occupiedField != nullptr)
+	{
+		auto board = occupiedField->GetBoard();
+		if (board == nullptr)
+		{
+			throw exception("Unit GetBoard - This unit's field doesn't belong to a board. Weird.");
+		}
+		return board;
+	}
+	throw exception("Unit GetBoard - This unit doesn't occupy a field. Weird.");
 }
 
 void Unit::CreateInfoBar(QQmlEngine* engine, QQuickItem* guiRoot)
@@ -80,10 +103,10 @@ void Unit::UpdateInfoBar(mat4 perspective, mat4 view, int winWidth, int winHeigh
 			Q_ARG(QVariant, posX),
 			Q_ARG(QVariant, posY),
 			Q_ARG(QVariant, depth),
-			Q_ARG(QVariant, currentHitPoints),
-			Q_ARG(QVariant, GetMaximumHitPoints()),
-			Q_ARG(QVariant, currentEnergy),
-			Q_ARG(QVariant, GetMaximumEnergy())
+			Q_ARG(QVariant, currentHP),
+			Q_ARG(QVariant, maximumHP),
+			Q_ARG(QVariant, currentEN),
+			Q_ARG(QVariant, maximumEN)
 		);
 	}
 
@@ -115,37 +138,81 @@ void Unit::CreateAbilitiesBar(QQmlEngine* engine, QQuickItem* guiRoot)
 	}
 }
 
-void Unit::Select()
+void Unit::Select(bool isEnemy) const
 {
 	renderingObject->Select();
-	QVariant returnedValue;
-	QMetaObject::invokeMethod(abilitiesBar, "show",
-		Q_RETURN_ARG(QVariant, returnedValue));
+	if (!isEnemy)
+	{
+		QVariant returnedValue;
+		QMetaObject::invokeMethod(abilitiesBar, "show",
+			Q_RETURN_ARG(QVariant, returnedValue));
+	}
 }
 
-void Unit::Unselect()
+void Unit::Unselect() const
 {
 	renderingObject->Unselect();
 	QVariant returnedValue;
-	QMetaObject::invokeMethod(abilitiesBar, "unselectAll",
-		Q_RETURN_ARG(QVariant, returnedValue));
 	QMetaObject::invokeMethod(abilitiesBar, "hide",
 		Q_RETURN_ARG(QVariant, returnedValue));
 }
 
+void Unit::SelectAbility(int slot) const
+{
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(abilitiesBar, "selectAbility",
+		Q_RETURN_ARG(QVariant, returnedValue),
+		Q_ARG(QVariant, slot));
+}
+
+void Unit::OnAbilitySelected(int slot)
+{
+	auto newSelectedAbility = abilities[slot - 1].get();
+
+	if(newSelectedAbility->CanAfford(this))
+	{
+		if(slot != selectedAbilitySlot)
+		{
+			selectedAbilitySlot = slot;
+			selectedAbility = newSelectedAbility;
+		}
+		RefreshAbilityHalflight();
+	}
+	else
+	{
+		SendToConsole(newSelectedAbility->GetName() +  " : Not enough EN (or HP) to use this ability.");
+	}
+}
+
+void Unit::RefreshAbilityHalflight()
+{
+	selectedAbility->OnSelected(GetBoard(), this);
+}
+
+bool Unit::UseSelectedAbility(Field* target)
+{
+	if (stunned)
+	{
+		SendToConsole(selectedAbility->GetName() + "This unit is STUNNED and cannot take any action.");
+		return false;
+	}
+	movedThisTurn = true;
+	return abilities[selectedAbilitySlot - 1]->Effect(GetBoard(), this, target);
+}
+
 void Unit::checkCurrentHitPoints()
 {
-	if (currentHitPoints > GetMaximumHitPoints())
+	if (currentHP > maximumHP)
 	{
-		currentHitPoints = GetMaximumHitPoints();
+		currentHP = maximumHP;
 	}
 }
 
 void Unit::checkCurrentEnergy()
 {
-	if (currentEnergy > GetMaximumEnergy())
+	if (currentEN > maximumEN)
 	{
-		currentEnergy = GetMaximumEnergy();
+		currentEN = maximumEN;
 	}
 }
 
@@ -158,10 +225,10 @@ int Unit::ReduceHP(int amount)
 
 	if(amount > GetCurrentHitPoints())
 	{
-		amount = currentHitPoints;
+		amount = currentHP;
 	}
 
-	currentHitPoints -= amount;
+	currentHP -= amount;
 
 	return amount;
 }
@@ -175,10 +242,42 @@ int Unit::ReduceEN(int amount)
 
 	if (amount > GetCurrentEnergy())
 	{
-		amount = currentEnergy;
+		amount = currentEN;
 	}
 
-	currentEnergy -= amount;
+	currentEN -= amount;
+
+	return amount;
+}
+
+int Unit::RegainHP(int amount)
+{
+	if (amount <= 0)
+	{
+		return 0;
+	}
+	if (currentHP + amount > maximumHP)
+	{
+		amount = maximumHP - currentHP;
+	}
+	
+	currentHP += amount;
+
+	return amount;
+}
+
+int Unit::RegainEN(int amount)
+{
+	if (amount <= 0)
+	{
+		return 0;
+	}
+	if (currentEN + amount > maximumEN)
+	{
+		amount = maximumEN - currentEN;
+	}
+
+	currentEN += amount;
 
 	return amount;
 }
@@ -227,6 +326,65 @@ int Unit::TakeDamage(int damageNormal, int damageEN, int damageHP)
 	}
 
 	return dealtToEN + dealtToHP;
+}
+
+int Unit::Heal(int healHP, int healEN)
+{
+	return RegainHP(healHP) + RegainEN(healEN);
+}
+
+void Unit::regenerate()
+{
+	RegainHP(regenerationHP);
+	RegainEN(regenerationEN);
+}
+
+void Unit::rest()
+{
+	if (!restless)
+	{
+		RegainHP(restHP);
+		RegainEN(restEN);
+	}
+}
+
+void Unit::OnTurnBegin()
+{
+	movedThisTurn = false;
+	regenerate();
+}
+
+void Unit::OnTurnEnd()
+{
+	if (restless)
+	{
+		if (restlessDuration <= 0)
+		{
+			restless = false;
+		}
+		else
+		{
+			restlessDuration--;
+		}
+
+		// this is inside the restless if because stunned units are also restless
+		if (stunned)
+		{
+			if (stunDuration <= 0)
+			{
+				stunned = false;
+			}
+			else
+			{
+				stunDuration--;
+			}
+		}
+	}
+
+	if (!movedThisTurn)
+	{
+		rest();
+	}
 }
 
 

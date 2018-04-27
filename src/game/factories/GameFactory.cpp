@@ -13,7 +13,9 @@ using namespace fsg;
 using namespace std;
 using namespace glm;
 
-Game* GameFactory::CreateStandardGame(Player* player_1, Player* player_2, ModelLoader* modelLoader, QQmlEngine* engine, QQuickItem* guiRoot)
+Game* GameFactory::CreateStandardGame(ApplicationControl* appControl,
+	QString p1Name, int p1Code, QString p2Name, int p2Code,
+	ModelLoader* modelLoader, QQmlEngine* engine, QQuickItem* guiRoot)
 {
 	modelLoader->LoadModel(APP_RESOURCES"/models/StandardGround/StandardGround.obj", "StandardGround");
 	modelLoader->LoadModel(APP_RESOURCES"/models/FieldBorder/FieldBorder.obj", "FieldBorder");
@@ -21,16 +23,16 @@ Game* GameFactory::CreateStandardGame(Player* player_1, Player* player_2, ModelL
 	modelLoader->LoadModel(APP_RESOURCES"/models/Throne/Throne.obj", "Throne");
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitQueen/UnitQueen.obj", "UnitQueen");
 
-	auto newGame = new Game(player_1, player_2, BoardFactory::CreateStandardBoard(modelLoader));
+	auto newGame = new Game(appControl, BoardFactory::CreateStandardBoard(modelLoader));
+	newGame->ThisIsRealGame();
+	newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player1, p1Name, p1Code));
+	newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player2, p2Name, p2Code));
 
 	auto groundRO = make_shared<RenderingObject>(modelLoader->GetModel("StandardGround"));
 	groundRO->TextureRepeat = 5;
 	newGame->AddEnvironmentObject(groundRO);
 
 	// PLAYER 1 UNITS
-	auto p1Color = vec4(0.75f, 0.1f, 0.1f, 1.0f);
-	auto p1HighlightColor = vec4(0.9f, 0.2f, 0.2f, 1.0f);
-
 	vector<Unit*> p1Units;
 
 	// QUEEN
@@ -41,25 +43,15 @@ Game* GameFactory::CreateStandardGame(Player* player_1, Player* player_2, ModelL
 	// PLAYER 1 UNITS COMMON COMMANDS
 	for (auto unit : p1Units)
 	{
-		unit->GetRenderingObject()->SetColors(p1Color, p1HighlightColor);
-		unit->CreateInfoBar(engine, guiRoot);
-		unit->CreateAbilitiesBar(engine, guiRoot);
-		player_1->AddNewUnit(unit);
-		for (auto ability : unit->GetAbilites())
-		{
-			ability->SetGame(newGame);
-		}
+		newGame->GetPlayer1()->AddNewUnitAndCreateUI(unit, newGame, engine, guiRoot);
 	}
 
 	// PLAYER 1 UNITS POSITIONS
 	newGame->GetGameBoard()->GetPlayField(8, 1)->MoveUnitToThisField(p1Queen);
 
 	// PLAYER 2 UNITS
-	auto p2Color = vec4(0.2f, 0.2f, 0.8f, 1.0f);
-	auto p2HighlightColor = vec4(0.3f, 0.3f, 0.95f, 1.0f);
-	auto p2Rotation = 180.0f;
-
 	vector<Unit*> p2Units;
+	auto p2Rotation = 180.0f;
 
 	// QUEEN
 	auto p2Queen = new Queen();
@@ -69,15 +61,8 @@ Game* GameFactory::CreateStandardGame(Player* player_1, Player* player_2, ModelL
 	// PLAYER 2 UNITS COMMON COMMANDS
 	for (auto unit : p2Units)
 	{
-		unit->GetRenderingObject()->SetColors(p2Color, p2HighlightColor);
 		unit->GetRenderingObject()->rotation = p2Rotation;
-		unit->CreateInfoBar(engine, guiRoot);
-		unit->CreateAbilitiesBar(engine, guiRoot);
-		player_2->AddNewUnit(unit);
-		for (auto ability : unit->GetAbilites())
-		{
-			ability->SetGame(newGame);
-		}
+		newGame->GetPlayer2()->AddNewUnitAndCreateUI(unit, newGame, engine, guiRoot);
 	}
 
 	// PLAYER 2 UNITS POSITIONS

@@ -15,5 +15,7 @@ class ApplicationControl;
 class GameFactory
 {
 public:
-	static Game* CreateStandardGame(Player* player_1, Player* player_2, fsg::ModelLoader* modelLoader, QQmlEngine* engine, QQuickItem* guiRoot);
+	static Game* CreateStandardGame(ApplicationControl* appControl,
+		QString p1Name, int p1Code, QString p2Name, int p2Code,
+		fsg::ModelLoader* modelLoader, QQmlEngine* engine, QQuickItem* guiRoot);
 };

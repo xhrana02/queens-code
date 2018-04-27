@@ -11,8 +11,9 @@
 #include <memory>
 #include <vector>
 
-#define BORDER_NORMAL_COLOR glm::vec4(0.94f, 0.89f, 0.66f, 1.0f)
-#define BORDER_HIGHLIGHT_COLOR glm::vec4(0.97f, 0.94f, 0.83f, 0.5f)
+#define BORDER_NORMAL_COLOR glm::vec4(0.85f, 0.75f, 0.45f, 0.9f)
+#define BORDER_HALFLIGHT_COLOR glm::vec4(0.75f, 0.97f, 0.45f, 0.9f)
+#define BORDER_HIGHLIGHT_COLOR glm::vec4(0.98f, 0.97f, 0.9f, 0.9f)
 
 class Board;
 
@@ -89,5 +90,7 @@ public:
 
 	void HighlightField() const;
 	void UnhighlightField() const;
+	void HalflightField() const;
+	void UnhalflightField() const;
 
 };

@@ -22,30 +22,35 @@ Item {
 
         anchors.centerIn: parent
 
-        spacing: 3
+        spacing: 8
 
         UnitAbility {
             id: ability1
+            slot: 1
             visible: false
         }
 
         UnitAbility {
             id: ability2
+            slot: 2
             visible: false
         }
 
         UnitAbility {
             id: ability3
+            slot: 3
             visible: false
         }
 
         UnitAbility {
             id: ability4
+            slot: 4
             visible: false
         }
 
         UnitAbility {
             id: ability5
+            slot: 5
             visible: false
         }
     }
@@ -56,7 +61,6 @@ Item {
             ability1.iconSource = iconPath
             ability1.description = description
             ability1.selectable = selectable
-            ability1.width = 60
             ability1.visible = true
         }
         if(slot == 2) {
@@ -64,7 +68,6 @@ Item {
             ability2.iconSource = iconPath
             ability2.description = description
             ability2.selectable = selectable
-            ability2.width = 60
             ability2.visible = true
         }
         if(slot == 3) {
@@ -72,7 +75,6 @@ Item {
             ability3.iconSource = iconPath
             ability3.description = description
             ability3.selectable = selectable
-            ability3.width = 60
             ability3.visible = true
         }
         if(slot == 4) {
@@ -80,7 +82,6 @@ Item {
             ability4.iconSource = iconPath
             ability4.description = description
             ability4.selectable = selectable
-            ability4.width = 60
             ability4.visible = true
         }
         if(slot == 5) {
@@ -88,7 +89,6 @@ Item {
             ability5.iconSource = iconPath
             ability5.description = description
             ability5.selectable = selectable
-            ability5.width = 60
             ability5.visible = true
         }
     }
@@ -99,7 +99,26 @@ Item {
     }
 
     function hide() {
+        unselectAll()
         abilitiesBar.visible = false
+    }
+
+    function selectAbility(slot) {
+        if(slot == 1) {
+            ability1.select()
+        }
+        if(slot == 2) {
+            ability2.select()
+        }
+        if(slot == 3) {
+            ability3.select()
+        }
+        if(slot == 4) {
+            ability4.select()
+        }
+        if(slot == 5) {
+            ability5.select()
+        }
     }
 
     function unselectAll() {
