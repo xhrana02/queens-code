@@ -10,6 +10,7 @@
 #include "GameEnums.h"
 #include "Unit.h"
 #include <QObject>
+#include <set>
 
 #define PLAYER1_NORMAL_COLOR glm::vec4(0.75f, 0.17f, 0.17f, 1.0f)
 #define PLAYER1_HALFLIGHT_COLOR glm::vec4(0.85f, 0.23f, 0.18f, 1.0f)
@@ -31,7 +32,7 @@ class Player
 	PlayerID id;
 	int playerType;
 	int aiType;
-	std::vector<Unit*> units;
+	std::set<Unit*> units;
 
 	glm::vec4 normalColor;
 	glm::vec4 halflightColor;
@@ -44,6 +45,10 @@ public:
 	explicit Player(Game* inGame, PlayerID inID, QString inName, int inCode) : Player(nullptr, game, inID, inName, inCode){}
 	explicit Player(ApplicationControl* inAppControl, Game* inGame, PlayerID inID, QString inName, int inCode);
 
+	void DecodePlayerType(int code);
+
+	void GamePopup(QString message) const;
+
 	QString GetName() const
 	{
 		return name;
@@ -53,14 +58,17 @@ public:
 		return id;
 	}
 
-	void DecodePlayerType(int code);
+	Player* GetEnemyPlayer();
+	std::vector<Player*> GetAllEnemyPlayers();
 
-	std::vector<Unit*> GetUnits() const
+	std::set<Unit*> GetUnits() const
 	{
 		return units;
 	}
+
 	void AddNewUnit(Unit* newUnit);
 	void AddNewUnitAndCreateUI(Unit* newUnit, Game* game, QQmlEngine* engine, QQuickItem* guiRoot);
+	void OnUnitDeath(Unit* dyingUnit);
 
 	void BeginTurn();
 	void OnAbilityUsed();

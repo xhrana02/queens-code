@@ -49,13 +49,18 @@ Item {
     Rectangle {
         id: abilityShortcutContainer
         
-        x: parent.x - 4
-        y: parent.y - 4
+        anchors.left: abilityIconContainer.left
+        anchors.leftMargin: -4
+        anchors.top: abilityIconContainer.top
+        anchors.topMargin: -4
+        
         width: 20
         height: 20
 
-        color: "#5F581A"
-        border.width: abilityRoot.selectable ? 2 : 0
+        visible: abilityRoot.selectable
+
+        color: "#EE3C3810"
+        border.width: 2
         border.color: abilityRoot.selected ? abilityRoot.borderSelectedColor : abilityRoot.borderColor
         radius: 1
 

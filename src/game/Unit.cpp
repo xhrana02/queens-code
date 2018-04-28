@@ -9,7 +9,6 @@
 #include "Board.h"
 #include "Field.h"
 #include <QtQml>
-#include <QQuickItem>
 #include "../ApplicationControl.h"
 
 using namespace std;
@@ -22,11 +21,12 @@ Unit::~Unit()
 	abilitiesBar->deleteLater();
 }
 
-void Unit::SendToConsole(QString message) const
+void Unit::GamePopup(QString message) const
 {
 	if (appControl != nullptr)
 	{
 		appControl->ConsoleWrite(message);
+		appControl->GamePopup(message);
 	}
 }
 
@@ -147,6 +147,11 @@ void Unit::Select(bool isEnemy) const
 		QMetaObject::invokeMethod(abilitiesBar, "show",
 			Q_RETURN_ARG(QVariant, returnedValue));
 	}
+
+	if (appControl != nullptr)
+	{
+		appControl->OnUnitSelected(name);
+	}
 }
 
 void Unit::Unselect() const
@@ -155,6 +160,11 @@ void Unit::Unselect() const
 	QVariant returnedValue;
 	QMetaObject::invokeMethod(abilitiesBar, "hide",
 		Q_RETURN_ARG(QVariant, returnedValue));
+
+	if (appControl != nullptr)
+	{
+		appControl->OnUnitUnselected();
+	}
 }
 
 void Unit::SelectAbility(int slot) const
@@ -180,7 +190,7 @@ void Unit::OnAbilitySelected(int slot)
 	}
 	else
 	{
-		SendToConsole(newSelectedAbility->GetName() +  " : Not enough EN (or HP) to use this ability.");
+		GamePopup(newSelectedAbility->GetName() +  " : Not enough EN (or HP) to use this ability");
 	}
 }
 
@@ -193,7 +203,7 @@ bool Unit::UseSelectedAbility(Field* target)
 {
 	if (stunned)
 	{
-		SendToConsole(selectedAbility->GetName() + "This unit is STUNNED and cannot take any action.");
+		GamePopup(name + " : This unit is STUNNED and cannot take any action");
 		return false;
 	}
 	movedThisTurn = true;
@@ -283,6 +293,12 @@ int Unit::RegainEN(int amount)
 }
 
 
+void Unit::OnUnitDeath()
+{
+	occupiedField->UnitLeavesThisField();
+	owner->OnUnitDeath(this);
+}
+
 int Unit::TakeDamage(int damageNormal, int damageEN, int damageHP)
 {
 	auto dealtToEN = 0;
@@ -348,14 +364,80 @@ void Unit::rest()
 	}
 }
 
+void Unit::Stun(int duration)
+{
+	if(duration > stunDuration)
+	{
+		stunned = true;
+		stunDuration = duration;
+		MakeRestless(duration);
+	}
+}
+
+void Unit::MakeRestless(int duration)
+{
+	if(duration > restlessDuration)
+	{
+		restless = true;
+		restlessDuration = duration;
+	}
+}
+
+void Unit::ApplyBuff(Buff* newBuff)
+{
+	buffs.push_back(newBuff);
+	newBuff->StartEffect(this);
+}
+
+void Unit::CheckBuffDurations()
+{
+	for (auto iterator = buffs.begin(); iterator != buffs.end();)
+	{
+		auto buff = *iterator;
+
+		auto buffEnded = buff->OnTurnStart();
+		if (buffEnded)
+		{
+			buffs.erase(iterator);
+			delete buff;
+		}
+		else
+		{
+			++iterator;
+		}
+	}
+}
+
 void Unit::OnTurnBegin()
 {
 	movedThisTurn = false;
 	regenerate();
+	// Regeneration must be before ending buffs!!!
+	CheckBuffDurations();
 }
 
 void Unit::OnTurnEnd()
 {
+	// Queen sitting on the throne makes all enemies Restless
+	if (isRoyalty)
+	{
+		if (occupiedField->GetTerrainType() == Throne)
+		{
+			auto enemyUnits = owner->GetEnemyPlayer()->GetUnits();
+			for (auto enemy : enemyUnits)
+			{
+				enemy->MakeRestless(1);
+			}
+		}
+	}
+
+	// Units in ice blocks become restunned
+	if (occupiedField->GetTerrainType() == IceBlock)
+	{
+		Stun(1);
+	}
+
+	// Reduce restless and stunned durations by 1
 	if (restless)
 	{
 		if (restlessDuration <= 0)
@@ -367,7 +449,7 @@ void Unit::OnTurnEnd()
 			restlessDuration--;
 		}
 
-		// this is inside the restless if because stunned units are also restless
+		// This is inside the restless if because stunned units are also restless
 		if (stunned)
 		{
 			if (stunDuration <= 0)
@@ -381,6 +463,7 @@ void Unit::OnTurnEnd()
 		}
 	}
 
+	// Rest if the unit didn't move this turn
 	if (!movedThisTurn)
 	{
 		rest();

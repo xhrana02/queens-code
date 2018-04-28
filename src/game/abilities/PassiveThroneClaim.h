@@ -9,10 +9,11 @@
 
 #include "Ability.h"
 
-class AttackLongsword : public Ability
+class PassiveThroneClaim : public Ability
 {
 public:
-	AttackLongsword();
+	PassiveThroneClaim();
+
 	bool Effect(Board* board, Unit* abilityUser, Field* target) override;
 	bool CanUse(Board* board, Unit* abilityUser, Field* target) override;
 	bool LockedIteration() override;

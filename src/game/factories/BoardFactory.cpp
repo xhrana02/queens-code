@@ -18,6 +18,7 @@ shared_ptr<Board> BoardFactory::CreateStandardBoard(ModelLoader* modelLoader)
 	auto throneObject = make_shared<RenderingObject>(modelLoader->GetModel("Throne"));
 	throneObject->TextureRepeat = 10;
 	newBoard->GetField(8, 8)->SetFieldTerrainObject(throneObject);
+	newBoard->GetField(8, 8)->SetTerrainType(Throne);
 
 	auto positionModifierX = (newBoard->PlayableWidth() + 1) / 2;
 	auto positionModifierY = (newBoard->PlayableHeight() + 1) / 2;
@@ -42,10 +43,10 @@ shared_ptr<Board> BoardFactory::CreateStandardBoard(ModelLoader* modelLoader)
 
 	for (auto field : wallFields)
 	{
-		field->SetTerrainType(Wall);
 		auto newWallObject = make_shared<RenderingObject>(modelLoader->GetModel("StoneWall"));
 		newWallObject->position = vec3(field->GetX() - positionModifierX, 0.0f, field->GetY() - positionModifierY);
 		field->SetFieldTerrainObject(newWallObject);
+		field->SetTerrainType(Wall);
 	}
 
 	for (auto x = 1; x <= newBoard->PlayableWidth(); x++)

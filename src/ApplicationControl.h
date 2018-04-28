@@ -9,14 +9,12 @@
 
 #include <QApplication>
 #include <QQmlEngine>
-#include <QQuickItem>
-#include <QObject>
-#include <QQuickWidget>
 #include <QQmlContext>
 #include <QTimer>
+#include <QObject>
+#include <QQuickWidget>
 #include <QMetaObject>
 #include <QtQuick>
-#include <geSG/Scene.h>
 
 #include "Simple_geSGRenderer.h"
 #include "ModelLoader.h"
@@ -80,8 +78,12 @@ public:
 	void GetObjectsForRendering() const;
 
 	void ConsoleWrite(const QString message) const;
+	void GamePopup(const QString message) const;
+	void SetActivePlayer(const QString playerName) const;
+	void OnUnitSelected(const QString unitName) const;
+	void OnUnitUnselected() const;
+	void OnTurnBegin(int turnNumber) const;
 	void OnAbilityUsed() const;
-	void OnTurnBegin() const;
 
 	Q_INVOKABLE void LoadSettings();
 	Q_INVOKABLE void NewStandardGame(QString p1Name, int p1Code, QString p2Name, int p2Code);

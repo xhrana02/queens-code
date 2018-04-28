@@ -12,7 +12,7 @@ Item {
     id: abilitiesBar
 
     visible: false
-    z: 4
+    z: 2
     anchors.bottom: parent != undefined ? parent.bottom : undefined
     anchors.bottomMargin: 30
     anchors.horizontalCenter: parent != undefined ? parent.horizontalCenter : undefined

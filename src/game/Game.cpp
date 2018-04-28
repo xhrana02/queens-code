@@ -63,7 +63,62 @@ Player* Game::GetNextPlayer() const
 	case Player2:
 		return player1.get();
 	default:
-		throw exception("Game GetNextPlayer - Active player was null.");
+		throw exception("Game GetNextPlayer - Invalid player ID.");
+	}
+}
+
+Player* Game::GetEnemyPlayer(Player* enemyOf) const
+{
+	if(enemyOf == nullptr)
+	{
+		throw exception("Game GetEnemyPlayer - Player parameter was null.");
+	}
+
+	switch(enemyOf->GetID())
+	{
+	case Player1:
+		return player2.get();
+	case Player2:
+		return player1.get();
+	default:
+		throw exception("Game GetEnemyPlayer - Invalid player ID.");
+	}
+}
+
+vector<Player*> Game::GetAllEnemyPlayers(Player* enemiesOf) const
+{
+	// IMPLEMENT THIS IF THERE ARE MORE THAN 2 PLAYERS IN THE GAME!!!
+	return vector<Player*>({ GetEnemyPlayer(enemiesOf) });
+}
+
+void Game::PlayerDefeat(Player* defeatedPlayer)
+{
+	PlayerVictory(GetEnemyPlayer(defeatedPlayer));
+}
+
+void Game::PlayerVictory(Player* player)
+{
+	if(isRealGame)
+	{
+		UnselectUnit();
+		locked = true;
+		if(appControl != nullptr)
+		{
+			appControl->GamePopup(player->GetName() + " is victorious!");
+		}
+	}
+	else
+	{
+		// TODO: Inform AI about player victory
+	}
+}
+
+void Game::SetActivePlayer(Player* newActivePlayer)
+{
+	activePlayer = newActivePlayer;
+	if(newActivePlayer->GetID() == Player1)
+	{
+		turnNumber++;
 	}
 }
 
@@ -200,7 +255,7 @@ void Game::SelectUnit(Unit* newSelectedUnit)
 
 	if (newSelectedUnit != nullptr)
 	{
-		auto isEnemy = newSelectedUnit->GetOwner() != activePlayer->GetID();
+		auto isEnemy = newSelectedUnit->GetOwner() != activePlayer;
 		newSelectedUnit->Select(isEnemy);
 		appControl->GetCameraControl()->PanToPosition(
 			newSelectedUnit->GetRenderingPosX(), newSelectedUnit->GetRenderingPosZ());
@@ -224,7 +279,7 @@ void Game::UseAbility(Field* clickedField)
 		return;
 	}
 
-	if (selectedUnit->GetOwner() != activePlayer->GetID())
+	if (selectedUnit->GetOwner() != activePlayer)
 	{
 		return;
 	}
@@ -313,24 +368,23 @@ void Game::UnlockGame()
 
 void Game::LockedIteration()
 {
-	for (auto abilityIndex = 0; true; abilityIndex++)
+	for (auto iterator = lockingAbilities.begin(); iterator != lockingAbilities.end();)
 	{
-		if(abilityIndex >= lockingAbilities.size())
-		{
-			break;
-		}
-
-		auto ability = lockingAbilities[abilityIndex];
+		auto ability = *iterator;
 
 		auto finished = ability->LockedIteration();
 		if (finished)
 		{
-			lockingAbilities.erase(lockingAbilities.begin() + abilityIndex);
-			abilityIndex--;
+			lockingAbilities.erase(iterator);
 			if(lockingAbilities.empty())
 			{
 				UnlockGame();
+				break;
 			}
+		}
+		else
+		{
+			++iterator;
 		}
 	}
 }

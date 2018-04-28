@@ -107,7 +107,7 @@ int Pathfinding::HeuristicCostEstimate(Field* origin, Field* target)
 {
 	auto deltaX = abs(origin->GetX() - target->GetX());
 	auto deltaY = abs(origin->GetY() - target->GetY());
-	return deltaX + deltaY;
+	return sqrt(pow(deltaX, 2) + pow(deltaY, 2));
 }
 
 

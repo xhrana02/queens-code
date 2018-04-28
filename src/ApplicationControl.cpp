@@ -154,17 +154,49 @@ void ApplicationControl::ConsoleWrite(const QString message) const
 		Q_ARG(QVariant, message));
 }
 
+void ApplicationControl::GamePopup(const QString message) const
+{
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(guiRoot, "gamePopup",
+		Q_RETURN_ARG(QVariant, returnedValue),
+		Q_ARG(QVariant, message));
+}
+
+void ApplicationControl::SetActivePlayer(const QString playerName) const
+{
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(guiRoot, "setActivePlayer",
+		Q_RETURN_ARG(QVariant, returnedValue),
+		Q_ARG(QVariant, playerName));
+}
+
+void ApplicationControl::OnUnitSelected(const QString unitName) const
+{
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(guiRoot, "onUnitSelected",
+		Q_RETURN_ARG(QVariant, returnedValue),
+		Q_ARG(QVariant, unitName));
+}
+
+void ApplicationControl::OnUnitUnselected() const
+{
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(guiRoot, "onUnitUnselected",
+		Q_RETURN_ARG(QVariant, returnedValue));
+}
+
+void ApplicationControl::OnTurnBegin(int turnNumber) const
+{
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(guiRoot, "onTurnBegin",
+		Q_RETURN_ARG(QVariant, returnedValue),
+		Q_ARG(QVariant, turnNumber));
+}
+
 void ApplicationControl::OnAbilityUsed() const
 {
 	QVariant returnedValue;
 	QMetaObject::invokeMethod(guiRoot, "onAbilityUsed",
-		Q_RETURN_ARG(QVariant, returnedValue));
-}
-
-void ApplicationControl::OnTurnBegin() const
-{
-	QVariant returnedValue;
-	QMetaObject::invokeMethod(guiRoot, "onTurnBegin",
 		Q_RETURN_ARG(QVariant, returnedValue));
 }
 
@@ -213,9 +245,9 @@ void ApplicationControl::NewStandardGame(QString p1Name, int p1Code, QString p2N
 
 	ActivateRendering();
 
-	activeGame->StartGame();
-
 	ConsoleWrite("... Game setup complete.");
+
+	activeGame->StartGame();
 }
 
 void ApplicationControl::AbilitySelected(int slot) const
@@ -457,6 +489,7 @@ void ApplicationControl::Update() const
 void ApplicationControl::GamePause() const
 {
 	StopRendering();
+	activeGame->UnselectUnit();
 }
 
 void ApplicationControl::GameContinue() const

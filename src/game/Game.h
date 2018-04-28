@@ -28,6 +28,7 @@ class Game
 	std::shared_ptr<Player> player2;
 	Player* activePlayer = nullptr;
 	GameStage gameStage;
+	int turnNumber = 0;
 	std::shared_ptr<Board> gameBoard;
 
 	std::vector<std::shared_ptr<fsg::RenderingObject>> environmentObjects;
@@ -66,14 +67,21 @@ public:
 		return player2.get();
 	}
 	Player* GetNextPlayer() const;
+	Player* GetEnemyPlayer(Player* enemyOf) const;
+	std::vector<Player*> GetAllEnemyPlayers(Player* enemiesOf) const;
 
-	void SetActivePlayer(Player* newActivePlayer)
-	{
-		activePlayer = newActivePlayer;
-	}
+	void PlayerDefeat(Player* defeatedPlayer);
+	void PlayerVictory(Player* victoriousPlayer);
+
+	void SetActivePlayer(Player* newActivePlayer);
 	Player* GetActivePlayer() const
 	{
 		return activePlayer;
+	}
+
+	int GetTurnNumber() const
+	{
+		return turnNumber;
 	}
 
 	Board* GetGameBoard() const

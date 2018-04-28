@@ -214,13 +214,30 @@ Item {
         gameActive                  = true
     }
 
-    function onTurnBegin() {
-        loaderGameOverlay.item.onTurnBegin()
+    function setActivePlayer(playerName) {
+        loaderGameOverlay.item.setActivePlayer(playerName)
+    }
+    
+    function onUnitSelected(unitName) {
+        loaderGameOverlay.item.onUnitSelected(unitName)
+    }
+    
+    function onUnitUnselected() {
+        loaderGameOverlay.item.onUnitUnselected()
+    }
+
+    function onTurnBegin(turnNumber) {
+        loaderGameOverlay.item.onTurnBegin(turnNumber)
     }
 
     function onAbilityUsed() {
         loaderGameOverlay.item.onAbilityUsed()
     }
+
+    function gamePopup(message) {
+        loaderGameOverlay.item.popup(message)
+    }
+
 
 }
 

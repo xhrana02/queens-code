@@ -49,6 +49,25 @@ Player::Player(ApplicationControl* inAppControl, Game* inGame, PlayerID inID, QS
 	}
 }
 
+void Player::GamePopup(QString message) const
+{
+	if (appControl != nullptr)
+	{
+		appControl->ConsoleWrite(message);
+		appControl->GamePopup(message);
+	}
+}
+
+Player* Player::GetEnemyPlayer()
+{
+	return game->GetEnemyPlayer(this);
+}
+
+vector<Player*> Player::GetAllEnemyPlayers()
+{
+	return game->GetAllEnemyPlayers(this);
+}
+
 /**
  * \brief Decodes player's type from a code.
  * \param code Player's type encoded as integer.
@@ -83,8 +102,8 @@ void Player::DecodePlayerType(int code)
 
 void Player::AddNewUnit(Unit* newUnit)
 {
-	units.push_back(newUnit);
-	newUnit->SetOwner(id);
+	units.insert(newUnit);
+	newUnit->SetOwner(this);
 	newUnit->GetRenderingObject()->SetColors(normalColor, halflightColor, highlightColor);
 }
 
@@ -100,6 +119,29 @@ void Player::AddNewUnitAndCreateUI(Unit* newUnit, Game* game, QQmlEngine* engine
 	}
 }
 
+void Player::OnUnitDeath(Unit* dyingUnit)
+{
+	units.erase(dyingUnit);
+	if (game->IsRealGame())
+	{
+		GamePopup(name + "'s " + dyingUnit->GetName() + " died");
+	}
+	
+	// if the player's queen died
+	if (dyingUnit->IsRoyalty())
+	{
+		game->PlayerDefeat(this);
+	}
+
+	// or if the queen is the last unit the player has
+	if (units.size() <= 1)
+	{
+		game->PlayerDefeat(this);
+	}
+
+	delete dyingUnit;
+}
+
 void Player::BeginTurn()
 {
 	for (auto unit : units)
@@ -111,8 +153,10 @@ void Player::BeginTurn()
 	if (game->IsRealGame())
 	{
 		game->UnselectUnit();
-		game->SelectUnit(units.front());
-		appControl->OnTurnBegin();
+		game->SelectUnit(*units.begin());
+		appControl->OnTurnBegin(game->GetTurnNumber());
+		GamePopup(name + "'s turn begins");
+		appControl->SetActivePlayer(name);
 	}
 }
 

@@ -6,22 +6,20 @@
 //----------------------------------------------//
 
 #pragma once
+#include "GameEnums.h"
 #include "Unit.h"
 #include "RenderingObject.h"
 #include <memory>
 #include <vector>
 
-#define BORDER_NORMAL_COLOR glm::vec4(0.85f, 0.75f, 0.45f, 0.9f)
-#define BORDER_HALFLIGHT_COLOR glm::vec4(0.75f, 0.97f, 0.45f, 0.9f)
-#define BORDER_HIGHLIGHT_COLOR glm::vec4(0.98f, 0.97f, 0.9f, 0.9f)
+#define BORDER_NORMAL_COLOR glm::vec4(0.93f, 0.88f, 0.36f, 0.9f)
+#define BORDER_HALFLIGHT_COLOR glm::vec4(0.50f, 0.95f, 0.30f, 0.9f)
+#define BORDER_HIGHLIGHT_COLOR glm::vec4(0.98f, 0.97f, 0.90f, 0.9f)
 
 class Board;
 
-enum TerrainType {Empty, Border, Wall, IceBlock};
-
 class Field
 {
-private:
 	Board* board = nullptr;
 	int positionX;
 	int positionY;
@@ -82,7 +80,7 @@ public:
 
 	bool IsFieldOccupied() const
 	{
-		return (GetTerrainType() != Empty || GetUnitOnField() != nullptr);
+		return ((GetTerrainType() != Empty && GetTerrainType() != Throne) || GetUnitOnField() != nullptr);
 	}
 
 	void MoveUnitToThisField(Unit* unit);

@@ -6,8 +6,8 @@
 //----------------------------------------------//
 
 #pragma once
-#include "GameEnums.h"
 #include "Ability.h"
+#include "Buff.h"
 #include "RenderingObject.h"
 #include <memory>
 #include <QObject>
@@ -16,14 +16,16 @@ class QQuickItem;
 class QQmlEngine;
 class Field;
 class ApplicationControl;
+class Player;
 
 class Unit
 {
 protected:
 	ApplicationControl* appControl = nullptr;
 
-	std::string name;
-	PlayerID ownerID = Player1;
+	QString name;
+	bool isRoyalty = false;
+	Player* owner = nullptr;
 
 	int currentHP = 0;
 	int maximumHP = 0;
@@ -52,6 +54,8 @@ protected:
 	int selectedAbilitySlot = 0;
 	Ability* selectedAbility = nullptr;
 
+	std::vector<Buff*> buffs = std::vector<Buff*>();
+
 	Field* occupiedField = nullptr;
 
 	std::shared_ptr<fsg::RenderingObject> renderingObject;
@@ -64,7 +68,7 @@ public:
 	{
 		appControl = inAppControl;
 	}
-	void SendToConsole(QString message) const;
+	void GamePopup(QString message) const;
 
 	float GetRenderingPosX() const;
 	float GetRenderingPosZ() const;
@@ -79,7 +83,7 @@ public:
 	void UpdateRenderingObjectPosition() const;
 	void SetCustomRenderingObjectPosition(float x, float z, float up) const;
 
-	std::string GetName() const
+	QString GetName() const
 	{
 		return name;
 	}
@@ -94,13 +98,18 @@ public:
 	}
 	Board* GetBoard() const;
 
-	PlayerID GetOwner() const
+	bool IsRoyalty() const
 	{
-		return ownerID;
+		return isRoyalty;
 	}
-	void SetOwner(PlayerID player)
+
+	Player* GetOwner() const
 	{
-		ownerID = player;
+		return owner;
+	}
+	void SetOwner(Player* player)
+	{
+		owner = player;
 	}
 
 	void CreateInfoBar(QQmlEngine* engine, QQuickItem* guiRoot);
@@ -137,19 +146,68 @@ public:
 	int ReduceEN(int amount);
 	int RegainHP(int amount);
 	int RegainEN(int amount);
+	void IncreaseArmor(int amount)
+	{
+		damageReduction += amount;
+	}
+	void DecreaseArmor(int amount)
+	{
+		damageReduction -= amount;
+	}
+	void IncreaseRegenerationHP(int amount)
+	{
+		regenerationHP += amount;
+	}
+	void DecreaseRegenerationHP(int amount)
+	{
+		regenerationHP -= amount;
+	}
+	void IncreaseRegenerationEN(int amount)
+	{
+		regenerationEN += amount;
+	}
+	void DecreaseRegenerationEN(int amount)
+	{
+		regenerationEN -= amount;
+	}
+	void IncreaseRestHP(int amount)
+	{
+		restHP += amount;
+	}
+	void DecreaseRestHP(int amount)
+	{
+		restHP -= amount;
+	}
+	void IncreaseRestEN(int amount)
+	{
+		restEN += amount;
+	}
+	void DecreaseRestEN(int amount)
+	{
+		restEN -= amount;
+	}
 
 	bool IsUnitAlive() const
 	{
 		return currentHP > 0;
 	}
+	void OnUnitDeath();
 
 	int TakeDamage(int damageNormal, int damageEN = 0, int damageHP = 0);
 	int Heal(int healHP, int healEN = 0);
+	void Stun(int duration);
+	void MakeRestless(int duration);
 
 	std::vector<std::shared_ptr<Ability>> GetAbilites() const
 	{
 		return abilities;
 	}
+	std::vector<Buff*> GetActiveBuffs() const
+	{
+		return buffs;
+	}
+	void ApplyBuff(Buff* newBuff);
+	void CheckBuffDurations();
 
 	void OnTurnBegin();
 	void OnTurnEnd();

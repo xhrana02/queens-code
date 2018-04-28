@@ -177,9 +177,9 @@ vec2 CameraControl::CalculateMousePosition(float x, float y, Simple_geSGRenderer
 	auto wc1 = unProject(vec3(x, y, 0.f), view, projection, vec4(0, 0, winWidth, winHeight));
 	auto wc2 = unProject(vec3(x, y, 1.f), view, projection, vec4(0, 0, winWidth, winHeight));
 	auto dwcy = wc2.y - wc1.y;
-	if (abs(dwcy) < 0.0001)
+	if (abs(dwcy) < 0.0001f)
 	{
-		dwcy = 0.0001;
+		dwcy = 0.0001f;
 	}
 	double f = wc1.y / dwcy;
 	auto x2d = wc1.x - f * (wc2.x - wc1.x );
