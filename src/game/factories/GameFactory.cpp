@@ -7,6 +7,7 @@
 
 #include "GameFactory.h"
 #include "BoardFactory.h"
+#include "Cursor.h"
 #include "Queen.h"
 #include "Knight.h"
 
@@ -18,6 +19,7 @@ Game* GameFactory::CreateStandardGame(ApplicationControl* appControl,
 	QString p1Name, int p1Code, QString p2Name, int p2Code,
 	ModelLoader* modelLoader, QQmlEngine* engine, QQuickItem* guiRoot)
 {
+	modelLoader->LoadModel(APP_RESOURCES"/models/Cursor/Cursor.obj", "Cursor");
 	modelLoader->LoadModel(APP_RESOURCES"/models/StandardGround/StandardGround.obj", "StandardGround");
 	modelLoader->LoadModel(APP_RESOURCES"/models/FieldBorder/FieldBorder.obj", "FieldBorder");
 	modelLoader->LoadModel(APP_RESOURCES"/models/StoneWall/StoneWall.obj", "StoneWall");
@@ -29,6 +31,7 @@ Game* GameFactory::CreateStandardGame(ApplicationControl* appControl,
 	newGame->ThisIsRealGame();
 	newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player1, p1Name, p1Code));
 	newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player2, p2Name, p2Code));
+	newGame->AddCursor(make_shared<Cursor>(make_shared<RenderingObject>(modelLoader->GetModel("Cursor"))));
 
 	auto groundRO = make_shared<RenderingObject>(modelLoader->GetModel("StandardGround"));
 	groundRO->TextureRepeat = 5;

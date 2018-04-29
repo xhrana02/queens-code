@@ -63,6 +63,9 @@ public:
 		return positionY;
 	}
 
+	float GetRenderingPosX() const;
+	float GetRenderingPosZ() const;
+
 	TerrainType GetTerrainType() const
 	{
 		return terrainType;

@@ -6,10 +6,13 @@
 //----------------------------------------------//
 
 #include "Movement.h"
+#include "Game.h"
 #include "Board.h"
 #include "Field.h"
 #include "Unit.h"
 #include "Pathfinding.h"
+#include "MovementAnimation.h"
+#include "CommonTooltips.h"
 
 
 Movement::Movement()
@@ -17,9 +20,9 @@ Movement::Movement()
 	costEN = 2;
 	name = "Movement";
 	iconPath = "icons/Movement.png";
-	description = "<b><u>Movement</u></b> ( 2 EN per tile )<br><br>"
+	description = "<b><u>Movement</u> ( 2 EN per tile )</b><br><br>"
 		"Move to a different tile. <br><br>"
-		"<i>Diagonal pathing is only possible if both neighbouring perpendicular tiles are also empty.</i>";
+		MOVEMENT_TOOLTIP;
 }
 
 bool Movement::Effect(Board* board, Unit* abilityUser, Field* target)
@@ -27,17 +30,14 @@ bool Movement::Effect(Board* board, Unit* abilityUser, Field* target)
 	if(CanUse(board, abilityUser, target))
 	{
 		abilityUser->ReduceEN(calculatedCost);
-		if(LockGame())
+		target->MoveUnitToThisField(abilityUser);
+		if(game != nullptr)
 		{
-			animationUnit = abilityUser;
-			animationPath = calculatedPath;
-			animationProgress = 0;
-			// 30 iterations (frames) per tile
-			animationGoal = (int(distance(calculatedPath.begin(), calculatedPath.end())) - 1) * 20;
-		}
-		else
-		{
-			target->MoveUnitToThisField(abilityUser);
+			if(game->IsRealGame())
+			{
+				// ReSharper disable once CppNonReclaimedResourceAcquisition
+				new MovementAnimation(game, abilityUser, calculatedPath);
+			}
 		}
 		return true;
 	}
@@ -69,42 +69,11 @@ bool Movement::CanUse(Board* board, Unit* abilityUser, Field* target)
 	return true;
 }
 
-bool Movement::LockedIteration()
-{
-	// Establish fromField and toField
-	auto iterator = animationPath.begin();
-	auto fieldIndex = animationProgress / 20;
-	advance(iterator, fieldIndex);
-	auto fromField = *iterator;
-	advance(iterator, 1);
-	auto toField = *iterator;
-
-	// Get coordinates of these 2 fields
-	auto fromPosX = fromField->GetX() - (fromField->GetBoard()->PlayableWidth() + 1) / 2.0f;
-	auto fromPosY = fromField->GetY() - (fromField->GetBoard()->PlayableHeight() + 1) / 2.0f;
-	auto toPosX = toField->GetX() - (toField->GetBoard()->PlayableWidth() + 1) / 2.0f;
-	auto toPosY = toField->GetY() - (toField->GetBoard()->PlayableHeight() + 1) / 2.0f;
-
-	// Position the unit model between them
-	auto fieldProgress = (animationProgress % 20) / 20.0f;
-	auto posX = fromPosX * (1 - fieldProgress) + toPosX * fieldProgress;
-	auto posY = fromPosY * (1 - fieldProgress) + toPosY * fieldProgress;
-
-	animationUnit->SetCustomRenderingObjectPosition(posX, posY, 0.0f);
-
-	animationProgress++;
-	if (animationProgress == animationGoal)
-	{
-		toField->MoveUnitToThisField(animationUnit);
-		return true;
-	}
-	return false;
-}
-
 void Movement::OnSelected(Board* board, Unit* abilityUser)
 {
 	auto viableTargets = Pathfinding::GetAllPossibleTargets(board, abilityUser->GetOccupiedField(), abilityUser->GetCurrentEnergy() / costEN);
 	board->HalflightFields(viableTargets);
 }
+
 
 

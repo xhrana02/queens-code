@@ -7,15 +7,19 @@
 
 #pragma once
 
-#include "Ability.h"
+#include "PassiveAbility.h"
+#include "CommonTooltips.h"
 
-class PassiveThroneClaim : public Ability
+class PassiveThroneClaim : public PassiveAbility
 {
 public:
-	PassiveThroneClaim();
-
-	bool Effect(Board* board, Unit* abilityUser, Field* target) override;
-	bool CanUse(Board* board, Unit* abilityUser, Field* target) override;
-	bool LockedIteration() override;
-	void OnSelected(Board* board, Unit* abilityUser) override;
+	PassiveThroneClaim::PassiveThroneClaim()
+	{
+		name = "Claim Throne";
+		iconPath = "icons/PassiveThroneClaim.png";
+		description = "<b><u>Claim Throne</u> ( passive )</b><br><br>"
+			"When standing on the throne tile at the end of the turn, all enemy units become Restless for 1 turn.<br><br>"
+			RESTLESS_TOOLTIP "<br>"
+			REST_TOOLTIP;
+	}
 };

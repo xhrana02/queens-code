@@ -48,6 +48,7 @@ void ApplicationControl::SetRendering()
 	renderingTimer = new QTimer(this);
 	connect(renderingTimer, SIGNAL(timeout()), this, SLOT(Update()));
 	renderingTimer->setSingleShot(false);
+	renderingTimer->setTimerType(Qt::PreciseTimer);
 	renderingTimer->setInterval(16);
 }
 

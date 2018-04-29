@@ -18,6 +18,10 @@ Player::~Player()
 	{
 		delete unit;
 	}
+	for (auto unit : deadUnits)
+	{
+		delete unit;
+	}
 }
 
 /**
@@ -122,24 +126,22 @@ void Player::AddNewUnitAndCreateUI(Unit* newUnit, Game* game, QQmlEngine* engine
 void Player::OnUnitDeath(Unit* dyingUnit)
 {
 	units.erase(dyingUnit);
+	deadUnits.insert(dyingUnit);
 	if (game->IsRealGame())
 	{
 		GamePopup(name + "'s " + dyingUnit->GetName() + " died");
 	}
 	
-	// if the player's queen died
 	if (dyingUnit->IsRoyalty())
 	{
+		// if the player's queen died
 		game->PlayerDefeat(this);
 	}
-
-	// or if the queen is the last unit the player has
-	if (units.size() <= 1)
+	else if (units.size() <= 1)
 	{
+		// or if the queen is the last unit the player has
 		game->PlayerDefeat(this);
 	}
-
-	delete dyingUnit;
 }
 
 void Player::BeginTurn()

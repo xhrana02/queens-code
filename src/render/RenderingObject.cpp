@@ -23,74 +23,102 @@ RenderingObject::RenderingObject(shared_ptr<Scene> inModel)
 	model = inModel;
 }
 
+void RenderingObject::SetModel(std::shared_ptr<ge::sg::Scene> newModel)
+{
+	model = newModel;
+	needToUpdateGLScene = true;
+}
+
+vec4 RenderingObject::GetColor() const
+{
+	if (flashing)
+	{
+		return flashingColor;
+	}
+	if (selected)
+	{
+		return highlightColor;
+	}
+	if (highlighted)
+	{
+		return fluctuatedColor;
+	}
+	if (halflighted)
+	{
+		return halflightColor;
+	}
+	return normalColor;
+}
+
 void RenderingObject::SetColors(vec4 normal, vec4 halflight, vec4 highlight)
 {
 	normalColor = normal;
 	halflightColor = halflight;
 	highlightColor = highlight;
-	color = normalColor;
 }
 
 void RenderingObject::Highlight()
 {
 	highlighted = true;
-	color = highlightColor;
 }
 
 void RenderingObject::Unhighlight()
 {
 	highlighted = false;
-	if(!selected)
-	{
-		if(!halflighted)
-		{
-			color = normalColor;
-		}
-		else
-		{
-			color = halflightColor;
-		}
-	}
 }
 
 void RenderingObject::Halflight()
 {
 	halflighted = true;
-	if(!selected && !highlighted)
-	{
-		color = halflightColor;
-	}
 }
 
 void RenderingObject::Unhalflight()
 {
 	halflighted = false;
-	if(!selected && !highlighted)
-	{
-		color = normalColor;
-	}
 }
 
 void RenderingObject::Select()
 {
 	selected = true;
-	color = highlightColor;
 }
 
 void RenderingObject::Unselect()
 {
 	selected = false;
-	if(!highlighted)
+}
+
+void RenderingObject::Fluctuate(float phase)
+{
+	vec4 baseColor;
+	if (halflighted)
 	{
-		if(!halflighted)
-		{
-			color = normalColor;
-		}
-		else
-		{
-			color = halflightColor;
-		}
+		baseColor = halflightColor;
 	}
+	else
+	{
+		baseColor = normalColor;
+	}
+
+	auto highlightWeight = sin(radians(phase));
+	fluctuatedColor =
+		highlightColor * highlightWeight +
+		baseColor * (1 - highlightWeight);
+}
+
+void RenderingObject::SetFlashColor(vec4 flash)
+{
+	flashingColor = flash;
+}
+
+void RenderingObject::StartFlash()
+{
+	flashing = true;
+	SetFlashColor(normalColor);
+}
+
+void RenderingObject::EndFlash()
+{
+	flashing = false;
 }
 
 void RenderingObject::PrepareObject(shared_ptr<Context> context)

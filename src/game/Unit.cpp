@@ -35,7 +35,7 @@ void Unit::GamePopup(QString message) const
 */
 float Unit::GetRenderingPosX() const
 {
-	return occupiedField->GetX() - (occupiedField->GetBoard()->PlayableWidth() + 1) / 2.0f;
+	return occupiedField->GetRenderingPosX();
 }
 
 /**
@@ -43,7 +43,7 @@ float Unit::GetRenderingPosX() const
 */
 float Unit::GetRenderingPosZ() const
 {
-	return occupiedField->GetY() - (occupiedField->GetBoard()->PlayableHeight() + 1) / 2.0f;
+	return occupiedField->GetRenderingPosZ();
 }
 
 void Unit::UpdateRenderingObjectPosition() const
@@ -54,6 +54,18 @@ void Unit::UpdateRenderingObjectPosition() const
 void Unit::SetCustomRenderingObjectPosition(float x, float z, float up) const
 {
 	renderingObject->position = vec3(x, up, z);
+}
+
+void Unit::SelectedUnitOnFieldHovered(Field* hoveredField) const
+{
+	if (selectedAbility == nullptr)
+	{
+		GetBoard()->HighlightField(hoveredField);
+	}
+	else
+	{
+		selectedAbility->SelectedAbilityOnFieldHovered(GetBoard(), hoveredField);
+	}
 }
 
 Board* Unit::GetBoard() const
@@ -106,7 +118,9 @@ void Unit::UpdateInfoBar(mat4 perspective, mat4 view, int winWidth, int winHeigh
 			Q_ARG(QVariant, currentHP),
 			Q_ARG(QVariant, maximumHP),
 			Q_ARG(QVariant, currentEN),
-			Q_ARG(QVariant, maximumEN)
+			Q_ARG(QVariant, maximumHP)
+			// maximumHP instead of maximumEN is intentional
+			// this is because low hp units EN bars look weird with maximumEN used
 		);
 	}
 
@@ -190,6 +204,12 @@ void Unit::OnAbilitySelected(int slot)
 	}
 	else
 	{
+		selectedAbilitySlot = 0;
+		selectedAbility = nullptr;
+		GetBoard()->UnhalflightAllFields();
+		QVariant returnedValue;
+		QMetaObject::invokeMethod(abilitiesBar, "unselectAll",
+			Q_RETURN_ARG(QVariant, returnedValue));
 		GamePopup(newSelectedAbility->GetName() +  " : Not enough EN (or HP) to use this ability");
 	}
 }
@@ -206,8 +226,18 @@ bool Unit::UseSelectedAbility(Field* target)
 		GamePopup(name + " : This unit is STUNNED and cannot take any action");
 		return false;
 	}
+	if (selectedAbilitySlot == 0)
+	{
+		GamePopup(name + " : No ability selected");
+		return false;
+	}
 	movedThisTurn = true;
 	return abilities[selectedAbilitySlot - 1]->Effect(GetBoard(), this, target);
+}
+
+bool Unit::IsEnemy(Unit* unit) const
+{
+	return owner->GetID() != unit->GetOwner()->GetID();
 }
 
 void Unit::checkCurrentHitPoints()
@@ -296,6 +326,9 @@ int Unit::RegainEN(int amount)
 void Unit::OnUnitDeath()
 {
 	occupiedField->UnitLeavesThisField();
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(infoBar, "hide",
+		Q_RETURN_ARG(QVariant, returnedValue));
 	owner->OnUnitDeath(this);
 }
 

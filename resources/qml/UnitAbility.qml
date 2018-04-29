@@ -59,7 +59,7 @@ Item {
 
         visible: abilityRoot.selectable
 
-        color: "#EE3C3810"
+        color: "#F83C3810"
         border.width: 2
         border.color: abilityRoot.selected ? abilityRoot.borderSelectedColor : abilityRoot.borderColor
         radius: 1
@@ -82,8 +82,8 @@ Item {
     Rectangle {
         id: abilityDescriptionContainer
 
-        width: 320
-        height: abilityDescriptionText.contentHeight + 20;
+        width: 400
+        height: abilityDescriptionText.contentHeight + 40;
 
         anchors.bottom: abilityRoot.top
         anchors.bottomMargin: 10
@@ -91,7 +91,7 @@ Item {
 
         visible: false
 
-        color: "#CC000000"
+        color: "#F8101004"
         border.width: 3
         border.color: abilityRoot.borderColor
         radius: 1

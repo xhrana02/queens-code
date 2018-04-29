@@ -214,6 +214,80 @@ vector<Field*> Board::GetAllNeighborEmptyFields(Field* field) const
 				continue;
 			}
 
+			neighbors.push_back(fields[x][y]);
+		}
+	}
+
+	return neighbors;
+}
+
+vector<Field*> Board::GetAllMeleeNeighborFields(Field* field) const
+{
+	auto neighbors = vector<Field*>();
+
+	auto fieldX = field->GetX();
+	auto fieldY = field->GetY();
+
+	for (auto modX = -1; modX <= 1; modX++)
+	{
+		for (auto modY = -1; modY <= 1; modY++)
+		{
+			if(abs(modX) == abs(modY))
+			{
+				// skip itself and diagonals
+				continue;
+			}
+
+			auto x = fieldX + modX;
+			auto y = fieldY + modY;
+
+			if (x < 1 || x > PlayableWidth() ||
+				y < 1 || y > PlayableHeight())
+			{
+				// skip non-existing and border fields
+				continue;
+			}
+
+			neighbors.push_back(fields[x][y]);
+		}
+	}
+
+	return neighbors;
+}
+
+vector<Field*> Board::GetAllMovementNeighborFields(Field* field) const
+{
+	auto neighbors = vector<Field*>();
+
+	auto fieldX = field->GetX();
+	auto fieldY = field->GetY();
+
+	for (auto modX = -1; modX <= 1; modX++)
+	{
+		for (auto modY = -1; modY <= 1; modY++)
+		{
+			if(modX == 0 && modY == 0)
+			{
+				// skip itself
+				continue;
+			}
+
+			auto x = fieldX + modX;
+			auto y = fieldY + modY;
+
+			if (x < 1 || x > PlayableWidth() ||
+				y < 1 || y > PlayableHeight() )
+			{
+				// skip non-existing and border fields
+				continue;
+			}
+
+			if (fields[x][y]->IsFieldOccupied())
+			{
+				// skip occupied fields
+				continue;
+			}
+
 			if (modX == 0 || modY == 0)
 			{
 				// perpendicular directions

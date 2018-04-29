@@ -62,7 +62,7 @@ forward_list<Field*> Pathfinding::FindPath(Board* board, Field* origin, Field* t
 		openSet.erase(current);
 		closedSet.insert(current);
 
-		for (auto neighbor : board->GetAllNeighborEmptyFields(current))
+		for (auto neighbor : board->GetAllMovementNeighborFields(current))
 		{
 			if (closedSet.count(neighbor) == 1)
 			{
@@ -78,8 +78,11 @@ forward_list<Field*> Pathfinding::FindPath(Board* board, Field* origin, Field* t
 			auto new_gScore = gScore[current] + 1;
 			if (new_gScore >= gScore[neighbor])
 			{
-				// this is not a better path
-				continue;
+				if (new_gScore > gScore[neighbor] || fScore[current] > fScore[cameFrom[neighbor]])
+				{
+					// this is not a better path
+					continue;
+				}
 			}
 
 			// record the new best path
@@ -155,7 +158,7 @@ vector<Field*> Pathfinding::GetAllPossibleTargets(Board* board, Field* origin, i
 		openSet.erase(current);
 		closedSet.insert(current);
 
-		for (auto neighbor : board->GetAllNeighborEmptyFields(current))
+		for (auto neighbor : board->GetAllMovementNeighborFields(current))
 		{
 			if (closedSet.count(neighbor) == 1)
 			{

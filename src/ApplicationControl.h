@@ -35,6 +35,7 @@ class ApplicationControl : public QObject
 	fsg::ModelLoader* modelLoader = new fsg::ModelLoader();
 
 	QTimer* renderingTimer;
+	
 	Game* activeGame = nullptr;
 	fsg::Camera* activeCamera = nullptr;
 	fsg::CameraControl* cameraControl = nullptr;

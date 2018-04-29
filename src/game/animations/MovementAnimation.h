@@ -6,17 +6,18 @@
 //----------------------------------------------//
 
 #pragma once
-
-#include "Ability.h"
+#include "AbilityAnimation.h"
 #include <forward_list>
 
-class Movement : public Ability
+class Unit;
+class Field;
+
+class MovementAnimation : public AbilityAnimation
 {
-	std::forward_list<Field*> calculatedPath;
-	int calculatedCost = 0;
+	Unit* movingUnit;
+	std::forward_list<Field*> path;
+	int framesPerTile;
 public:
-	Movement();
-	bool Effect(Board* board, Unit* abilityUser, Field* target) override;
-	bool CanUse(Board* board, Unit* abilityUser, Field* target) override;
-	void OnSelected(Board* board, Unit* abilityUser) override;
+	MovementAnimation(Game* inGame, Unit* inUnit,std::forward_list<Field*> inPath);
+	bool Iteration() override;
 };

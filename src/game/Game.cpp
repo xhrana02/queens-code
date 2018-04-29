@@ -8,10 +8,20 @@
 #include "Game.h"
 #include "Simple_geSGRenderer.h"
 #include "../ApplicationControl.h"
+#include "Cursor.h"
+#include "AbilityAnimation.h"
 
 using namespace fsg;
 using namespace std;
 using namespace glm;
+
+Game::~Game()
+{
+	for (auto animation : lockingAnimations)
+	{
+		delete animation;
+	}
+}
 
 /**
  * \brief Game constructor.
@@ -101,10 +111,12 @@ void Game::PlayerVictory(Player* player)
 	if(isRealGame)
 	{
 		UnselectUnit();
+		gameBoard->UnhighlightAllFields();
+		gameBoard->UnhalflightAllFields();
 		locked = true;
 		if(appControl != nullptr)
 		{
-			appControl->GamePopup(player->GetName() + " is victorious!");
+			appControl->SetActivePlayer(player->GetName() + " is victorious!");
 		}
 	}
 	else
@@ -134,6 +146,10 @@ int Game::GetMapSize() const
 ////////////////////////////////////////////////////////////////////////////////
 // RENDERING
 
+void Game::AddCursor(shared_ptr<Cursor> newCursor)
+{
+	cursor = newCursor;
+}
 
 void Game::AddEnvironmentObject(shared_ptr<RenderingObject> newObject)
 {
@@ -144,6 +160,11 @@ void Game::GetObjectsForRendering(Simple_geSGRenderer* renderer) const
 {
 	// RENDERING OBJECTS
 	auto objects = vector<RenderingObject*>();
+
+	if (cursor.get() != nullptr)
+	{
+		objects.push_back(cursor->GetRenderingObject());
+	}
 
 	for (auto envObject : environmentObjects)
 	{
@@ -179,12 +200,21 @@ void Game::GetObjectsForRendering(Simple_geSGRenderer* renderer) const
 
 void Game::HandleMouseMovement(vec2 mouse)
 {
+	auto newHoveredField = gameBoard->GetPlayFieldFromMouse(mouse);
+	if (newHoveredField != nullptr)
+	{
+		cursorPosition = vec2(newHoveredField->GetRenderingPosX(), newHoveredField->GetRenderingPosZ());
+	}
+	else
+	{
+		cursorPosition = mouse;
+	}
+
 	if (locked)
 	{
 		return;
 	}
 
-	auto newHoveredField = gameBoard->GetPlayFieldFromMouse(mouse);
 	HoverField(newHoveredField);
 }
 
@@ -218,7 +248,14 @@ void Game::HoverField(Field* newHoveredField)
 		hoveredField = newHoveredField;
 		if (newHoveredField != nullptr)
 		{
-			gameBoard->HighlightField(newHoveredField);
+			if (selectedUnit == nullptr)
+			{
+				gameBoard->HighlightField(newHoveredField);
+			}
+			else
+			{
+				selectedUnit->SelectedUnitOnFieldHovered(newHoveredField);
+			}
 		}
 		else
 		{
@@ -336,12 +373,12 @@ void Game::EndTurn()
 	GetActivePlayer()->EndTurn();
 }
 
-void Game::LockGame(Ability* lockingAbility)
+void Game::LockGame(AbilityAnimation* lockingAbility)
 {
 	if(isRealGame)
 	{
 		locked = true;
-		lockingAbilities.push_back(lockingAbility);
+		lockingAnimations.push_back(lockingAbility);
 	}
 }
 
@@ -368,15 +405,15 @@ void Game::UnlockGame()
 
 void Game::LockedIteration()
 {
-	for (auto iterator = lockingAbilities.begin(); iterator != lockingAbilities.end();)
+	for (auto iterator = lockingAnimations.begin(); iterator != lockingAnimations.end();)
 	{
-		auto ability = *iterator;
+		auto animation = *iterator;
 
-		auto finished = ability->LockedIteration();
+		auto finished = animation->Iteration();
 		if (finished)
 		{
-			lockingAbilities.erase(iterator);
-			if(lockingAbilities.empty())
+			lockingAnimations.erase(iterator);
+			if(lockingAnimations.empty())
 			{
 				UnlockGame();
 				break;
@@ -394,5 +431,24 @@ void Game::IterationEvents()
 	if(locked)
 	{
 		LockedIteration();
+	}
+
+	highlightFluctuationPhase += 1.5f; // 1 second from normal to fully highlighted
+	if (highlightFluctuationPhase > 180.f)
+	{
+		// only positive sin values
+		highlightFluctuationPhase -= 180.f;
+	}
+	for (auto hlField : gameBoard->GetAllHighlightedFields())
+	{
+		for (auto hlObject : hlField->GetRenderingObjects())
+		{
+			hlObject->Fluctuate(highlightFluctuationPhase);
+		}
+	}
+
+	if (cursor.get() != nullptr)
+	{
+		cursor->Update(cursorPosition.x, cursorPosition.y, highlightFluctuationPhase);
 	}
 }

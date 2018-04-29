@@ -82,6 +82,7 @@ public:
 	}
 	void UpdateRenderingObjectPosition() const;
 	void SetCustomRenderingObjectPosition(float x, float z, float up) const;
+	void SelectedUnitOnFieldHovered(Field* hoveredField) const;
 
 	QString GetName() const
 	{
@@ -122,6 +123,7 @@ public:
 	void OnAbilitySelected(int slot);
 	void RefreshAbilityHalflight();
 	bool UseSelectedAbility(Field* target);
+	bool IsEnemy(Unit* unit) const;
 
 	int GetCurrentHitPoints()
 	{

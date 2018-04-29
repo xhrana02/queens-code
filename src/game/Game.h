@@ -13,6 +13,9 @@
 #include "RenderingObject.h"
 #include <glm/glm.hpp>
 
+class AbilityAnimation;
+class Cursor;
+
 namespace fsg {
 	class Simple_geSGRenderer;
 }
@@ -31,17 +34,21 @@ class Game
 	int turnNumber = 0;
 	std::shared_ptr<Board> gameBoard;
 
+	std::shared_ptr<Cursor> cursor;
 	std::vector<std::shared_ptr<fsg::RenderingObject>> environmentObjects;
+	glm::vec2 cursorPosition = glm::vec2(0.f, 0.f);
+	float highlightFluctuationPhase = 0.0f;
 
 	Field* hoveredField = nullptr;
 	Unit* selectedUnit = nullptr;
 
 	bool locked = false;
-	std::vector<Ability*> lockingAbilities;
+	std::vector<AbilityAnimation*> lockingAnimations;
 	Unit* selectUnitAfterUnlock = nullptr;
 	bool endTurnAfterUnlock = false;
 
 public:
+	~Game();
 	explicit Game(std::shared_ptr<Board> inBoard) : Game(nullptr, inBoard){}
 	Game(ApplicationControl* inAppControl, std::shared_ptr<Board> inBoard);
 
@@ -91,6 +98,7 @@ public:
 
 	int GetMapSize() const;
 
+	void AddCursor(std::shared_ptr<Cursor> newCursor);
 	void AddEnvironmentObject(std::shared_ptr<fsg::RenderingObject> newObject);
 
 	void GetObjectsForRendering(fsg::Simple_geSGRenderer* renderer) const;
@@ -106,7 +114,7 @@ public:
 	void OnAbilitySelected(int slot) const;
 	void EndTurn();
 
-	void LockGame(Ability* lockingAbility);
+	void LockGame(AbilityAnimation* lockingAnimation);
 	void UnlockGame();
 	void LockedIteration();
 

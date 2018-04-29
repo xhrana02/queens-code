@@ -72,9 +72,16 @@ public:
 	std::vector<Field*> GetAllNeighborPlayFields(Field* field) const;
 	std::vector<Field*> GetAllNeighborEmptyFields(Field* field) const;
 
+	std::vector<Field*> GetAllMeleeNeighborFields(Field* field) const;
+	std::vector<Field*> GetAllMovementNeighborFields(Field* field) const;
+
 	void UnhighlightAllFields();
 	void HighlightField(Field* hlField);
 	void HighlightFields(std::vector<Field*> hlFields);
+	std::vector<Field*> GetAllHighlightedFields() const
+	{
+		return highlightedFields;
+	}
 
 	void UnhalflightAllFields();
 	void HalflightFields(std::vector<Field*> hlFields);

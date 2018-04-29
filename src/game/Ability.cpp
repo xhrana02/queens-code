@@ -7,7 +7,7 @@
 
 #include "Ability.h"
 #include "Unit.h"
-#include "Game.h"
+#include "Board.h"
 
 bool Ability::CanAfford(Unit* abilityUser) const
 {
@@ -22,12 +22,7 @@ bool Ability::CanAfford(Unit* abilityUser) const
 	return true;
 }
 
-bool Ability::LockGame()
+void Ability::SelectedAbilityOnFieldHovered(Board* board, Field* hoveredField)
 {
-	if (game != nullptr)
-	{
-		game->LockGame(this);
-		return true;
-	}
-	return false;
+	board->HighlightField(hoveredField);
 }

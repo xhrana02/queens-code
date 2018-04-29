@@ -17,13 +17,15 @@ namespace fsg
 	class RenderingObject
 	{
 		std::shared_ptr<ge::sg::Scene> model;
-		glm::vec4 color = glm::vec4(0.88f,0.88f,0.88f,1);
 		glm::vec4 normalColor = glm::vec4(0.88f,0.88f,0.88f,1);
 		glm::vec4 halflightColor = glm::vec4(0.94f,0.94f,0.94f,1);
+		glm::vec4 fluctuatedColor = glm::vec4(1,1,1,1);
 		glm::vec4 highlightColor = glm::vec4(1,1,1,1);
+		glm::vec4 flashingColor = glm::vec4(1,1,1,1);
 		bool highlighted = false;
 		bool halflighted = false;
 		bool selected = false;
+		bool flashing = false;
 
 		std::shared_ptr<ge::gl::Context> glContext;
 		std::shared_ptr<ge::glsg::GLScene> glScene;
@@ -44,16 +46,9 @@ namespace fsg
 		{
 			return model.get();
 		}
-		void SetModel(std::shared_ptr<ge::sg::Scene> newModel)
-		{
-			model = newModel;
-			needToUpdateGLScene = true;
-		}
+		void SetModel(std::shared_ptr<ge::sg::Scene> newModel);
 
-		glm::vec4 GetColor() const
-		{
-			return color;
-		}
+		glm::vec4 GetColor() const;
 		glm::vec4 GetNormalColor() const
 		{
 			return normalColor;
@@ -73,6 +68,10 @@ namespace fsg
 		void Unhalflight();
 		void Select();
 		void Unselect();
+		void Fluctuate(float phase);
+		void SetFlashColor(glm::vec4 flash);
+		void StartFlash();
+		void EndFlash();
 
 		std::shared_ptr<ge::glsg::GLScene> GetGLScene() const
 		{

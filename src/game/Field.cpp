@@ -6,6 +6,7 @@
 //----------------------------------------------//
 
 #include "Field.h"
+#include "Board.h"
 
 using namespace fsg;
 using namespace std;
@@ -27,6 +28,23 @@ vector<RenderingObject*> Field::GetRenderingObjects() const
 	}
 
 	return objects;
+}
+
+
+/**
+* \brief Rendering position X.
+*/
+float Field::GetRenderingPosX() const
+{
+	return positionX - (board->PlayableWidth() + 1) / 2.0f;
+}
+
+/**
+* \brief Rendering position Z (Z in rendering coords, Y in game coords).
+*/
+float Field::GetRenderingPosZ() const
+{
+	return positionY - (board->PlayableHeight() + 1) / 2.0f;
 }
 
 void Field::MoveUnitToThisField(Unit* unit)

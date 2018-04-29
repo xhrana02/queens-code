@@ -7,6 +7,8 @@
 
 #include "Knight.h"
 #include "Movement.h"
+#include "AttackLongsword.h"
+#include "PassiveKnightsArmor.h"
 
 Knight::Knight()
 {
@@ -16,5 +18,7 @@ Knight::Knight()
 	currentEN = maximumEN;
 	damageReduction = 2;
 	abilities.push_back(std::make_shared<Movement>());
+	abilities.push_back(std::make_shared<AttackLongsword>());
+	abilities.push_back(std::make_shared<PassiveKnightsArmor>());
 }
 

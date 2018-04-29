@@ -54,7 +54,7 @@ public:
 	{
 		game = activeGame;
 	}
-	bool LockGame();
-	virtual bool LockedIteration() = 0;
+
 	virtual void OnSelected(Board* board, Unit* abilityUser) = 0;
+	virtual void SelectedAbilityOnFieldHovered(Board* board, Field* hoveredField);
 };
