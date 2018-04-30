@@ -13,13 +13,18 @@
 using namespace std;
 
 
-
-::vector<Field*> Targetfinding::GetMeleeEnemyTargets(Board* board, Unit* origin)
+vector<Field*> Targetfinding::GetMeleeEnemyTargets(Board* board, Unit* origin, bool includeEmpty)
 {
 	auto targets = vector<Field*>();
 
 	for (auto neighbor : board->GetAllMeleeNeighborFields(origin->GetOccupiedField()))
 	{
+		if (neighbor->GetTerrainType() == IceBlock)
+		{
+			targets.push_back(neighbor);
+			continue;
+		}
+
 		auto neighborUnit = neighbor->GetUnitOnField();
 		if (neighborUnit != nullptr)
 		{
@@ -27,48 +32,207 @@ using namespace std;
 			{
 				targets.push_back(neighbor);
 			}
+			continue;
+		}
+
+		if (includeEmpty && !neighbor->IsFieldOccupied())
+		{
+			// Include empty tiles too if set
+			targets.push_back(neighbor);
 		}
 	}
 
 	return targets;
 }
 
-vector<Field*> Targetfinding::GetLineEnemyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax)
+vector<Field*> Targetfinding::GetLineEnemyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax, bool includeEmpty)
 {
-	return vector<Field*>();
+	auto targets = vector<Field*>();
+
+	auto originX = origin->GetOccupiedField()->GetX();
+	auto originY = origin->GetOccupiedField()->GetY();
+
+	for (auto directionX = -1; directionX <=1; directionX++) {
+	for (auto directionY = -1; directionY <=1; directionY++)
+	{
+		if (directionX == 0 && directionY == 0) {
+			//skip no direction
+			continue;
+		}
+
+		auto isDiagonal = (directionX != 0 && directionY != 0);
+		auto diagonalTraveled = 0;
+
+		auto range = 0;
+		auto posX = originX;
+		auto posY = originY;
+
+		while (true)
+		{
+			if (isDiagonal) {
+				diagonalTraveled += 1.4142;
+				range = ceil(diagonalTraveled);
+			} else {
+				range++;
+			}
+			if (range > rangeMax) { break; } // Out of range
+
+			posX += directionX;
+			posY += directionY;
+			auto field = board->GetField(posX, posY);
+
+			// Is there an obstacle?
+			if (field->IsFieldOccupied())
+			{
+				if (field->GetTerrainType() == IceBlock) {
+					if (range < rangeMin) { break; } // Obstacle is too near
+					targets.push_back(field);
+					break;
+				}
+
+				if (field->GetUnitOnField() == nullptr) {
+					// Dead end, blocked by terrain or border
+					break;
+				}
+
+				// Add enemies to the vector
+				if (origin->IsEnemy(field->GetUnitOnField())) {
+					if (range < rangeMin) { break; } // Obstacle is too near
+					targets.push_back(field);
+					break;
+				}
+				// Continue if allied
+				continue;
+			}
+
+			if (includeEmpty && range >= rangeMin)
+			{
+				// Include empty tiles too if set
+				targets.push_back(field);
+			}
+		}
+	}}
+
+	return targets;
 }
 
-vector<Field*> Targetfinding::GetLineAllTargets(Board* board, Unit* origin, int rangeMin, int rangeMax)
+
+vector<Field*> Targetfinding::GetIndirectEnemyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax, bool includeEmpty)
 {
-	return vector<Field*>();
+	auto targets = vector<Field*>();
+
+	auto allFields = board->GetAllPlayFields();
+	for (auto field : allFields)
+	{
+		if (!IsInRange(origin->GetOccupiedField(), field, rangeMin, rangeMax))
+		{
+			continue;
+		}
+		if (field->GetTerrainType() == IceBlock)
+		{
+			targets.push_back(field);
+			continue;
+		}
+		auto unit = field->GetUnitOnField();
+		if (unit == nullptr)
+		{
+			if (includeEmpty)
+			{
+				// Include empty tiles too if set
+				targets.push_back(field);
+			}
+			continue;
+		}
+		if (origin->IsEnemy(unit))
+		{
+			targets.push_back(field);
+		}
+	}
+
+	return targets;
 }
 
-bool Targetfinding::IsClearShot(Board* board, Unit* origin, Field* target)
+vector<Field*> Targetfinding::GetIndirectAllyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax, bool includeEmpty)
 {
-	return false;
-}
+	auto targets = vector<Field*>();
 
-vector<Field*> Targetfinding::GetIndirectEnemyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax)
-{
-	return vector<Field*>();
-}
+	auto allFields = board->GetAllPlayFields();
+	for (auto field : allFields)
+	{
+		if (!IsInRange(origin->GetOccupiedField(), field, rangeMin, rangeMax))
+		{
+			continue;
+		}
+		if (field->GetTerrainType() == IceBlock)
+		{
+			continue;
+		}
+		auto unit = field->GetUnitOnField();
+		if (unit == nullptr)
+		{
+			if (includeEmpty)
+			{
+				// Include empty tiles too if set
+				targets.push_back(field);
+			}
+			continue;
+		}
+		if (!origin->IsEnemy(unit))
+		{
+			targets.push_back(field);
+		}
+	}
 
-vector<Field*> Targetfinding::GetIndirectAllyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax)
-{
-	return vector<Field*>();
+	return targets;
 }
 
 vector<Field*> Targetfinding::GetIndirectEmptyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax)
 {
-	return vector<Field*>();
+	auto targets = vector<Field*>();
+
+	auto allFields = board->GetAllEmptyFields();
+	for (auto field : allFields)
+	{
+		if (!IsInRange(origin->GetOccupiedField(), field, rangeMin, rangeMax))
+		{
+			continue;
+		}
+		targets.push_back(field);
+	}
+
+	return targets;
 }
 
 vector<Field*> Targetfinding::GetIndirectAllTargets(Board* board, Unit* origin, int rangeMin, int rangeMax)
 {
-	return vector<Field*>();
+	auto targets = vector<Field*>();
+
+	auto allFields = board->GetAllPlayFields();
+	for (auto field : allFields)
+	{
+		if (!IsInRange(origin->GetOccupiedField(), field, rangeMin, rangeMax))
+		{
+			continue;
+		}
+		if (field->GetTerrainType() == Wall)
+		{
+			continue;
+		}
+		targets.push_back(field);
+	}
+
+	return targets;
 }
 
-int Targetfinding::GetRange(Board* board, Field* origin, Field* target)
+bool Targetfinding::IsInRange(Field* origin, Field* target, int rangeMin, int rangeMax)
 {
-	return 0;
+	auto deltaX = origin->GetX() - target->GetX();
+	auto deltaY = origin->GetY() - target->GetY();
+	auto range = sqrt(pow(deltaX, 2) + pow(deltaY, 2));
+
+	if (range < rangeMin - 0.00001 || range > rangeMax + 0.00001)
+	{
+		return false;
+	}
+	return true;
 }

@@ -15,15 +15,13 @@ class Board;
 class Targetfinding
 {
 public:
-	static std::vector<Field*> GetMeleeEnemyTargets(Board* board, Unit* origin);
+	static std::vector<Field*> GetMeleeEnemyTargets(Board* board, Unit* origin, bool includeEmpty = false);
 
-	static std::vector<Field*> GetLineEnemyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax);
-	static std::vector<Field*> GetLineAllTargets(Board* board, Unit* origin, int rangeMin, int rangeMax);
-	static bool IsClearShot(Board* board, Unit* origin, Field* target);
+	static std::vector<Field*> GetLineEnemyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax, bool includeEmpty = false);
 
-	static std::vector<Field*> GetIndirectEnemyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax);
-	static std::vector<Field*> GetIndirectAllyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax);
+	static std::vector<Field*> GetIndirectEnemyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax, bool includeEmpty = false);
+	static std::vector<Field*> GetIndirectAllyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax, bool includeEmpty = false);
 	static std::vector<Field*> GetIndirectEmptyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax);
 	static std::vector<Field*> GetIndirectAllTargets(Board* board, Unit* origin, int rangeMin, int rangeMax);
-	static int GetRange(Board* board, Field* origin, Field* target);
+	static bool IsInRange(Field* origin, Field* target, int rangeMin, int rangeMax);
 };

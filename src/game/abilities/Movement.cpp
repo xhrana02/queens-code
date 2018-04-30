@@ -75,5 +75,14 @@ void Movement::OnSelected(Board* board, Unit* abilityUser)
 	board->HalflightFields(viableTargets);
 }
 
+void Movement::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
+{
+	board->HighlightField(hoveredField);
+	if(CanUse(board, abilityUser, hoveredField))
+	{
+		abilityUser->ReduceTheoreticalEN(calculatedCost);
+	}
+}
+
 
 

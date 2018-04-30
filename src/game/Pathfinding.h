@@ -19,7 +19,7 @@ class Pathfinding
 public:
 	static std::forward_list<Field*> FindPath(Board* board, Field* origin, Field* target);
 	static std::forward_list<Field*> ReconstructPath(std::unordered_map<Field*, Field*> cameFrom, Field* current);
-	static int HeuristicCostEstimate(Field* origin, Field* target);
+	static double HeuristicCostEstimate(Field* origin, Field* target);
 
 	static std::vector<Field*> GetAllPossibleTargets(Board* board, Field* origin, int maxLength);
 	static std::vector<Field*> ConvertSetToVector(std::set<Field*> convertingSet);

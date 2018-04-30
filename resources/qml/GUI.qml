@@ -238,6 +238,10 @@ Item {
         loaderGameOverlay.item.popup(message)
     }
 
+    function onGameOver() {
+        loaderGameOverlay.item.onGameOver()
+    }
+
 
 }
 

@@ -29,7 +29,7 @@ forward_list<Field*> Pathfinding::FindPath(Board* board, Field* origin, Field* t
 	}
 	gScore[origin] = 0;
 
-	auto fScore = unordered_map<Field*, int>();
+	auto fScore = unordered_map<Field*, double>();
 	for (auto field : allEmptyFields)
 	{
 		fScore[field] = 9999;
@@ -106,7 +106,7 @@ forward_list<Field*> Pathfinding::ReconstructPath(unordered_map<Field*, Field*> 
 	return path;
 }
 
-int Pathfinding::HeuristicCostEstimate(Field* origin, Field* target)
+double Pathfinding::HeuristicCostEstimate(Field* origin, Field* target)
 {
 	auto deltaX = abs(origin->GetX() - target->GetX());
 	auto deltaY = abs(origin->GetY() - target->GetY());

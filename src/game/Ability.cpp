@@ -22,7 +22,7 @@ bool Ability::CanAfford(Unit* abilityUser) const
 	return true;
 }
 
-void Ability::SelectedAbilityOnFieldHovered(Board* board, Field* hoveredField)
+void Ability::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
 {
 	board->HighlightField(hoveredField);
 }

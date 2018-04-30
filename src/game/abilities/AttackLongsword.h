@@ -8,16 +8,14 @@
 #pragma once
 
 #include "Ability.h"
-#include <vector>
 
 class AttackLongsword : public Ability
 {
-	int normalDamage = 9;
+	static int const normalDamage = 9;
 public:
 	AttackLongsword();
 	bool Effect(Board* board, Unit* abilityUser, Field* target) override;
 	bool CanUse(Board* board, Unit* abilityUser, Field* target) override;
 	void OnSelected(Board* board, Unit* abilityUser) override;
-private:
-	static std::vector<Field*> calculateViableTargets(Board* board, Unit* abilityUser);
+	void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField) override;
 };

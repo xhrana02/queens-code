@@ -53,6 +53,13 @@ Item {
 
         anchors.fill: parent
 
+        Rectangle {
+            id: gameOverScreen
+            anchors.fill: parent
+            color: "#88484840"
+            visible: false
+        }
+
         // LEFT SIDE
         Column {
             id: gameUI_topLeft
@@ -274,21 +281,28 @@ Item {
         popupText.text = message
         popupAnimation.restart()
     }
+    
+    function onGameOver() {
+        gameOverScreen.visible = true
+        activePlayerName.font.pixelSize = 40
+    }
 
     function cleanUI() {
-        loaderGameMenu.visible = false;
-        gameUI.visible = true;
+        loaderGameMenu.visible = false
+        gameUI.visible = true
         paused = false
+        gameOverScreen.visible = false
+        activePlayerName.font.pixelSize = 22
     }
 
     function showGameMenu() {
-        loaderGameMenu.visible = true;
-        gameUI.visible = false;
+        loaderGameMenu.visible = true
+        gameUI.visible = false
     }
 
     function hideGameMenu() {
-        loaderGameMenu.visible = false;
-        gameUI.visible = true;
+        loaderGameMenu.visible = false
+        gameUI.visible = true
     }
 }
 

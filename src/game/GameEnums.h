@@ -7,7 +7,6 @@
 
 #pragma once
 
-enum GameStage { Deploy, Battle, GameOver };
 enum MouseButton { LMB, RMB, MMB };
 enum PlayerID { Player1, Player2 };
 enum PlayerType {Human, AI};

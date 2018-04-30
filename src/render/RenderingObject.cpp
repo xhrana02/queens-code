@@ -99,10 +99,9 @@ void RenderingObject::Fluctuate(float phase)
 		baseColor = normalColor;
 	}
 
-	auto highlightWeight = sin(radians(phase));
 	fluctuatedColor =
-		highlightColor * highlightWeight +
-		baseColor * (1 - highlightWeight);
+		highlightColor * phase +
+		baseColor * (1 - phase);
 }
 
 void RenderingObject::SetFlashColor(vec4 flash)

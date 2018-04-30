@@ -31,7 +31,6 @@ Game::Game(ApplicationControl* inAppControl, shared_ptr<Board> inBoard)
 {
 	appControl = inAppControl;
 	gameBoard = inBoard;
-	gameStage = Deploy;
 }
 
 void Game::StartGame() const
@@ -113,10 +112,12 @@ void Game::PlayerVictory(Player* player)
 		UnselectUnit();
 		gameBoard->UnhighlightAllFields();
 		gameBoard->UnhalflightAllFields();
+		ResetTheoryValues();
 		locked = true;
 		if(appControl != nullptr)
 		{
 			appControl->SetActivePlayer(player->GetName() + " is victorious!");
+			appControl->OnGameOver();
 		}
 	}
 	else
@@ -185,12 +186,12 @@ void Game::GetObjectsForRendering(Simple_geSGRenderer* renderer) const
 	for (auto unit : player1->GetUnits())
 	{
 		unit->UpdateInfoBar(renderer->GetPerspectiveMatrix(), renderer->GetViewMatrix(),
-			renderer->GetWindowWidth(), renderer->GetWindowHeight());
+			renderer->GetWindowWidth(), renderer->GetWindowHeight(), highlightFluctuation);
 	}
 	for (auto unit : player2->GetUnits())
 	{
 		unit->UpdateInfoBar(renderer->GetPerspectiveMatrix(), renderer->GetViewMatrix(),
-			renderer->GetWindowWidth(), renderer->GetWindowHeight());
+			renderer->GetWindowWidth(), renderer->GetWindowHeight(), highlightFluctuation);
 	}
 
 }
@@ -245,6 +246,8 @@ void Game::HoverField(Field* newHoveredField)
 {
 	if (newHoveredField != hoveredField)
 	{
+		ResetTheoryValues();
+
 		hoveredField = newHoveredField;
 		if (newHoveredField != nullptr)
 		{
@@ -326,6 +329,7 @@ void Game::UseAbility(Field* clickedField)
 		if (isRealGame)
 		{
 			gameBoard->UnhalflightAllFields();
+			ResetTheoryValues();
 		}
 
 		activePlayer->OnAbilityUsed();
@@ -439,16 +443,30 @@ void Game::IterationEvents()
 		// only positive sin values
 		highlightFluctuationPhase -= 180.f;
 	}
+	highlightFluctuation = sin(radians(highlightFluctuationPhase));
+
 	for (auto hlField : gameBoard->GetAllHighlightedFields())
 	{
 		for (auto hlObject : hlField->GetRenderingObjects())
 		{
-			hlObject->Fluctuate(highlightFluctuationPhase);
+			hlObject->Fluctuate(highlightFluctuation);
 		}
 	}
 
 	if (cursor.get() != nullptr)
 	{
 		cursor->Update(cursorPosition.x, cursorPosition.y, highlightFluctuationPhase);
+	}
+}
+
+void Game::ResetTheoryValues()
+{
+	for (auto unit : player1->GetUnits())
+	{
+		unit->ResetTheory();
+	}
+	for (auto unit : player2->GetUnits())
+	{
+		unit->ResetTheory();
 	}
 }

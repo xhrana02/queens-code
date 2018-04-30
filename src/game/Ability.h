@@ -56,5 +56,5 @@ public:
 	}
 
 	virtual void OnSelected(Board* board, Unit* abilityUser) = 0;
-	virtual void SelectedAbilityOnFieldHovered(Board* board, Field* hoveredField);
+	virtual void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField);
 };

@@ -85,6 +85,7 @@ public:
 	void OnUnitUnselected() const;
 	void OnTurnBegin(int turnNumber) const;
 	void OnAbilityUsed() const;
+	void OnGameOver() const;
 
 	Q_INVOKABLE void LoadSettings();
 	Q_INVOKABLE void NewStandardGame(QString p1Name, int p1Code, QString p2Name, int p2Code);

@@ -26,7 +26,7 @@ public:
 		// IS PASSIVE, always does nothing
 	}
 
-	void SelectedAbilityOnFieldHovered(Board* board, Field* hoveredField) final
+	void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField) final
 	{
 		// IS PASSIVE, always does nothing
 	}

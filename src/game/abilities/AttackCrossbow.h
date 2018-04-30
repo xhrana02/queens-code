@@ -8,14 +8,14 @@
 #pragma once
 
 #include "Ability.h"
-#include <forward_list>
 
-class Movement : public Ability
+class AttackCrossbow : public Ability
 {
-	std::forward_list<Field*> calculatedPath;
-	int calculatedCost = 0;
+	static int const normalDamage = 11;
+	static int const rangeMin = 2;
+	static int const rangeMax = 8;
 public:
-	Movement();
+	AttackCrossbow();
 	bool Effect(Board* board, Unit* abilityUser, Field* target) override;
 	bool CanUse(Board* board, Unit* abilityUser, Field* target) override;
 	void OnSelected(Board* board, Unit* abilityUser) override;

@@ -56,7 +56,7 @@ void Unit::SetCustomRenderingObjectPosition(float x, float z, float up) const
 	renderingObject->position = vec3(x, up, z);
 }
 
-void Unit::SelectedUnitOnFieldHovered(Field* hoveredField) const
+void Unit::SelectedUnitOnFieldHovered(Field* hoveredField)
 {
 	if (selectedAbility == nullptr)
 	{
@@ -64,7 +64,7 @@ void Unit::SelectedUnitOnFieldHovered(Field* hoveredField) const
 	}
 	else
 	{
-		selectedAbility->SelectedAbilityOnFieldHovered(GetBoard(), hoveredField);
+		selectedAbility->SelectedAbilityOnFieldHovered(GetBoard(), this, hoveredField);
 	}
 }
 
@@ -92,15 +92,21 @@ void Unit::CreateInfoBar(QQmlEngine* engine, QQuickItem* guiRoot)
 		QUrl::fromLocalFile(APP_RESOURCES"/qml/UnitInfoBar.qml"));
 	infoBar = qobject_cast<QQuickItem*>(component.create());
 	infoBar->setParentItem(guiRoot);
+
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(infoBar, "setMax",
+		Q_RETURN_ARG(QVariant, returnedValue),
+		Q_ARG(QVariant, maximumHP));
 }
 
-void Unit::UpdateInfoBar(mat4 perspective, mat4 view, int winWidth, int winHeight) const
+void Unit::UpdateInfoBar(mat4 perspective, mat4 view, int winWidth, int winHeight, float fluctuation) const
 {
 	auto homopos = perspective * view * vec4(GetRenderingPosX(), 1.2f, GetRenderingPosZ(), 1.0f);
 	auto posvec = vec3(homopos.x / homopos.w, homopos.y / homopos.w, homopos.z / homopos.w);
 	auto posX = ((posvec.x + 1) / 2.0f) * winWidth - 60;
 	auto posY = ((1 - posvec.y) / 2.0f) * winHeight - 19;
 	auto depth = 1 - posvec.z;
+	fluctuation = 0.45 + 0.4 * fluctuation;
 
 	QVariant returnedValue;
 	if (posvec.z < 0 || posvec.z > 1)
@@ -116,11 +122,10 @@ void Unit::UpdateInfoBar(mat4 perspective, mat4 view, int winWidth, int winHeigh
 			Q_ARG(QVariant, posY),
 			Q_ARG(QVariant, depth),
 			Q_ARG(QVariant, currentHP),
-			Q_ARG(QVariant, maximumHP),
 			Q_ARG(QVariant, currentEN),
-			Q_ARG(QVariant, maximumHP)
-			// maximumHP instead of maximumEN is intentional
-			// this is because low hp units EN bars look weird with maximumEN used
+			Q_ARG(QVariant, currentHpTheory),
+			Q_ARG(QVariant, currentEnTheory),
+			Q_ARG(QVariant, fluctuation)
 		);
 	}
 
@@ -504,5 +509,124 @@ void Unit::OnTurnEnd()
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
+// THEORY METHODS
+
+void Unit::ResetTheory()
+{
+	currentHpTheory = currentHP;
+	currentEnTheory = currentEN;
+}
+
+
+int Unit::ReduceTheoreticalHP(int amount)
+{
+	if(amount <= 0)
+	{
+		return 0;
+	}
+
+	if(amount > currentHpTheory)
+	{
+		amount = currentHpTheory;
+	}
+
+	currentHpTheory -= amount;
+
+	return amount;
+}
+
+int Unit::ReduceTheoreticalEN(int amount)
+{
+	if (amount <= 0)
+	{
+		return 0;
+	}
+
+	if (amount > currentEnTheory)
+	{
+		amount = currentEnTheory;
+	}
+
+	currentEnTheory -= amount;
+
+	return amount;
+}
+
+int Unit::RegainTheoreticalHP(int amount)
+{
+	if (amount <= 0)
+	{
+		return 0;
+	}
+	if (currentHpTheory + amount > maximumHP)
+	{
+		amount = maximumHP - currentHpTheory;
+	}
+
+	currentHpTheory += amount;
+
+	return amount;
+}
+
+int Unit::RegainTheoreticalEN(int amount)
+{
+	if (amount <= 0)
+	{
+		return 0;
+	}
+	if (currentEnTheory + amount > maximumEN)
+	{
+		amount = maximumEN - currentEnTheory;
+	}
+
+	currentEnTheory += amount;
+
+	return amount;
+}
+
+void Unit::TakeTheoreticalDamage(int damageNormal, int damageEN, int damageHP)
+{
+	damageNormal -= damageReduction;
+	if (damageNormal < 0)
+	{
+		damageEN += damageNormal;
+		damageNormal = 0;
+		if (damageEN < 0)
+		{
+			damageHP += damageEN;
+			damageEN = 0;
+			if (damageHP < 0)
+			{
+				return;
+			}
+		}
+	}
+
+	if (damageHP > 0)
+	{
+		ReduceTheoreticalHP(damageHP);
+	}
+
+	if (damageEN > 0)
+	{
+		ReduceTheoreticalEN(damageEN);
+	}
+
+	if (damageNormal > 0)
+	{
+		auto ENpart = ReduceTheoreticalEN(damageNormal);
+		damageNormal -= ENpart;
+		if (damageNormal > 0)
+		{
+			ReduceTheoreticalHP(damageNormal);
+		}
+	}
+}
+
+void Unit::TheoreticalHeal(int healHP, int healEN)
+{
+	RegainTheoreticalHP(healHP) + RegainTheoreticalEN(healEN);
+}
 
 

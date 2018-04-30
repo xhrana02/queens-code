@@ -26,6 +26,8 @@ Item {
     property var borderColor: "#604020"
     property var textColor: "#CCE6FF"
 
+    property var maxValue: 1
+
     transformOrigin: Item.Center
 
     // HEALTH
@@ -45,6 +47,22 @@ Item {
     }
 
     Rectangle {
+        id: hpBarTheory
+
+        width: barWidth
+        height: barHeight
+
+        anchors.top: parent.top
+        anchors.topMargin: borderWidth
+        anchors.left: hpBackground.left
+        anchors.leftMargin: borderWidth
+
+        color: hpColor
+        border.width: 0
+        z: 3
+    }
+
+    Rectangle {
         id: hpBar
 
         width: barWidth
@@ -57,7 +75,7 @@ Item {
 
         color: hpColor
         border.width: 0
-        z: 2
+        z: 3
     }
 
     Text {
@@ -78,7 +96,7 @@ Item {
         font.bold: true
         style: Text.Outline
         styleColor: emptyColor
-        z: 3
+        z: 4
     }
 
     // ENERGY
@@ -96,6 +114,22 @@ Item {
         border.color: borderColor
         z: 1
     }
+    
+    Rectangle {
+        id: enBarTheory
+
+        width: barWidth
+        height: barHeight
+
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: borderWidth
+        anchors.left: enBackground.left
+        anchors.leftMargin: borderWidth
+
+        color: enColor
+        border.width: 0
+        z: 2
+    }
 
     Rectangle {
         id: enBar
@@ -110,7 +144,7 @@ Item {
 
         color: enColor
         border.width: 0
-        z: 2
+        z: 3
     }
 
     Text {
@@ -131,27 +165,35 @@ Item {
         font.bold: true
         style: Text.Outline
         styleColor: emptyColor
-        z: 3
+        z: 4
     }
 
-    function update(x, y, z, hp, maxhp, en, maxen) {
+    function setMax(newMax) {
+        infoBar.maxValue = newMax
+    }
+
+    function update(x, y, z, hp, en, hpTheory, enTheory, fluctuation) {
         infoBar.visible = true
         infoBar.x = x
         infoBar.y = y
         infoBar.z = z
-        hpBar.width = barWidth * hp / maxhp
-        enBar.width = barWidth * en / maxen
-        hpNumbers.text = hp + "/" + maxhp
-        enNumbers.text = en + "/" + maxen
-        
-        infoBar.scale = z * 2.5
-        if (z < 0.2) {
+        infoBar.scale = z * 4.2
+        if (z < 0.15) {
             hpNumbers.visible = false
             enNumbers.visible = false
         } else {
             hpNumbers.visible = true
             enNumbers.visible = true
         }
+
+        hpBarTheory.width = infoBar.barWidth * hpTheory / infoBar.maxValue
+        enBarTheory.width = infoBar.barWidth * enTheory / infoBar.maxValue
+        hpBar.width = infoBar.barWidth * hp / infoBar.maxValue
+        enBar.width = infoBar.barWidth * en / infoBar.maxValue
+        hpBar.opacity = fluctuation
+        enBar.opacity = fluctuation
+        hpNumbers.text = hp + "/" + infoBar.maxValue
+        enNumbers.text = en + "/" + infoBar.maxValue
     }
 
     function hide() {

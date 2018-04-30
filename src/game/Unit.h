@@ -60,6 +60,8 @@ protected:
 
 	std::shared_ptr<fsg::RenderingObject> renderingObject;
 	QQuickItem* infoBar = nullptr;
+	int currentHpTheory = 0;
+	int currentEnTheory = 0;
 	QQuickItem* abilitiesBar = nullptr;
 
 public:
@@ -82,7 +84,7 @@ public:
 	}
 	void UpdateRenderingObjectPosition() const;
 	void SetCustomRenderingObjectPosition(float x, float z, float up) const;
-	void SelectedUnitOnFieldHovered(Field* hoveredField) const;
+	void SelectedUnitOnFieldHovered(Field* hoveredField);
 
 	QString GetName() const
 	{
@@ -114,7 +116,7 @@ public:
 	}
 
 	void CreateInfoBar(QQmlEngine* engine, QQuickItem* guiRoot);
-	void UpdateInfoBar(glm::mat4 perspective, glm::mat4 view, int winWidth, int winHeight) const;
+	void UpdateInfoBar(glm::mat4 perspective, glm::mat4 view, int winWidth, int winHeight, float fluctuation) const;
 	void CreateAbilitiesBar(QQmlEngine* engine, QQuickItem* guiRoot);
 
 	void Select(bool isEnemy = false) const;
@@ -213,4 +215,13 @@ public:
 
 	void OnTurnBegin();
 	void OnTurnEnd();
+
+	// THEORY METHODS
+	void ResetTheory();
+	int ReduceTheoreticalHP(int amount);
+	int ReduceTheoreticalEN(int amount);
+	int RegainTheoreticalHP(int amount);
+	int RegainTheoreticalEN(int amount);
+	void TakeTheoreticalDamage(int damageNormal, int damageEN = 0, int damageHP = 0);
+	void TheoreticalHeal(int healHP, int healEN = 0);
 };

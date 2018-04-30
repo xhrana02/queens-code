@@ -30,7 +30,6 @@ class Game
 	std::shared_ptr<Player> player1;
 	std::shared_ptr<Player> player2;
 	Player* activePlayer = nullptr;
-	GameStage gameStage;
 	int turnNumber = 0;
 	std::shared_ptr<Board> gameBoard;
 
@@ -38,6 +37,7 @@ class Game
 	std::vector<std::shared_ptr<fsg::RenderingObject>> environmentObjects;
 	glm::vec2 cursorPosition = glm::vec2(0.f, 0.f);
 	float highlightFluctuationPhase = 0.0f;
+	float highlightFluctuation = 0.0f;
 
 	Field* hoveredField = nullptr;
 	Unit* selectedUnit = nullptr;
@@ -119,4 +119,5 @@ public:
 	void LockedIteration();
 
 	void IterationEvents();
+	void ResetTheoryValues();
 };

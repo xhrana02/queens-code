@@ -5,7 +5,7 @@
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
-#include "AttackLongsword.h"
+#include "AttackCrossbow.h"
 #include "Game.h"
 #include "Field.h"
 #include "Flash.h"
@@ -14,17 +14,17 @@
 
 using namespace glm;
 
-AttackLongsword::AttackLongsword()
+AttackCrossbow::AttackCrossbow()
 {
-	costEN = 4;
-	name = "Longsword Attack";
-	iconPath = "icons/AttackLongsword.png";
-	description = "<b><u>Longsword Attack</u> ( 4 EN ) Melee</b><br><br>"
-		"Deals 9 normal damage to the target.<br><br>"
+	costEN = 9;
+	name = "Crossbow Attack";
+	iconPath = "icons/AttackCrossbow.png";
+	description = "<b><u>Crossbow Attack</u> ( 9 EN ) Line 2-8</b><br><br>"
+		"Deals 11 normal damage to the target.<br><br>"
 		NORMAL_DAMAGE_TOOLTIP;
 }
 
-bool AttackLongsword::Effect(Board* board, Unit* abilityUser, Field* target)
+bool AttackCrossbow::Effect(Board* board, Unit* abilityUser, Field* target)
 {
 	if(CanUse(board, abilityUser, target))
 	{
@@ -52,14 +52,14 @@ bool AttackLongsword::Effect(Board* board, Unit* abilityUser, Field* target)
 	return false;
 }
 
-bool AttackLongsword::CanUse(Board* board, Unit* abilityUser, Field* target)
+bool AttackCrossbow::CanUse(Board* board, Unit* abilityUser, Field* target)
 {
 	if (target == nullptr)
 	{
 		return false;
 	}
 
-	auto viableTargets = Targetfinding::GetMeleeEnemyTargets(board, abilityUser);
+	auto viableTargets = Targetfinding::GetLineEnemyTargets(board, abilityUser, rangeMin, rangeMax);
 	for (auto viableTarget : viableTargets)
 	{
 		if (target == viableTarget)
@@ -70,12 +70,12 @@ bool AttackLongsword::CanUse(Board* board, Unit* abilityUser, Field* target)
 	return false;
 }
 
-void AttackLongsword::OnSelected(Board* board, Unit* abilityUser)
+void AttackCrossbow::OnSelected(Board* board, Unit* abilityUser)
 {
-	board->HalflightFields(Targetfinding::GetMeleeEnemyTargets(board, abilityUser, true));
+	board->HalflightFields(Targetfinding::GetLineEnemyTargets(board, abilityUser, rangeMin, rangeMax, true));
 }
 
-void AttackLongsword::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
+void AttackCrossbow::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
 {
 	board->HighlightField(hoveredField);
 	if(CanUse(board, abilityUser, hoveredField))

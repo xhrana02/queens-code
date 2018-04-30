@@ -201,6 +201,13 @@ void ApplicationControl::OnAbilityUsed() const
 		Q_RETURN_ARG(QVariant, returnedValue));
 }
 
+void ApplicationControl::OnGameOver() const
+{
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(guiRoot, "onGameOver",
+		Q_RETURN_ARG(QVariant, returnedValue));
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // RENDERING
 
