@@ -42,6 +42,7 @@ bool AttackCrossbow::Effect(Board* board, Unit* abilityUser, Field* target)
 			{
 				if(game->IsRealGame())
 				{
+					game->PanCameraToField(target);
 					// ReSharper disable once CppNonReclaimedResourceAcquisition
 					new Flash(game, target->GetUnitOnField(), vec4(1.0f, 0.0f, 0.0f, 1.0f), normalDamage);
 				}

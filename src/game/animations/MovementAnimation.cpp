@@ -8,6 +8,7 @@
 #include "MovementAnimation.h"
 #include "Field.h"
 #include "Unit.h"
+#include "Game.h"
 
 using namespace std;
 
@@ -39,6 +40,7 @@ bool MovementAnimation::Iteration()
 		      + toField->GetRenderingPosZ() * fieldProgress;
 
 	movingUnit->SetCustomRenderingObjectPosition(posX, posZ, 0.0f);
+	game->PanCameraToPosition(posX, posZ);
 
 	progress++;
 	if (progress == goal)

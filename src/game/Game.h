@@ -102,6 +102,8 @@ public:
 	void AddEnvironmentObject(std::shared_ptr<fsg::RenderingObject> newObject);
 
 	void GetObjectsForRendering(fsg::Simple_geSGRenderer* renderer) const;
+	void PanCameraToField(Field* centerField) const;
+	void PanCameraToPosition(float posX, float posZ) const;
 
 	void HandleMouseMovement(glm::vec2 mouse);
 	void HandleMouseClick(glm::vec2 mouse, MouseButton button);

@@ -29,7 +29,7 @@ namespace fsg
 		float const rotationYMin = 15;
 		float const rotationYMax = 85;
 
-		float distance = 7;
+		float distance = 5;
 		float const distanceMin = 2;
 		float const distanceMax = 12;
 

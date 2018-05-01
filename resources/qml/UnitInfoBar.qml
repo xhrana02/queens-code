@@ -25,6 +25,7 @@ Item {
     property var emptyColor: "#000066"
     property var borderColor: "#604020"
     property var textColor: "#CCE6FF"
+    property var statusTextColor: "#F0E0A8"
 
     property var maxValue: 1
 
@@ -54,12 +55,11 @@ Item {
 
         anchors.top: parent.top
         anchors.topMargin: borderWidth
-        anchors.left: hpBackground.left
-        anchors.leftMargin: borderWidth
+        anchors.left: parent.left
 
         color: hpColor
         border.width: 0
-        z: 3
+        z: 2
     }
 
     Rectangle {
@@ -70,8 +70,7 @@ Item {
 
         anchors.top: parent.top
         anchors.topMargin: borderWidth
-        anchors.left: hpBackground.left
-        anchors.leftMargin: borderWidth
+        anchors.left: parent.left
 
         color: hpColor
         border.width: 0
@@ -114,6 +113,20 @@ Item {
         border.color: borderColor
         z: 1
     }
+
+    Rectangle {
+        id: enBackgroundLimited
+
+        width: hpBar.width
+        height: barHeight
+
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: borderWidth
+        anchors.left: parent.left
+
+        color: "#505033"
+        z: 2
+    }
     
     Rectangle {
         id: enBarTheory
@@ -123,12 +136,11 @@ Item {
 
         anchors.bottom: parent.bottom
         anchors.bottomMargin: borderWidth
-        anchors.left: enBackground.left
-        anchors.leftMargin: borderWidth
+        anchors.left: parent.left
 
         color: enColor
         border.width: 0
-        z: 2
+        z: 3
     }
 
     Rectangle {
@@ -139,12 +151,11 @@ Item {
 
         anchors.bottom: parent.bottom
         anchors.bottomMargin: borderWidth
-        anchors.left: enBackground.left
-        anchors.leftMargin: borderWidth
+        anchors.left: parent.left
 
         color: enColor
         border.width: 0
-        z: 3
+        z: 4
     }
 
     Text {
@@ -165,15 +176,66 @@ Item {
         font.bold: true
         style: Text.Outline
         styleColor: emptyColor
-        z: 4
+        z: 5
     }
+
+
+    Column {
+        id: statusEffects
+
+        anchors.bottom: parent.top
+        anchors.bottomMargin: 5
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        spacing: 5
+
+        Text {
+            id: stunnedStatus
+
+            visible: false
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            text: "Stunned"
+            color: infoBar.statusTextColor
+            font.pixelSize: infoBar.fontSize * 1.5
+            font.bold: true
+            style: Text.Raised
+            styleColor: "#CC000000"
+        }
+        
+        Text {
+            id: restlessStatus
+
+            visible: false
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            text: "Restless"
+            color: infoBar.statusTextColor
+            font.pixelSize: infoBar.fontSize * 1.5
+            font.bold: true
+            style: Text.Raised
+            styleColor: "#CC000000"
+        }
+    }
+
 
     function setMax(newMax) {
         infoBar.maxValue = newMax
     }
 
-    function update(x, y, z, hp, en, hpTheory, enTheory, fluctuation) {
+    function show() {
         infoBar.visible = true
+    }
+
+    function hide() {
+        infoBar.visible = false
+    }
+
+    function updatePosition(x, y, z) {
         infoBar.x = x
         infoBar.y = y
         infoBar.z = z
@@ -185,18 +247,24 @@ Item {
             hpNumbers.visible = true
             enNumbers.visible = true
         }
-
-        hpBarTheory.width = infoBar.barWidth * hpTheory / infoBar.maxValue
-        enBarTheory.width = infoBar.barWidth * enTheory / infoBar.maxValue
+    }
+    
+    function updateValues(hp, en) {
         hpBar.width = infoBar.barWidth * hp / infoBar.maxValue
         enBar.width = infoBar.barWidth * en / infoBar.maxValue
-        hpBar.opacity = fluctuation
-        enBar.opacity = fluctuation
         hpNumbers.text = hp + "/" + infoBar.maxValue
         enNumbers.text = en + "/" + infoBar.maxValue
     }
+    
+    function updateTheoryValues(hpTheory, enTheory, fluctuation) {
+        hpBarTheory.width = infoBar.barWidth * hpTheory / infoBar.maxValue
+        enBarTheory.width = infoBar.barWidth * enTheory / infoBar.maxValue
+        hpBar.opacity = 0.45 + 0.4 * fluctuation;
+        enBar.opacity = 0.25 + 0.6 * fluctuation;
+    }
 
-    function hide() {
-        infoBar.visible = false
+    function updateStatus(isStunned, isRestless){
+        stunnedStatus.visible = isStunned
+        restlessStatus.visible = isRestless
     }
 }

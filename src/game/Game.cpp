@@ -36,6 +36,10 @@ Game::Game(ApplicationControl* inAppControl, shared_ptr<Board> inBoard)
 void Game::StartGame() const
 {
 	player1->BeginTurn();
+	if (IsRealGame())
+	{
+		PanCameraToField(gameBoard->GetField(8, 1));
+	}
 }
 
 void Game::AddPlayer(std::shared_ptr<Player> newPlayer)
@@ -196,6 +200,16 @@ void Game::GetObjectsForRendering(Simple_geSGRenderer* renderer) const
 
 }
 
+void Game::PanCameraToField(Field* centerField) const
+{
+	PanCameraToPosition(centerField->GetRenderingPosX(), centerField->GetRenderingPosZ());
+}
+
+void Game::PanCameraToPosition(float posX, float posZ) const
+{
+	appControl->GetCameraControl()->PanToPosition(posX, posZ);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // MOUSE EVENTS
 
@@ -297,8 +311,6 @@ void Game::SelectUnit(Unit* newSelectedUnit)
 	{
 		auto isEnemy = newSelectedUnit->GetOwner() != activePlayer;
 		newSelectedUnit->Select(isEnemy);
-		appControl->GetCameraControl()->PanToPosition(
-			newSelectedUnit->GetRenderingPosX(), newSelectedUnit->GetRenderingPosZ());
 	}
 }
 
@@ -416,7 +428,7 @@ void Game::LockedIteration()
 		auto finished = animation->Iteration();
 		if (finished)
 		{
-			lockingAnimations.erase(iterator);
+			iterator = lockingAnimations.erase(iterator);
 			if(lockingAnimations.empty())
 			{
 				UnlockGame();

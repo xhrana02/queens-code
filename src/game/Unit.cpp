@@ -10,6 +10,7 @@
 #include "Field.h"
 #include <QtQml>
 #include "../ApplicationControl.h"
+#include "Flash.h"
 
 using namespace std;
 using namespace fsg;
@@ -106,7 +107,6 @@ void Unit::UpdateInfoBar(mat4 perspective, mat4 view, int winWidth, int winHeigh
 	auto posX = ((posvec.x + 1) / 2.0f) * winWidth - 60;
 	auto posY = ((1 - posvec.y) / 2.0f) * winHeight - 19;
 	auto depth = 1 - posvec.z;
-	fluctuation = 0.45 + 0.4 * fluctuation;
 
 	QVariant returnedValue;
 	if (posvec.z < 0 || posvec.z > 1)
@@ -116,16 +116,29 @@ void Unit::UpdateInfoBar(mat4 perspective, mat4 view, int winWidth, int winHeigh
 	}
 	else
 	{
-		QMetaObject::invokeMethod(infoBar, "update",
+		QMetaObject::invokeMethod(infoBar, "show",
+			Q_RETURN_ARG(QVariant, returnedValue));
+		QMetaObject::invokeMethod(infoBar, "updatePosition",
 			Q_RETURN_ARG(QVariant, returnedValue),
 			Q_ARG(QVariant, posX),
 			Q_ARG(QVariant, posY),
-			Q_ARG(QVariant, depth),
+			Q_ARG(QVariant, depth)
+		);
+		QMetaObject::invokeMethod(infoBar, "updateValues",
+			Q_RETURN_ARG(QVariant, returnedValue),
 			Q_ARG(QVariant, currentHP),
-			Q_ARG(QVariant, currentEN),
+			Q_ARG(QVariant, currentEN)
+		);
+		QMetaObject::invokeMethod(infoBar, "updateTheoryValues",
+			Q_RETURN_ARG(QVariant, returnedValue),
 			Q_ARG(QVariant, currentHpTheory),
 			Q_ARG(QVariant, currentEnTheory),
 			Q_ARG(QVariant, fluctuation)
+		);
+		QMetaObject::invokeMethod(infoBar, "updateStatus",
+			Q_RETURN_ARG(QVariant, returnedValue),
+			Q_ARG(QVariant, stunned),
+			Q_ARG(QVariant, restless)
 		);
 	}
 
@@ -465,6 +478,12 @@ void Unit::OnTurnEnd()
 			for (auto enemy : enemyUnits)
 			{
 				enemy->MakeRestless(1);
+				if (appControl != nullptr)
+				{
+					auto game = appControl->GetGame();
+					// ReSharper disable once CppNonReclaimedResourceAcquisition
+					new Flash(game, enemy, vec4(0.0f, 0.0f, 0.0f, 0.75f), 10);
+				}
 			}
 		}
 	}

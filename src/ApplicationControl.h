@@ -68,6 +68,11 @@ public:
 		return cameraControl;
 	}
 
+	Game* GetGame() const
+	{
+		return activeGame;
+	}
+
 	void SetIcons() const;
 	void SetRendering();
 	void InitWindow();

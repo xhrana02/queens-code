@@ -12,13 +12,13 @@
 #include <QObject>
 #include <set>
 
-#define PLAYER1_NORMAL_COLOR glm::vec4(0.38f, 0.12f, 0.95f, 1.0f)
-#define PLAYER1_HALFLIGHT_COLOR glm::vec4(0.95f, 0.13f, 0.95f, 1.0f)
-#define PLAYER1_HIGHLIGHT_COLOR glm::vec4(0.45f, 0.16f, 1.0f, 1.0f)
+#define PLAYER1_NORMAL_COLOR glm::vec4(0.19f, 0.21f, 0.85f, 1.0f)
+#define PLAYER1_HALFLIGHT_COLOR glm::vec4(0.21f, 0.85f, 0.85f, 1.0f)
+#define PLAYER1_HIGHLIGHT_COLOR glm::vec4(0.27f, 0.30f, 0.95f, 1.0f)
 
-#define PLAYER2_NORMAL_COLOR glm::vec4(0.19f, 0.21f, 0.85f, 1.0f)
-#define PLAYER2_HALFLIGHT_COLOR glm::vec4(0.21f, 0.85f, 0.85f, 1.0f)
-#define PLAYER2_HIGHLIGHT_COLOR glm::vec4(0.27f, 0.30f, 0.95f, 1.0f)
+#define PLAYER2_NORMAL_COLOR glm::vec4(0.38f, 0.12f, 0.95f, 1.0f)
+#define PLAYER2_HALFLIGHT_COLOR glm::vec4(0.95f, 0.13f, 0.95f, 1.0f)
+#define PLAYER2_HIGHLIGHT_COLOR glm::vec4(0.50f, 0.20f, 1.0f, 1.0f)
 
 class ApplicationControl;
 class Game;

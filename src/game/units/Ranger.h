@@ -8,19 +8,19 @@
 #pragma once
 #include "Unit.h"
 #include "Movement.h"
-#include "PassiveThroneClaim.h"
 
-class Queen : public Unit
+class Ranger : public Unit
 {
 public:
-	Queen::Queen()
+	Ranger::Ranger()
 	{
-		name = "Queen";
-		isRoyalty = true;
-		this->maximumHP = 10;
+		name = "Ranger";
+		this->maximumHP = 16;
 		currentHP = maximumHP;
 		currentEN = maximumEN;
 		abilities.push_back(std::make_shared<Movement>());
-		abilities.push_back(std::make_shared<PassiveThroneClaim>());
+		// longbow
+		// short sword
+		// reflex
 	}
 };
