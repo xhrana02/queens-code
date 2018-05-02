@@ -74,7 +74,7 @@ public:
 	}
 
 	void SetIcons() const;
-	void SetRendering();
+	void InitRendering();
 	void InitWindow();
 	void QtConnect() const;
 	void CleanAssets();
@@ -84,6 +84,9 @@ public:
 	void GetObjectsForRendering() const;
 
 	void ConsoleWrite(const QString message) const;
+	void OnLoadingStarted() const;
+	void UpdateLoadingProgress(float progress) const;
+	void OnLoadingFinished() const;
 	void GamePopup(const QString message) const;
 	void SetActivePlayer(const QString playerName) const;
 	void OnUnitSelected(const QString unitName) const;
@@ -93,7 +96,11 @@ public:
 	void OnGameOver() const;
 
 	Q_INVOKABLE void LoadSettings();
+
 	Q_INVOKABLE void NewStandardGame(QString p1Name, int p1Code, QString p2Name, int p2Code);
+	Q_INVOKABLE void NewScenarioGame(QString scenarioName);
+	void FinishGameSetup();
+
 	Q_INVOKABLE void AbilitySelected(int slot) const;
 	Q_INVOKABLE void EndTurn() const;
 

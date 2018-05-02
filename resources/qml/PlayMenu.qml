@@ -89,7 +89,6 @@ Item {
         styledText: "Start"
 
         onClicked: {
-            cleanUI()
             startGame()
         }
     }
@@ -129,17 +128,13 @@ Item {
     function startGame() {
         switch(selectedMode){
             case "Standard":
-                guiRoot.consoleWrite("Starting a standard game:")
-                ApplicationControl.NewStandardGame(
-                    loaderStandardSetup.item.player1name(), loaderStandardSetup.item.player1type(),
-                    loaderStandardSetup.item.player2name(), loaderStandardSetup.item.player2type()
-                )
-                guiRoot.showGameOverlay()
+                loaderStandardSetup.item.startGame()
+                cleanUI()
                 break
             case "Scenario":
-                guiRoot.consoleWrite("Starting a custom scenario game:")
-                guiRoot.consoleWrite("ERROR:PlayMenu.qml - Scenario game type is not implemented yet")
-                // TODO
+                if (loaderScenarioSetup.item.startGame()){
+                    cleanUI()
+                }
                 break
             default:
                 guiRoot.consoleWrite("ERROR:PlayMenu.qml - Unknown game type")

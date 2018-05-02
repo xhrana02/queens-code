@@ -13,7 +13,9 @@
 #include "Pathfinding.h"
 #include "MovementAnimation.h"
 #include "CommonTooltips.h"
+#include "Flash.h"
 
+using namespace glm;
 
 Movement::Movement()
 {
@@ -30,13 +32,40 @@ bool Movement::Effect(Board* board, Unit* abilityUser, Field* target)
 	if(CanUse(board, abilityUser, target))
 	{
 		abilityUser->ReduceEN(calculatedCost);
-		target->MoveUnitToThisField(abilityUser);
-		if(game != nullptr)
+		for (auto neighbor : board->GetAllMeleeNeighborFields(abilityUser->GetOccupiedField()))
 		{
-			if(game->IsRealGame())
+			auto neighborUnit = neighbor->GetUnitOnField();
+			if (neighborUnit != nullptr)
 			{
-				// ReSharper disable once CppNonReclaimedResourceAcquisition
-				new MovementAnimation(game, abilityUser, calculatedPath);
+				if (neighborUnit->HasOpportunityAttack && abilityUser->IsEnemy(neighborUnit) && !neighborUnit->IsStunned())
+				{
+					abilityUser->TakeDamage(0, neighborUnit->DamageOpportunityAttack);
+					
+					if(game != nullptr)
+					{
+						if(game->IsRealGame())
+						{
+							// ReSharper disable once CppNonReclaimedResourceAcquisition
+							new Flash(game, abilityUser, vec4(1.0f, 0.0f, 0.0f, 1.0f), 1.5*neighborUnit->DamageOpportunityAttack);
+						}
+					}
+				}
+			}
+		}
+		if (!abilityUser->IsUnitAlive())
+		{
+			abilityUser->OnUnitDeath();
+		}
+		else
+		{
+			target->MoveUnitToThisField(abilityUser);
+			if (game != nullptr)
+			{
+				if (game->IsRealGame())
+				{
+					// ReSharper disable once CppNonReclaimedResourceAcquisition
+					new MovementAnimation(game, abilityUser, calculatedPath);
+				}
 			}
 		}
 		return true;
@@ -61,7 +90,7 @@ bool Movement::CanUse(Board* board, Unit* abilityUser, Field* target)
 	{
 		return false;
 	}
-	calculatedCost = (int(distance(calculatedPath.begin(), calculatedPath.end())) - 1) * costEN;
+	calculatedCost = (int(std::distance(calculatedPath.begin(), calculatedPath.end())) - 1) * costEN;
 	if (calculatedCost > abilityUser->GetCurrentEnergy())
 	{
 		return false;
@@ -81,6 +110,17 @@ void Movement::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Fi
 	if(CanUse(board, abilityUser, hoveredField))
 	{
 		abilityUser->ReduceTheoreticalEN(calculatedCost);
+		for (auto neighbor : board->GetAllMeleeNeighborFields(abilityUser->GetOccupiedField()))
+		{
+			auto neighborUnit = neighbor->GetUnitOnField();
+			if (neighborUnit != nullptr)
+			{
+				if (neighborUnit->HasOpportunityAttack && abilityUser->IsEnemy(neighborUnit) && !neighborUnit->IsStunned())
+				{
+					abilityUser->TakeTheoreticalDamage(0, neighborUnit->DamageOpportunityAttack);
+				}
+			}
+		}
 	}
 }
 

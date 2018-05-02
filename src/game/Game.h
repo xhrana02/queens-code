@@ -121,5 +121,5 @@ public:
 	void LockedIteration();
 
 	void IterationEvents();
-	void ResetTheoryValues();
+	void ResetTheoryValues() const;
 };

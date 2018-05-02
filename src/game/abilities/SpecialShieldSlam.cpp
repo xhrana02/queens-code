@@ -5,7 +5,7 @@
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
-#include "AttackCrossbow.h"
+#include "SpecialShieldSlam.h"
 #include "Game.h"
 #include "Field.h"
 #include "Flash.h"
@@ -14,23 +14,25 @@
 
 using namespace glm;
 
-AttackCrossbow::AttackCrossbow()
+SpecialShieldSlam::SpecialShieldSlam()
 {
-	costEN = 9;
-	name = "Crossbow Attack";
-	iconPath = "icons/AttackCrossbow.png";
-	description = "<b><u>Crossbow Attack</u> ( 9 EN ) Line 2-8</b><br><br>"
-		"Deals 11 normal damage to the target.<br>"
-		NORMAL_DAMAGE_TOOLTIP;
+	costEN = 4;
+	name = "Shield Slam";
+	iconPath = "icons/SpecialShieldSlam.png";
+	description = "<b><u>Shield Slam</u> ( 4 EN ) Melee</b><br><br>"
+		"The target takes 5 EN damage and is stunned for 1 turn.<br>"
+		STUN_TOOLTIP
+		EN_DAMAGE_TOOLTIP;
 }
 
-bool AttackCrossbow::Effect(Board* board, Unit* abilityUser, Field* target)
+bool SpecialShieldSlam::Effect(Board* board, Unit* abilityUser, Field* target)
 {
 	if(CanUse(board, abilityUser, target))
 	{
 		abilityUser->ReduceEN(costEN);
 		auto targetUnit = target->GetUnitOnField();
-		targetUnit->TakeDamage(damageNormal);
+		targetUnit->Stun(1);
+		targetUnit->TakeDamage(0, 0, damageEN);
 
 		if (!targetUnit->IsUnitAlive())
 		{
@@ -44,7 +46,7 @@ bool AttackCrossbow::Effect(Board* board, Unit* abilityUser, Field* target)
 				{
 					game->PanCameraToField(target);
 					// ReSharper disable once CppNonReclaimedResourceAcquisition
-					new Flash(game, target->GetUnitOnField(), vec4(1.0f, 0.0f, 0.0f, 1.0f), damageNormal);
+					new Flash(game, target->GetUnitOnField(), vec4(1.0f, 1.0f, 0.0f, 1.0f), 5 + 0.75 * damageEN);
 				}
 			}
 		}
@@ -53,14 +55,14 @@ bool AttackCrossbow::Effect(Board* board, Unit* abilityUser, Field* target)
 	return false;
 }
 
-bool AttackCrossbow::CanUse(Board* board, Unit* abilityUser, Field* target)
+bool SpecialShieldSlam::CanUse(Board* board, Unit* abilityUser, Field* target)
 {
 	if (target == nullptr)
 	{
 		return false;
 	}
 
-	auto viableTargets = Targetfinding::GetLineEnemyTargets(board, abilityUser, rangeMin, rangeMax);
+	auto viableTargets = Targetfinding::GetMeleeEnemyTargets(board, abilityUser);
 	for (auto viableTarget : viableTargets)
 	{
 		if (target == viableTarget)
@@ -71,17 +73,17 @@ bool AttackCrossbow::CanUse(Board* board, Unit* abilityUser, Field* target)
 	return false;
 }
 
-void AttackCrossbow::OnSelected(Board* board, Unit* abilityUser)
+void SpecialShieldSlam::OnSelected(Board* board, Unit* abilityUser)
 {
-	board->HalflightFields(Targetfinding::GetLineEnemyTargets(board, abilityUser, rangeMin, rangeMax, true));
+	board->HalflightFields(Targetfinding::GetMeleeEnemyTargets(board, abilityUser, true));
 }
 
-void AttackCrossbow::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
+void SpecialShieldSlam::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
 {
 	board->HighlightField(hoveredField);
 	if(CanUse(board, abilityUser, hoveredField))
 	{
 		abilityUser->ReduceTheoreticalEN(costEN);
-		hoveredField->GetUnitOnField()->TakeTheoreticalDamage(damageNormal);
+		hoveredField->GetUnitOnField()->TakeTheoreticalDamage(0, 0, damageEN);
 	}
 }

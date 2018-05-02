@@ -61,6 +61,14 @@ Item {
     }
 
     Loader {
+        id: loaderLoadingScreen
+        anchors.fill: parent
+        source: "LoadingScreen.qml"
+        visible: false
+        z: 5
+    }
+
+    Loader {
         id: loaderGameOverlay
         anchors.fill: parent
         source: "GameOverlay.qml"
@@ -170,6 +178,7 @@ Item {
         loaderMainMenu.visible      = false
         loaderPlayMenu.visible      = false
         loaderOptionsMenu.visible   = false
+        loaderLoadingScreen.visible = false
         loaderGameOverlay.visible   = false
 
         menuBackground.visible      = false
@@ -208,10 +217,28 @@ Item {
         }
     }
 
+    function showLoadingScreen() {
+        cleanUI()
+        loaderLoadingScreen.visible = true
+    }
+
     function showGameOverlay() {
         cleanUI()
         loaderGameOverlay.visible   = true
         gameActive                  = true
+    }
+
+    function onLoadingStarted() {
+        showLoadingScreen()
+        loaderLoadingScreen.item.updateProgress(0.0)
+    }
+
+    function updateLoadingProgress(progress) {
+        loaderLoadingScreen.item.updateProgress(progress)
+    }
+
+    function onLoadingFinished() {
+        showGameOverlay()
     }
 
     function setActivePlayer(playerName) {

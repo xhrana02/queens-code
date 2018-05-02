@@ -15,8 +15,9 @@ bool Ability::CanAfford(Unit* abilityUser) const
 	{
 		return false;
 	}
-	if (abilityUser->GetCurrentHitPoints() < costHP)
+	if (abilityUser->GetCurrentHitPoints() <= costHP)
 	{
+		// <= instead of < so a unit can't kill itself
 		return false;
 	}
 	return true;

@@ -24,7 +24,6 @@ protected:
 	ApplicationControl* appControl = nullptr;
 
 	QString name;
-	bool isRoyalty = false;
 	Player* owner = nullptr;
 
 	int currentHP = 0;
@@ -100,11 +99,6 @@ public:
 		occupiedField = newField;
 	}
 	Board* GetBoard() const;
-
-	bool IsRoyalty() const
-	{
-		return isRoyalty;
-	}
 
 	Player* GetOwner() const
 	{
@@ -197,11 +191,20 @@ public:
 	}
 	void OnUnitDeath();
 
-	int TakeDamage(int damageNormal, int damageEN = 0, int damageHP = 0);
+	int TakeDamage(int damageNormal, int damageHP = 0, int damageEN = 0);
 	int Heal(int healHP, int healEN = 0);
 	void Stun(int duration);
 	void MakeRestless(int duration);
 
+	bool IsStunned() const
+	{
+		return stunned;
+	}
+	bool IsRestless() const
+	{
+		return restless;
+	}
+	
 	std::vector<std::shared_ptr<Ability>> GetAbilites() const
 	{
 		return abilities;
@@ -212,6 +215,8 @@ public:
 	}
 	void ApplyBuff(Buff* newBuff);
 	void CheckBuffDurations();
+	void CheckStatusDurations();
+	void CheckThroneClaim() const;
 
 	void OnTurnBegin();
 	void OnTurnEnd();
@@ -222,6 +227,11 @@ public:
 	int ReduceTheoreticalEN(int amount);
 	int RegainTheoreticalHP(int amount);
 	int RegainTheoreticalEN(int amount);
-	void TakeTheoreticalDamage(int damageNormal, int damageEN = 0, int damageHP = 0);
+	void TakeTheoreticalDamage(int damageNormal, int damageHP = 0, int damageEN = 0);
 	void TheoreticalHeal(int healHP, int healEN = 0);
+
+	// PASSIVE ABILITIES RELATED PROPERTIES
+	bool IsRoyalty = false;
+	bool HasOpportunityAttack = false;
+	int DamageOpportunityAttack = 0;
 };

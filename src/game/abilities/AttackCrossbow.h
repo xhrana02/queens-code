@@ -11,7 +11,7 @@
 
 class AttackCrossbow : public Ability
 {
-	static int const normalDamage = 11;
+	static int const damageNormal = 11;
 	static int const rangeMin = 2;
 	static int const rangeMax = 8;
 public:

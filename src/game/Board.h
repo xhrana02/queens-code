@@ -12,13 +12,11 @@
 
 class Board
 {
-private:
 	Field*** fields;
 	int playfieldHeight;
 	int playfieldWidth;
 
 	std::vector<Field*> highlightedFields = std::vector<Field*>();
-	std::vector<Field*> halflightedFields = std::vector<Field*>();
 public:
 	~Board();
 	Board(int width, int height);
@@ -68,7 +66,6 @@ public:
 	std::vector<Field*> GetAllPlayFields() const;
 	std::vector<Field*> GetAllEmptyFields() const;
 
-	std::vector<Field*> GetAllNeighborFields(Field* field) const;
 	std::vector<Field*> GetAllNeighborPlayFields(Field* field) const;
 	std::vector<Field*> GetAllNeighborEmptyFields(Field* field) const;
 
@@ -83,6 +80,6 @@ public:
 		return highlightedFields;
 	}
 
-	void UnhalflightAllFields();
-	void HalflightFields(std::vector<Field*> hlFields);
+	void UnhalflightAllFields() const;
+	void HalflightFields(std::vector<Field*> hlFields) const;
 };

@@ -20,9 +20,6 @@ shared_ptr<Board> BoardFactory::CreateStandardBoard(ModelLoader* modelLoader)
 	newBoard->GetField(8, 8)->SetFieldTerrainObject(throneObject);
 	newBoard->GetField(8, 8)->SetTerrainType(Throne);
 
-	auto positionModifierX = (newBoard->PlayableWidth() + 1) / 2;
-	auto positionModifierY = (newBoard->PlayableHeight() + 1) / 2;
-
 	vector<Field*> wallFields;
 	// bottom left corner
 	wallFields.push_back(newBoard->GetField(5, 5));
@@ -44,7 +41,7 @@ shared_ptr<Board> BoardFactory::CreateStandardBoard(ModelLoader* modelLoader)
 	for (auto field : wallFields)
 	{
 		auto newWallObject = make_shared<RenderingObject>(modelLoader->GetModel("StoneWall"));
-		newWallObject->position = vec3(field->GetX() - positionModifierX, 0.0f, field->GetY() - positionModifierY);
+		newWallObject->position = vec3(field->GetRenderingPosX(), 0.0f, field->GetRenderingPosZ());
 		field->SetFieldTerrainObject(newWallObject);
 		field->SetTerrainType(Wall);
 	}
@@ -55,7 +52,43 @@ shared_ptr<Board> BoardFactory::CreateStandardBoard(ModelLoader* modelLoader)
 		{
 			auto field = newBoard->GetField(x, y);
 			auto newBorderObject = make_shared<RenderingObject>(modelLoader->GetModel("FieldBorder"));
-			newBorderObject->position = vec3(field->GetX() - positionModifierX, 0.0f, field->GetY() - positionModifierY);
+			newBorderObject->position = vec3(field->GetRenderingPosX(), 0.0f, field->GetRenderingPosZ());
+			newBorderObject->SetColors(BORDER_NORMAL_COLOR, BORDER_HALFLIGHT_COLOR, BORDER_HIGHLIGHT_COLOR);
+			field->SetFieldBorderObject(newBorderObject);
+		}
+	}
+	return newBoard;
+}
+
+shared_ptr<Board> BoardFactory::CreateTrainingDuelBoard(ModelLoader* modelLoader)
+{
+	auto newBoard = make_shared<Board>(5, 12);
+	
+	for (auto x = 1; x <= newBoard->PlayableWidth(); x++)
+	{
+		for (auto y = 1; y <= newBoard->PlayableHeight(); y++)
+		{
+			auto field = newBoard->GetField(x, y);
+			auto newBorderObject = make_shared<RenderingObject>(modelLoader->GetModel("FieldBorder"));
+			newBorderObject->position = vec3(field->GetRenderingPosX(), 0.0f, field->GetRenderingPosZ());
+			newBorderObject->SetColors(BORDER_NORMAL_COLOR, BORDER_HALFLIGHT_COLOR, BORDER_HIGHLIGHT_COLOR);
+			field->SetFieldBorderObject(newBorderObject);
+		}
+	}
+	return newBoard;
+}
+
+shared_ptr<Board> BoardFactory::CreateChessBoard(ModelLoader* modelLoader)
+{
+	auto newBoard = make_shared<Board>(8, 8);
+
+	for (auto x = 1; x <= newBoard->PlayableWidth(); x++)
+	{
+		for (auto y = 1; y <= newBoard->PlayableHeight(); y++)
+		{
+			auto field = newBoard->GetField(x, y);
+			auto newBorderObject = make_shared<RenderingObject>(modelLoader->GetModel("FieldBorder"));
+			newBorderObject->position = vec3(field->GetRenderingPosX(), 0.0f, field->GetRenderingPosZ());
 			newBorderObject->SetColors(BORDER_NORMAL_COLOR, BORDER_HALFLIGHT_COLOR, BORDER_HIGHLIGHT_COLOR);
 			field->SetFieldBorderObject(newBorderObject);
 		}

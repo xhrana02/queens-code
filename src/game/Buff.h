@@ -6,12 +6,15 @@
 //----------------------------------------------//
 
 #pragma once
+#include <QString>
 
 class Unit;
 
 class Buff
 {
 protected:
+	QString name = "";
+
 	int maxDuration = 1;
 	int remainingDuration = 0;
 	Unit* affectedUnit = nullptr;
@@ -23,6 +26,11 @@ public:
 
 	void StartEffect(Unit* buffTarget);
 	bool OnTurnStart();
+
+	QString GetName() const
+	{
+		return name;
+	}
 
 	int GetRemainingDuration() const
 	{

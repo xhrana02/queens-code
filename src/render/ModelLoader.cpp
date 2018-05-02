@@ -12,6 +12,7 @@
 #include <geSG/DefaultImage.h>
 #include <geSG/Scene.h>
 #include <geSG/Model.h>
+#include <QDebug>
 
 using namespace std;
 using namespace fsg;
@@ -19,22 +20,29 @@ using namespace ge::sg;
 
 void ModelLoader::LoadModel(QString modelFileName, string modelName)
 {
-    QFileInfo fi(modelFileName);
-    string modelPath(qUtf8Printable(fi.canonicalPath() + "/"));
 	if(loadedModels.count(modelName) != 0)
 	{
-		cerr << "Model " << modelName << " was already loaded" << endl;
+		// this is OK
+		qDebug() << "Model " + QString::fromStdString(modelName) + " was already loaded.";
+		return;
 	}
+
+	QFileInfo fi(modelFileName);
+	string modelPath(qUtf8Printable(fi.canonicalPath() + "/"));
 
     auto model = AssimpModelLoader::loadScene(modelFileName.toUtf8().constData());
     if(!model)
     {
-        cerr << "Failed to load model" << modelName << endl;      
+		// this is not OK
+		qDebug() << "Failed to load model " + QString::fromStdString(modelName);
+		throw exception("ModelLoader LoadModel - Failed to load model.");    
     }
 
     LoadImages(model, modelPath);
 
 	loadedModels[modelName] = shared_ptr<Scene>(model);
+
+	qDebug() << "Model " + QString::fromStdString(modelName) + " successfully loaded.";
 }
 
 void ModelLoader::LoadImages(Scene* scene, string& imageDir) const
@@ -69,7 +77,9 @@ shared_ptr<Scene> ModelLoader::GetModel(string modelName)
 {
 	if(loadedModels.count(modelName) == 0)
 	{
-		throw exception("Requested model isn't loaded.");
+		// this is not OK
+		qDebug() << "Tried to get model " + QString::fromStdString(modelName) + " but it wasn't loaded.";
+		throw exception("ModelLoader GetModel - Requested model isn't loaded.");
 	}
 
 	return loadedModels[modelName];

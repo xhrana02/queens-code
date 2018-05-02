@@ -38,11 +38,11 @@ void Game::StartGame() const
 	player1->BeginTurn();
 	if (IsRealGame())
 	{
-		PanCameraToField(gameBoard->GetField(8, 1));
+		PanCameraToField((*player1->GetUnits().begin())->GetOccupiedField());
 	}
 }
 
-void Game::AddPlayer(std::shared_ptr<Player> newPlayer)
+void Game::AddPlayer(shared_ptr<Player> newPlayer)
 {
 	if(newPlayer == nullptr)
 	{
@@ -354,11 +354,6 @@ void Game::UseAbility(Field* clickedField)
 
 void Game::SelectAbility(int slot) const
 {
-	if (locked)
-	{
-		return;
-	}
-
 	if (selectedUnit != nullptr)
 	{
 		selectedUnit->SelectAbility(slot);
@@ -367,14 +362,14 @@ void Game::SelectAbility(int slot) const
 
 void Game::OnAbilitySelected(int slot) const
 {
-	if (locked)
-	{
-		return;
-	}
-
 	if (selectedUnit != nullptr)
 	{
 		selectedUnit->OnAbilitySelected(slot);
+		if (hoveredField != nullptr)
+		{
+			ResetTheoryValues();
+			selectedUnit->SelectedUnitOnFieldHovered(hoveredField);
+		}
 	}
 }
 
@@ -471,7 +466,7 @@ void Game::IterationEvents()
 	}
 }
 
-void Game::ResetTheoryValues()
+void Game::ResetTheoryValues() const
 {
 	for (auto unit : player1->GetUnits())
 	{

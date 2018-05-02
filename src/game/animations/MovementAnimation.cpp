@@ -12,12 +12,13 @@
 
 using namespace std;
 
-MovementAnimation::MovementAnimation(Game* inGame, Unit* inUnit, std::forward_list<Field*> inPath)
+MovementAnimation::MovementAnimation(Game* inGame, Unit* inUnit, forward_list<Field*> inPath, int inFramesPerTile, bool inTrackCamera)
 {
 	movingUnit = inUnit;
 	path = inPath;
 	progress = 0;
-	framesPerTile = 10;
+	framesPerTile = inFramesPerTile;
+	trackCamera = inTrackCamera;
 	goal = (int(distance(path.begin(), path.end())) - 1) * framesPerTile;
 	LockGame(inGame);
 }
@@ -40,7 +41,10 @@ bool MovementAnimation::Iteration()
 		      + toField->GetRenderingPosZ() * fieldProgress;
 
 	movingUnit->SetCustomRenderingObjectPosition(posX, posZ, 0.0f);
-	game->PanCameraToPosition(posX, posZ);
+	if (trackCamera)
+	{
+		game->PanCameraToPosition(posX, posZ);
+	}
 
 	progress++;
 	if (progress == goal)

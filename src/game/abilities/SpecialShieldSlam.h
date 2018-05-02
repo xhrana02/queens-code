@@ -9,11 +9,11 @@
 
 #include "Ability.h"
 
-class AttackLongsword : public Ability
+class SpecialShieldSlam : public Ability
 {
-	static int const damageNormal = 9;
+	static int const damageEN = 5;
 public:
-	AttackLongsword();
+	SpecialShieldSlam();
 	bool Effect(Board* board, Unit* abilityUser, Field* target) override;
 	bool CanUse(Board* board, Unit* abilityUser, Field* target) override;
 	void OnSelected(Board* board, Unit* abilityUser) override;

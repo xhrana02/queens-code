@@ -19,6 +19,10 @@ Item {
 
     property var borderWidth: 2
     property var fontSize: 12
+    FontLoader { id: menuFont; source: "fonts/CinzelDecorative-Regular.ttf" }
+
+    property var maxValue: 1
+    property var unitName: "Unknown Unit"
 
     property var hpColor: "#CC0000"
     property var enColor: "#E6E000"
@@ -27,7 +31,10 @@ Item {
     property var textColor: "#CCE6FF"
     property var statusTextColor: "#F0E0A8"
 
-    property var maxValue: 1
+    property var stunnedTurns: 0
+    property var restlessTurns: 0
+    property var blessedTurns: 0
+    property var shieldedTurns: 0
 
     transformOrigin: Item.Center
 
@@ -179,52 +186,104 @@ Item {
         z: 5
     }
 
+    Text {
+        id: unitNameText
+
+        anchors.bottom: parent.top
+        anchors.bottomMargin: 2
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        visible: false
+
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+
+        text: infoBar.unitName
+        color: infoBar.statusTextColor
+        font.pixelSize: infoBar.fontSize * 1.25
+        font.bold: true
+        style: Text.Raised
+        styleColor: "#CC000000"
+    }
 
     Column {
         id: statusEffects
 
-        anchors.bottom: parent.top
-        anchors.bottomMargin: 5
+        anchors.top: parent.bottom
+        anchors.topMargin: 2
         anchors.horizontalCenter: parent.horizontalCenter
 
-        spacing: 5
+        spacing: 2
 
         Text {
             id: stunnedStatus
 
-            visible: false
+            visible: infoBar.stunnedTurns > 0 ? true : false
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
-            text: "Stunned"
             color: infoBar.statusTextColor
-            font.pixelSize: infoBar.fontSize * 1.5
-            font.bold: true
+            font.pixelSize: infoBar.fontSize * 1.1
             style: Text.Raised
             styleColor: "#CC000000"
+
+            text: "Stunned [" + infoBar.stunnedTurns + "]"
         }
         
         Text {
             id: restlessStatus
 
-            visible: false
+            visible: infoBar.restlessTurns > 0 ? true : false
 
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
 
-            text: "Restless"
             color: infoBar.statusTextColor
-            font.pixelSize: infoBar.fontSize * 1.5
-            font.bold: true
+            font.pixelSize: infoBar.fontSize * 1.1
             style: Text.Raised
             styleColor: "#CC000000"
+
+            text: "Restless [" + infoBar.restlessTurns + "]"
+        }
+        
+        Text {
+            id: blessedStatus
+
+            visible: infoBar.blessedTurns > 0 ? true : false
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            color: infoBar.statusTextColor
+            font.pixelSize: infoBar.fontSize * 1.1
+            style: Text.Raised
+            styleColor: "#CC000000"
+
+            text: "Blessing [" + infoBar.blessedTurns + "]"
+        }
+        
+        Text {
+            id: shieldedStatus
+
+            visible: infoBar.shieldedTurns > 0 ? true : false
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            color: infoBar.statusTextColor
+            font.pixelSize: infoBar.fontSize * 1.1
+            style: Text.Raised
+            styleColor: "#CC000000"
+
+            text: "Demon Shield [" + infoBar.shieldedTurns + "]"
         }
     }
 
 
-    function setMax(newMax) {
-        infoBar.maxValue = newMax
+    function setUnitConstants(name, maxHP) {
+        unitName = name
+        infoBar.maxValue = maxHP
     }
 
     function show() {
@@ -235,17 +294,30 @@ Item {
         infoBar.visible = false
     }
 
-    function updatePosition(x, y, z) {
+    function showExtraInfo() {
+        hpNumbers.visible = true
+        enNumbers.visible = true
+        unitNameText.visible = true
+        statusEffects.visible = true
+    }
+
+    function hideExtraInfo() {
+        hpNumbers.visible = false
+        enNumbers.visible = false
+        unitNameText.visible = false
+        statusEffects.visible = false
+    }
+
+    function updatePosition(x, y, depth, size) {
         infoBar.x = x
         infoBar.y = y
-        infoBar.z = z
-        infoBar.scale = z * 4.2
-        if (z < 0.15) {
-            hpNumbers.visible = false
-            enNumbers.visible = false
+        infoBar.z = depth
+        infoBar.scale = size
+
+        if (size > 0.6) {
+            showExtraInfo()
         } else {
-            hpNumbers.visible = true
-            enNumbers.visible = true
+            hideExtraInfo()
         }
     }
     
@@ -263,8 +335,10 @@ Item {
         enBar.opacity = 0.25 + 0.6 * fluctuation;
     }
 
-    function updateStatus(isStunned, isRestless){
-        stunnedStatus.visible = isStunned
-        restlessStatus.visible = isRestless
+    function updateStatus(stunned, restless, blessed, shielded){
+        infoBar.stunnedTurns = stunned
+        infoBar.restlessTurns = restless
+        infoBar.blessedTurns = blessed
+        infoBar.shieldedTurns = shielded
     }
 }

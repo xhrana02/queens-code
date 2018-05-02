@@ -55,20 +55,24 @@ Item {
         playerName: settings.player2Name
     }
 
+    function startGame() {
+        guiRoot.consoleWrite("Starting a standard game:")
+        ApplicationControl.NewStandardGame(player1name(), player1type(),player2name(), player2type())
+    }
 
-    function player1name(){
+    function player1name() {
         return player1.name2string()
     }
 
-    function player2name(){
+    function player2name() {
         return player2.name2string()
     }
 
-    function player1type(){
+    function player1type() {
         return player1.encodePlayerType()
     }
 
-    function player2type(){
+    function player2type() {
         return player2.encodePlayerType()
     }
 

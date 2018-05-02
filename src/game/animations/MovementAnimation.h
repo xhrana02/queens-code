@@ -17,7 +17,8 @@ class MovementAnimation : public AbilityAnimation
 	Unit* movingUnit;
 	std::forward_list<Field*> path;
 	int framesPerTile;
+	bool trackCamera;
 public:
-	MovementAnimation(Game* inGame, Unit* inUnit,std::forward_list<Field*> inPath);
+	MovementAnimation(Game* inGame, Unit* inUnit,std::forward_list<Field*> inPath, int inFramesPerTile = 10, bool inTrackCamera = true);
 	bool Iteration() override;
 };

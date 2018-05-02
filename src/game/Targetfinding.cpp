@@ -61,7 +61,7 @@ vector<Field*> Targetfinding::GetLineEnemyTargets(Board* board, Unit* origin, in
 		}
 
 		auto isDiagonal = (directionX != 0 && directionY != 0);
-		auto diagonalTraveled = 0;
+		auto diagonalTraveled = 0.0f;
 
 		auto range = 0;
 		auto posX = originX;

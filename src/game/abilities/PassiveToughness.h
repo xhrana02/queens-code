@@ -11,16 +11,16 @@
 #include "CommonTooltips.h"
 #include "Unit.h"
 
-class PassiveKnightsArmor : public PassiveAbility
+class PassiveToughness : public PassiveAbility
 {
 public:
-	explicit PassiveKnightsArmor(Unit* unit)
+	explicit PassiveToughness(Unit* unit)
 	{
-		name = "Knight's Armor";
-		iconPath = "icons/PassiveKnightsArmor.png";
-		description = "<b><u>Knight's Armor</u> ( passive )</b><br><br>"
-			"The knight has bonus 2 Armor.<br>"
-			ARMOR_TOOLTIP;
-		unit->IncreaseArmor(2);
+		name = "Toughness";
+		iconPath = "icons/PassiveToughness.png";
+		description = "<b><u>Toughness</u> ( passive )</b><br><br>"
+			"Regains bonus 1 HP when regenerating (1 HP and 3 EN total).<br>"
+			REGENERATION_TOOLTIP;
+		unit->IncreaseRegenerationHP(1);
 	}
 };

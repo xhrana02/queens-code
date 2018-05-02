@@ -20,7 +20,7 @@ AttackLongsword::AttackLongsword()
 	name = "Longsword Attack";
 	iconPath = "icons/AttackLongsword.png";
 	description = "<b><u>Longsword Attack</u> ( 4 EN ) Melee</b><br><br>"
-		"Deals 9 normal damage to the target.<br><br>"
+		"Deals 9 normal damage to the target.<br>"
 		NORMAL_DAMAGE_TOOLTIP;
 }
 
@@ -30,7 +30,7 @@ bool AttackLongsword::Effect(Board* board, Unit* abilityUser, Field* target)
 	{
 		abilityUser->ReduceEN(costEN);
 		auto targetUnit = target->GetUnitOnField();
-		targetUnit->TakeDamage(normalDamage);
+		targetUnit->TakeDamage(damageNormal);
 
 		if (!targetUnit->IsUnitAlive())
 		{
@@ -44,7 +44,7 @@ bool AttackLongsword::Effect(Board* board, Unit* abilityUser, Field* target)
 				{
 					game->PanCameraToField(target);
 					// ReSharper disable once CppNonReclaimedResourceAcquisition
-					new Flash(game, target->GetUnitOnField(), vec4(1.0f, 0.0f, 0.0f, 1.0f), normalDamage);
+					new Flash(game, target->GetUnitOnField(), vec4(1.0f, 0.0f, 0.0f, 1.0f), damageNormal);
 				}
 			}
 		}
@@ -82,6 +82,6 @@ void AttackLongsword::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityU
 	if(CanUse(board, abilityUser, hoveredField))
 	{
 		abilityUser->ReduceTheoreticalEN(costEN);
-		hoveredField->GetUnitOnField()->TakeTheoreticalDamage(normalDamage);
+		hoveredField->GetUnitOnField()->TakeTheoreticalDamage(damageNormal);
 	}
 }

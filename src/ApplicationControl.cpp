@@ -8,7 +8,6 @@
 #include "ApplicationControl.h"
 #include "GameFactory.h"
 #include <iomanip>
-#include <thread>
 
 using namespace fsg;
 using namespace std;
@@ -29,7 +28,7 @@ ApplicationControl::ApplicationControl(QApplication* in_app, QQuickWindow* in_wi
 	qmlEngine = in_eng;
 
 	SetIcons();
-	SetRendering();
+	InitRendering();
 	InitWindow();
 	QtConnect();
 	LoadSettings();
@@ -42,7 +41,7 @@ void ApplicationControl::SetIcons() const
 	mainWindow->setIcon(QIcon(APP_RESOURCES"/qricon.ico"));
 }
 
-void ApplicationControl::SetRendering()
+void ApplicationControl::InitRendering()
 {
 	renderer = new Simple_geSGRenderer(mainWindow);
 	renderingTimer = new QTimer(this);
@@ -51,7 +50,6 @@ void ApplicationControl::SetRendering()
 	renderingTimer->setTimerType(Qt::PreciseTimer);
 	renderingTimer->setInterval(16);
 }
-
 
 /**
  * \brief Main initialization part of application control class (window and qml root element setup).
@@ -122,8 +120,6 @@ void ApplicationControl::CleanAssets()
 		cameraControl = nullptr;
 	}
 
-	modelLoader->UnloadAllModels();
-
 	renderer->SetObjects(vector<RenderingObject*>());
 }
 
@@ -153,6 +149,30 @@ void ApplicationControl::ConsoleWrite(const QString message) const
 	QMetaObject::invokeMethod(guiRoot, "consoleWrite",
 		Q_RETURN_ARG(QVariant, returnedValue),
 		Q_ARG(QVariant, message));
+}
+
+void ApplicationControl::OnLoadingStarted() const
+{
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(guiRoot, "onLoadingStarted",
+		Q_RETURN_ARG(QVariant, returnedValue));
+	application->processEvents();
+}
+
+void ApplicationControl::UpdateLoadingProgress(float progress) const
+{
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(guiRoot, "updateLoadingProgress",
+		Q_RETURN_ARG(QVariant, returnedValue),
+		Q_ARG(QVariant, progress));
+	application->processEvents();
+}
+
+void ApplicationControl::OnLoadingFinished() const
+{
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(guiRoot, "onLoadingFinished",
+		Q_RETURN_ARG(QVariant, returnedValue));
 }
 
 void ApplicationControl::GamePopup(const QString message) const
@@ -240,22 +260,33 @@ void ApplicationControl::GetObjectsForRendering() const
  */
 void ApplicationControl::NewStandardGame(QString p1Name, int p1Code, QString p2Name, int p2Code)
 {
-	ConsoleWrite("... Game setup started.");
-
+	OnLoadingStarted();
+	ConsoleWrite("... Standard game setup started.");
 	CleanAssets();
+	activeGame = GameFactory::CreateStandardGame(p1Name, p1Code, p2Name, p2Code, this, modelLoader, qmlEngine, guiRoot);
+	FinishGameSetup();
+}
 
-	activeGame = GameFactory::CreateStandardGame(this, p1Name, p1Code, p2Name, p2Code, modelLoader, qmlEngine, guiRoot);
-	ConsoleWrite("... " + activeGame->GetPlayer1()->GetName() + " vs " + activeGame->GetPlayer2()->GetName());
+void ApplicationControl::NewScenarioGame(QString scenarioName)
+{
+	OnLoadingStarted();
+	ConsoleWrite("... " + scenarioName);
+	ConsoleWrite("... Scenario game setup started.");
+	CleanAssets();
+	activeGame = GameFactory::CreateScenarioGame(scenarioName, this, modelLoader, qmlEngine, guiRoot);
+	FinishGameSetup();
+}
 
+void ApplicationControl::FinishGameSetup()
+{
 	activeCamera = new Camera();
 	cameraControl = new CameraControl(activeCamera, activeGame->GetMapSize());
 	cameraControl->UpdateCamera();
-
 	ActivateRendering();
-
 	ConsoleWrite("... Game setup complete.");
-
 	activeGame->StartGame();
+	OnLoadingFinished();
+	GamePopup(activeGame->GetPlayer1()->GetName() + " vs " + activeGame->GetPlayer2()->GetName());
 }
 
 void ApplicationControl::AbilitySelected(int slot) const
@@ -491,7 +522,7 @@ void ApplicationControl::Update() const
 	// update the list of rendered objects
 	GetObjectsForRendering();
 	// force redraw
-	mainWindow->update();
+	mainWindow->requestUpdate();
 }
 
 void ApplicationControl::GamePause() const

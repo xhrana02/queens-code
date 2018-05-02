@@ -114,7 +114,7 @@ Item {
                 color: gameOverlay.textColor
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
-                font.pixelSize: 20
+                font.pixelSize: 18
                 font.bold: true
                 font.family: menuFont.name
                 style: Text.Raised
@@ -131,11 +131,10 @@ Item {
             color: gameOverlay.textColor
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 22
+            font.pixelSize: 24
             font.bold: true
-            font.family: menuFont.name
             textFormat: Text.StyledText
-            style: Text.Raised
+            style: Text.Outline
             styleColor: "#CC000000"
 
             ParallelAnimation {
@@ -146,9 +145,9 @@ Item {
 
                     target: popupText
                     easing.type: Easing.InQuint
-                    from: 100
+                    from: 150
                     to: -100
-                    duration: 5000
+                    duration: 6000
                 }
                 
                 OpacityAnimator {
@@ -158,7 +157,7 @@ Item {
                     easing.type: Easing.InQuint
                     from: 1
                     to: 0
-                    duration: 5000
+                    duration: 6000
                 }
 
             }

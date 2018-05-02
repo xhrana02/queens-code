@@ -8,6 +8,9 @@
 #pragma once
 #include "Unit.h"
 #include "Movement.h"
+#include "AttackWarhammer.h"
+#include "SpecialCharge.h"
+#include "PassiveToughness.h"
 
 class Brute : public Unit
 {
@@ -19,8 +22,8 @@ public:
 		currentHP = maximumHP;
 		currentEN = maximumEN;
 		abilities.push_back(std::make_shared<Movement>());
-		// warhammer
-		// tackle
-		// toughness
+		abilities.push_back(std::make_shared<AttackWarhammer>());
+		abilities.push_back(std::make_shared<SpecialCharge>());
+		abilities.push_back(std::make_shared<PassiveToughness>(this));
 	}
 };

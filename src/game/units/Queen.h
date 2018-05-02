@@ -16,11 +16,10 @@ public:
 	Queen::Queen()
 	{
 		name = "Queen";
-		isRoyalty = true;
 		this->maximumHP = 10;
 		currentHP = maximumHP;
 		currentEN = maximumEN;
 		abilities.push_back(std::make_shared<Movement>());
-		abilities.push_back(std::make_shared<PassiveThroneClaim>());
+		abilities.push_back(std::make_shared<PassiveThroneClaim>(this));
 	}
 };

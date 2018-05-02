@@ -132,7 +132,7 @@ void Player::OnUnitDeath(Unit* dyingUnit)
 		GamePopup(name + "'s " + dyingUnit->GetName() + " died");
 	}
 	
-	if (dyingUnit->IsRoyalty())
+	if (dyingUnit->IsRoyalty)
 	{
 		// if the player's queen died
 		game->PlayerDefeat(this);
@@ -157,7 +157,7 @@ void Player::BeginTurn()
 		game->UnselectUnit();
 		game->SelectUnit(*units.begin());
 		appControl->OnTurnBegin(game->GetTurnNumber());
-		GamePopup(name + "'s turn begins");
+		GamePopup(name + "'s turn");
 		appControl->SetActivePlayer(name);
 	}
 }

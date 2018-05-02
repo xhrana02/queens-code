@@ -113,43 +113,13 @@ vector<Field*> Board::GetAllEmptyFields() const
 	return allEmptyFields;
 }
 
-vector<Field*> Board::GetAllNeighborFields(Field* field) const
-{
-	auto neighbors = vector<Field*>();
-
-	auto fieldX = field->GetX();
-	auto fieldY = field->GetY();
-
-	for (auto modX = -1; modX <= 1; modX++)
-	{
-		for (auto modY = -1; modY <= 1; modY++)
-		{
-			if(modX == 0 && modY == 0)
-			{
-				// skip itself
-				continue;
-			}
-
-			auto x = fieldX + modX;
-			auto y = fieldY + modY;
-
-			if (x < 0 || x >= ActualWidth() ||
-				y < 0 || y >= ActualHeight() )
-			{
-				// skip non-existing fields
-				continue;
-			}
-
-			neighbors.push_back(fields[x][y]);
-		}
-	}
-
-	return neighbors;
-}
-
 vector<Field*> Board::GetAllNeighborPlayFields(Field* field) const
 {
 	auto neighbors = vector<Field*>();
+	if (field->GetTerrainType() == Border)
+	{
+		throw exception("Baord GetAllNeighborPlayFields - can't ask for neigbors of a border field.");
+	}
 
 	auto fieldX = field->GetX();
 	auto fieldY = field->GetY();
@@ -166,15 +136,15 @@ vector<Field*> Board::GetAllNeighborPlayFields(Field* field) const
 
 			auto x = fieldX + modX;
 			auto y = fieldY + modY;
+			auto neighbor = fields[x][y];
 
-			if (x < 1 || x > PlayableWidth() ||
-				y < 1 || y > PlayableHeight())
+			if (neighbor->GetTerrainType() == Border)
 			{
-				// skip non-existing and border fields
+				// skip invisible border fields
 				continue;
 			}
 
-			neighbors.push_back(fields[x][y]);
+			neighbors.push_back(neighbor);
 		}
 	}
 
@@ -184,6 +154,10 @@ vector<Field*> Board::GetAllNeighborPlayFields(Field* field) const
 vector<Field*> Board::GetAllNeighborEmptyFields(Field* field) const
 {
 	auto neighbors = vector<Field*>();
+	if (field->GetTerrainType() == Border)
+	{
+		throw exception("Baord GetAllNeighborEmptyFields - can't ask for neigbors of a border field.");
+	}
 
 	auto fieldX = field->GetX();
 	auto fieldY = field->GetY();
@@ -200,21 +174,15 @@ vector<Field*> Board::GetAllNeighborEmptyFields(Field* field) const
 
 			auto x = fieldX + modX;
 			auto y = fieldY + modY;
+			auto neighbor = fields[x][y];
 
-			if (x < 1 || x > PlayableWidth() ||
-				y < 1 || y > PlayableHeight() )
+			if (neighbor->IsFieldOccupied())
 			{
-				// skip non-existing and border fields
+				// skip occupied fields (border fields are considered occupied)
 				continue;
 			}
 
-			if (fields[x][y]->IsFieldOccupied())
-			{
-				// skip occupied fields
-				continue;
-			}
-
-			neighbors.push_back(fields[x][y]);
+			neighbors.push_back(neighbor);
 		}
 	}
 
@@ -224,6 +192,10 @@ vector<Field*> Board::GetAllNeighborEmptyFields(Field* field) const
 vector<Field*> Board::GetAllMeleeNeighborFields(Field* field) const
 {
 	auto neighbors = vector<Field*>();
+	if (field->GetTerrainType() == Border)
+	{
+		throw exception("Baord GetAllMeleeNeighborFields - can't ask for neigbors of a border field.");
+	}
 
 	auto fieldX = field->GetX();
 	auto fieldY = field->GetY();
@@ -240,15 +212,15 @@ vector<Field*> Board::GetAllMeleeNeighborFields(Field* field) const
 
 			auto x = fieldX + modX;
 			auto y = fieldY + modY;
+			auto neighbor = fields[x][y];
 
-			if (x < 1 || x > PlayableWidth() ||
-				y < 1 || y > PlayableHeight())
+			if (neighbor->GetTerrainType() == Border)
 			{
-				// skip non-existing and border fields
+				// skip invisible border fields
 				continue;
 			}
 
-			neighbors.push_back(fields[x][y]);
+			neighbors.push_back(neighbor);
 		}
 	}
 
@@ -258,6 +230,10 @@ vector<Field*> Board::GetAllMeleeNeighborFields(Field* field) const
 vector<Field*> Board::GetAllMovementNeighborFields(Field* field) const
 {
 	auto neighbors = vector<Field*>();
+	if (field->GetTerrainType() == Border)
+	{
+		throw exception("Baord GetAllMovementNeighborFields - can't ask for neigbors of a border field.");
+	}
 
 	auto fieldX = field->GetX();
 	auto fieldY = field->GetY();
@@ -274,33 +250,25 @@ vector<Field*> Board::GetAllMovementNeighborFields(Field* field) const
 
 			auto x = fieldX + modX;
 			auto y = fieldY + modY;
+			auto neighbor = fields[x][y];
 
-			if (x < 1 || x > PlayableWidth() ||
-				y < 1 || y > PlayableHeight() )
+			if (neighbor->IsFieldOccupied())
 			{
-				// skip non-existing and border fields
+				// skip occupied fields (border fields are considered occupied)
 				continue;
 			}
 
-			if (fields[x][y]->IsFieldOccupied())
-			{
-				// skip occupied fields
-				continue;
-			}
-
-			if (modX == 0 || modY == 0)
-			{
-				// perpendicular directions
-				neighbors.push_back(fields[x][y]);
-			}
-			else
+			if (modX != 0 && modY != 0)
 			{
 				// diagonal directions
-				if (!fields[x][fieldY]->IsFieldOccupied() && !fields[fieldX][y]->IsFieldOccupied())
+				if (fields[x][fieldY]->IsFieldOccupied() || fields[fieldX][y]->IsFieldOccupied())
 				{
-					neighbors.push_back(fields[x][y]);
+					// skip if neighboring perpendicular fields aren't empty
+					continue;
 				}
 			}
+
+			neighbors.push_back(neighbor);
 		}
 	}
 
@@ -309,9 +277,9 @@ vector<Field*> Board::GetAllMovementNeighborFields(Field* field) const
 
 void Board::UnhighlightAllFields()
 {
-	for (auto hlField : highlightedFields)
+	for (auto field : GetAllPlayFields())
 	{
-		hlField->UnhighlightField();
+		field->UnhighlightField();
 	}
 	highlightedFields = vector<Field*>();
 }
@@ -333,22 +301,20 @@ void Board::HighlightFields(vector<Field*> hlFields)
 	}
 }
 
-void Board::UnhalflightAllFields()
+void Board::UnhalflightAllFields() const
 {
-	for (auto hlField : halflightedFields)
+	for (auto field : GetAllPlayFields())
 	{
-		hlField->UnhalflightField();
+		field->UnhalflightField();
 	}
-	halflightedFields = vector<Field*>();
 }
 
-void Board::HalflightFields(vector<Field*> hlFields)
+void Board::HalflightFields(vector<Field*> hlFields) const
 {
 	UnhalflightAllFields();
 	for (auto hlField : hlFields)
 	{
 		hlField->HalflightField();
-		halflightedFields.push_back(hlField);
 	}
 }
 

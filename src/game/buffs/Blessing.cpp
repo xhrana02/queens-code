@@ -11,6 +11,7 @@
 
 Blessing::Blessing()
 {
+	name = "Blessing";
 	maxDuration = 3;
 }
 

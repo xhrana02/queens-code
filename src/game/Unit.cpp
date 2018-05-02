@@ -20,6 +20,10 @@ Unit::~Unit()
 {
 	infoBar->deleteLater();
 	abilitiesBar->deleteLater();
+	for (auto buff : buffs)
+	{
+		delete buff;
+	}
 }
 
 void Unit::GamePopup(QString message) const
@@ -95,8 +99,9 @@ void Unit::CreateInfoBar(QQmlEngine* engine, QQuickItem* guiRoot)
 	infoBar->setParentItem(guiRoot);
 
 	QVariant returnedValue;
-	QMetaObject::invokeMethod(infoBar, "setMax",
+	QMetaObject::invokeMethod(infoBar, "setUnitConstants",
 		Q_RETURN_ARG(QVariant, returnedValue),
+		Q_ARG(QVariant, name),
 		Q_ARG(QVariant, maximumHP));
 }
 
@@ -107,6 +112,20 @@ void Unit::UpdateInfoBar(mat4 perspective, mat4 view, int winWidth, int winHeigh
 	auto posX = ((posvec.x + 1) / 2.0f) * winWidth - 60;
 	auto posY = ((1 - posvec.y) / 2.0f) * winHeight - 19;
 	auto depth = 1 - posvec.z;
+	auto size = depth * (winWidth + winHeight) / 500.0f;
+	auto blessedDuration = 0;
+	auto shieldedDuration = 0;
+	for (auto buff : buffs)
+	{
+		if (buff->GetName() == "Blessing")
+		{
+			blessedDuration = buff->GetRemainingDuration();
+		}
+		if (buff->GetName() == "Demon Shield")
+		{
+			shieldedDuration = buff->GetRemainingDuration();
+		}
+	}
 
 	QVariant returnedValue;
 	if (posvec.z < 0 || posvec.z > 1)
@@ -122,7 +141,8 @@ void Unit::UpdateInfoBar(mat4 perspective, mat4 view, int winWidth, int winHeigh
 			Q_RETURN_ARG(QVariant, returnedValue),
 			Q_ARG(QVariant, posX),
 			Q_ARG(QVariant, posY),
-			Q_ARG(QVariant, depth)
+			Q_ARG(QVariant, depth),
+			Q_ARG(QVariant, size)
 		);
 		QMetaObject::invokeMethod(infoBar, "updateValues",
 			Q_RETURN_ARG(QVariant, returnedValue),
@@ -137,8 +157,10 @@ void Unit::UpdateInfoBar(mat4 perspective, mat4 view, int winWidth, int winHeigh
 		);
 		QMetaObject::invokeMethod(infoBar, "updateStatus",
 			Q_RETURN_ARG(QVariant, returnedValue),
-			Q_ARG(QVariant, stunned),
-			Q_ARG(QVariant, restless)
+			Q_ARG(QVariant, stunDuration),
+			Q_ARG(QVariant, restlessDuration),
+			Q_ARG(QVariant, blessedDuration),
+			Q_ARG(QVariant, shieldedDuration)
 		);
 	}
 
@@ -211,7 +233,7 @@ void Unit::OnAbilitySelected(int slot)
 {
 	auto newSelectedAbility = abilities[slot - 1].get();
 
-	if(newSelectedAbility->CanAfford(this))
+	if(newSelectedAbility->CanAfford(this) && !stunned)
 	{
 		if(slot != selectedAbilitySlot)
 		{
@@ -228,7 +250,14 @@ void Unit::OnAbilitySelected(int slot)
 		QVariant returnedValue;
 		QMetaObject::invokeMethod(abilitiesBar, "unselectAll",
 			Q_RETURN_ARG(QVariant, returnedValue));
-		GamePopup(newSelectedAbility->GetName() +  " : Not enough EN (or HP) to use this ability");
+		if (stunned)
+		{
+			GamePopup("This unit is Stunned and cannot take any action");
+		}
+		else
+		{
+			GamePopup("Not enough EN (or HP) to use " + newSelectedAbility->GetName());
+		}
 	}
 }
 
@@ -241,12 +270,12 @@ bool Unit::UseSelectedAbility(Field* target)
 {
 	if (stunned)
 	{
-		GamePopup(name + " : This unit is STUNNED and cannot take any action");
+		GamePopup("This unit is Stunned and cannot take any action");
 		return false;
 	}
 	if (selectedAbilitySlot == 0)
 	{
-		GamePopup(name + " : No ability selected");
+		GamePopup("No ability selected");
 		return false;
 	}
 	movedThisTurn = true;
@@ -350,7 +379,7 @@ void Unit::OnUnitDeath()
 	owner->OnUnitDeath(this);
 }
 
-int Unit::TakeDamage(int damageNormal, int damageEN, int damageHP)
+int Unit::TakeDamage(int damageNormal, int damageHP, int damageEN)
 {
 	auto dealtToEN = 0;
 	auto dealtToHP = 0;
@@ -449,7 +478,7 @@ void Unit::CheckBuffDurations()
 		auto buffEnded = buff->OnTurnStart();
 		if (buffEnded)
 		{
-			buffs.erase(iterator);
+			iterator = buffs.erase(iterator);
 			delete buff;
 		}
 		else
@@ -459,18 +488,38 @@ void Unit::CheckBuffDurations()
 	}
 }
 
-void Unit::OnTurnBegin()
+void Unit::CheckStatusDurations()
 {
-	movedThisTurn = false;
-	regenerate();
-	// Regeneration must be before ending buffs!!!
-	CheckBuffDurations();
+	// Reduce restless and stunned durations by 1
+	if (restless)
+	{
+		restlessDuration--;
+		if (restlessDuration <= 0)
+		{
+			restless = false;
+		}
+		// This is inside the restless if because stunned units are also restless
+		if (stunned)
+		{
+			stunDuration--;
+			if (stunDuration <= 0)
+			{
+				stunned = false;
+			}
+		}
+	}
+
+	// Units in ice blocks become restunned
+	if (occupiedField->GetTerrainType() == IceBlock)
+	{
+		Stun(1);
+	}
 }
 
-void Unit::OnTurnEnd()
+void Unit::CheckThroneClaim() const
 {
 	// Queen sitting on the throne makes all enemies Restless
-	if (isRoyalty)
+	if (IsRoyalty && !stunned)
 	{
 		if (occupiedField->GetTerrainType() == Throne)
 		{
@@ -487,44 +536,26 @@ void Unit::OnTurnEnd()
 			}
 		}
 	}
+}
 
-	// Units in ice blocks become restunned
-	if (occupiedField->GetTerrainType() == IceBlock)
-	{
-		Stun(1);
-	}
+void Unit::OnTurnBegin()
+{
+	movedThisTurn = false;
+	// The order of these is very important!!!
+	regenerate();
+	CheckBuffDurations();
+}
 
-	// Reduce restless and stunned durations by 1
-	if (restless)
-	{
-		if (restlessDuration <= 0)
-		{
-			restless = false;
-		}
-		else
-		{
-			restlessDuration--;
-		}
-
-		// This is inside the restless if because stunned units are also restless
-		if (stunned)
-		{
-			if (stunDuration <= 0)
-			{
-				stunned = false;
-			}
-			else
-			{
-				stunDuration--;
-			}
-		}
-	}
-
+void Unit::OnTurnEnd()
+{
+	// The order of these is very important!!!
+	CheckThroneClaim();
 	// Rest if the unit didn't move this turn
 	if (!movedThisTurn)
 	{
 		rest();
 	}
+	CheckStatusDurations();
 }
 
 
@@ -604,7 +635,7 @@ int Unit::RegainTheoreticalEN(int amount)
 	return amount;
 }
 
-void Unit::TakeTheoreticalDamage(int damageNormal, int damageEN, int damageHP)
+void Unit::TakeTheoreticalDamage(int damageNormal, int damageHP, int damageEN)
 {
 	damageNormal -= damageReduction;
 	if (damageNormal < 0)

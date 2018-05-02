@@ -15,7 +15,13 @@ class ApplicationControl;
 class GameFactory
 {
 public:
-	static Game* CreateStandardGame(ApplicationControl* appControl,
-		QString p1Name, int p1Code, QString p2Name, int p2Code,
-		fsg::ModelLoader* modelLoader, QQmlEngine* engine, QQuickItem* guiRoot);
+	static Game* CreateStandardGame(QString p1Name, int p1Code, QString p2Name, int p2Code,
+		ApplicationControl* appControl, fsg::ModelLoader* modelLoader, QQmlEngine* engine, QQuickItem* guiRoot);
+
+	static Game* CreateScenarioGame(QString scenarioName,
+		ApplicationControl* appControl, fsg::ModelLoader* modelLoader, QQmlEngine* engine, QQuickItem* guiRoot);
+
+private:
+	static Game* CreateTrainingDuel(ApplicationControl* appControl, fsg::ModelLoader* modelLoader, QQmlEngine* engine, QQuickItem* guiRoot);
+	static Game* CreateChess(ApplicationControl* appControl, fsg::ModelLoader* modelLoader, QQmlEngine* engine, QQuickItem* guiRoot);
 };
