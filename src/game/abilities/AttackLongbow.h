@@ -7,19 +7,21 @@
 
 #pragma once
 
-#include "AttackMelee.h"
+#include "AttackLine.h"
 #include "CommonTooltips.h"
 
-class AttackLongsword : public AttackMelee
+class AttackLongbow : public AttackLine
 {
 public:
-	AttackLongsword()
+	AttackLongbow()
 	{
-		costEN = 4;
+		costEN = 5;
 		damageNormal = 9;
-		name = "Longsword Attack";
-		iconPath = "icons/AttackLongsword.png";
-		description = "<b><u>Longsword Attack</u> ( 4 EN ) Melee</b><br><br>"
+		rangeMin = 2;
+		rangeMax = 9;
+		name = "Longbow Attack";
+		iconPath = "icons/AttackLongbow.png";
+		description = "<b><u>Longbow Attack</u> ( 5 EN ) Line 2-9</b><br><br>"
 			"Deals 9 normal damage to the target.<br>"
 			NORMAL_DAMAGE_TOOLTIP;
 	}

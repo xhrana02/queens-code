@@ -379,12 +379,19 @@ void Unit::OnUnitDeath()
 	owner->OnUnitDeath(this);
 }
 
-int Unit::TakeDamage(int damageNormal, int damageHP, int damageEN)
+int Unit::TakeDamage(AttackType attackType, int damageNormal, int damageHP, int damageEN)
 {
 	auto dealtToEN = 0;
 	auto dealtToHP = 0;
 
-	damageNormal -= damageReduction;
+	if (attackType == Line)
+	{
+		auto damageTotal = damageNormal + damageHP + damageEN;
+		auto damageReducedLine = floor(damageTotal * GetDamageReductionLine());
+		damageNormal -= damageReducedLine;
+	}
+
+	damageNormal -= armor;
 	if (damageNormal < 0)
 	{
 		damageEN += damageNormal;
@@ -635,9 +642,15 @@ int Unit::RegainTheoreticalEN(int amount)
 	return amount;
 }
 
-void Unit::TakeTheoreticalDamage(int damageNormal, int damageHP, int damageEN)
+void Unit::TakeTheoreticalDamage(AttackType attackType, int damageNormal, int damageHP, int damageEN)
 {
-	damageNormal -= damageReduction;
+	if (attackType == Line)
+	{
+		auto damageTotal = damageNormal + damageHP + damageEN;
+		auto damageReducedLine = floor(damageTotal * GetDamageReductionLine());
+		damageNormal -= damageReducedLine;
+	}
+	damageNormal -= armor;
 	if (damageNormal < 0)
 	{
 		damageEN += damageNormal;

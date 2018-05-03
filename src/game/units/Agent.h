@@ -8,6 +8,9 @@
 #pragma once
 #include "Unit.h"
 #include "Movement.h"
+#include "AttackDagger.h"
+#include "AttackShortbow.h"
+#include "SpecialDash.h"
 
 class Agent : public Unit
 {
@@ -19,8 +22,8 @@ public:
 		currentHP = maximumHP;
 		currentEN = maximumEN;
 		abilities.push_back(std::make_shared<Movement>());
-		// dagger
-		// shortbow
-		// dash
+		abilities.push_back(std::make_shared<AttackDagger>());
+		abilities.push_back(std::make_shared<AttackShortbow>());
+		abilities.push_back(std::make_shared<SpecialDash>());
 	}
 };

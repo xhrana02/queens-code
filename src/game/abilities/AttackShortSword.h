@@ -10,17 +10,17 @@
 #include "AttackMelee.h"
 #include "CommonTooltips.h"
 
-class AttackLongsword : public AttackMelee
+class AttackShortSword : public AttackMelee
 {
 public:
-	AttackLongsword()
+	AttackShortSword()
 	{
-		costEN = 4;
-		damageNormal = 9;
-		name = "Longsword Attack";
-		iconPath = "icons/AttackLongsword.png";
-		description = "<b><u>Longsword Attack</u> ( 4 EN ) Melee</b><br><br>"
-			"Deals 9 normal damage to the target.<br>"
+		costEN = 3;
+		damageNormal = 7;
+		name = "Short Sword Attack";
+		iconPath = "icons/AttackShortSword.png";
+		description = "<b><u>Short Sword Attack</u> ( 3 EN ) Melee</b><br><br>"
+			"Deals 7 normal damage to the target.<br>"
 			NORMAL_DAMAGE_TOOLTIP;
 	}
 };

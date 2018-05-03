@@ -9,18 +9,14 @@
 
 #include "Ability.h"
 
-class SpecialCharge : public Ability
+class SpecialDash : public Ability
 {
-	static int const damageHP = 3;
-	static int const rangeMin = 2;
-	static int const rangeMax = 4;
-	Field* fieldBehind = nullptr;
-	Field* fieldInFront = nullptr;
+	static int const rangeMin = 1;
+	static int const rangeMax = 3;
 public:
-	SpecialCharge();
+	SpecialDash();
 	bool Effect(Board* board, Unit* abilityUser, Field* target) override;
 	bool CanUse(Board* board, Unit* abilityUser, Field* target) override;
 	void OnSelected(Board* board, Unit* abilityUser) override;
 	void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField) override;
-	bool IsTargetPushable(Board* board, Unit* abilityUser, Unit* target);
 };

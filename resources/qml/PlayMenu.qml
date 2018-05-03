@@ -30,7 +30,9 @@ Item {
             color: "#EADCA8"
         }
 
-        onClicked: selectGameType("Standard")
+        onClicked: {
+            selectGameType("Standard")
+        }
     }
 
     MenuButtonSmall {
@@ -52,7 +54,9 @@ Item {
             color: "#EADCA8"
         }
 
-        onClicked: selectGameType("Scenario")
+        onClicked: {
+            selectGameType("Scenario")
+        }
     }
 
     Rectangle {

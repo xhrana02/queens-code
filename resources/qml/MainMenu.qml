@@ -7,71 +7,97 @@
 
 import QtQuick 2.7
 
-Column {
+Item {
     id: mainMenu
 
-    FontLoader { id: menuFont; source: "fonts/CinzelDecorative-Regular.ttf" }
+    anchors.fill: parent
 
-    anchors.horizontalCenter: parent.horizontalCenter
-    anchors.top: parent.top
-    anchors.topMargin: (guiRoot.height / 3 - 100)
+    Column {
+        id: centralItems
 
-    spacing: (guiRoot.height / 30)
+        FontLoader { id: menuFont; source: "fonts/CinzelDecorative-Regular.ttf" }
 
-    Text {
-        id: titleText
-        
         anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: (guiRoot.height / 3 - 100)
 
-        font.family: menuFont.name
-        font.pixelSize: 72
-        font.letterSpacing: 10
-        font.bold: false
-        color: "#4D4500"
+        spacing: (guiRoot.height / 30)
 
-        text: "Queens Regicide"
-    }
+        Text {
+            id: titleText
+            
+            anchors.horizontalCenter: parent.horizontalCenter
 
-    Item {
-        // force double space
-        width: 1
-        height: 1
-    }
+            font.family: menuFont.name
+            font.pixelSize: 72
+            font.letterSpacing: 10
+            font.bold: false
+            color: "#4D4500"
 
-    MenuButton {
-        id: mainButtonPlay
+            text: "Queens Regicide"
+        }
+
+        Item {
+            // force double space
+            width: 1
+            height: 1
+        }
+
+        MenuButton {
+            id: mainButtonPlay
+            
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            styledText: "Play"
+
+            onClicked: {
+                guiRoot.showPlayMenu()
+            }
+        }
+
+        MenuButton {
+            id: mainButtonOptions
+            
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            styledText: "Options"
+
+            onClicked: {
+                guiRoot.showOptionsMenu()
+            }
+        }
         
-        anchors.horizontalCenter: parent.horizontalCenter
+        Item {
+            // force double space
+            width: 1
+            height: 1
+        }
 
-        styledText: "Play"
+        MenuButton {
+            id: mainButtonQuit
+            
+            anchors.horizontalCenter: parent.horizontalCenter
 
-        onClicked: guiRoot.showPlayMenu()
+            styledText: "Quit"
+
+            onClicked: {
+                Qt.quit()
+            }
+        }
     }
 
-    MenuButton {
-        id: mainButtonOptions
-        
-        anchors.horizontalCenter: parent.horizontalCenter
+    MenuButtonSmall {
+        id: mainButtonCredits
+        anchors.left: parent.left
+        anchors.leftMargin: 40
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 30
+        styledText: "Credits"
 
-        styledText: "Options"
-
-        onClicked: guiRoot.showOptionsMenu()
-    }
-    
-    Item {
-        // force double space
-        width: 1
-        height: 1
-    }
-
-    MenuButton {
-        id: mainButtonQuit
-        
-        anchors.horizontalCenter: parent.horizontalCenter
-
-        styledText: "Quit"
-
-        onClicked: Qt.quit()
+        onClicked: {
+            guiRoot.showCredits()
+        }
     }
 }
+
 

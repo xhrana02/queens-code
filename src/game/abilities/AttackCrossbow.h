@@ -7,17 +7,23 @@
 
 #pragma once
 
-#include "Ability.h"
+#include "AttackLine.h"
+#include "CommonTooltips.h"
 
-class AttackCrossbow : public Ability
+class AttackCrossbow : public AttackLine
 {
-	static int const damageNormal = 11;
-	static int const rangeMin = 2;
-	static int const rangeMax = 8;
 public:
-	AttackCrossbow();
-	bool Effect(Board* board, Unit* abilityUser, Field* target) override;
-	bool CanUse(Board* board, Unit* abilityUser, Field* target) override;
-	void OnSelected(Board* board, Unit* abilityUser) override;
-	void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField) override;
+	AttackCrossbow()
+	{
+		costEN = 7;
+		damageNormal = 6;
+		damageHP = 3;
+		rangeMin = 2;
+		rangeMax = 7;
+		name = "Crossbow Attack";
+		iconPath = "icons/AttackCrossbow.png";
+		description = "<b><u>Crossbow Attack</u> ( 7 EN ) Line 2-7</b><br><br>"
+			"Deals 3 HP and 6 normal damage to the target.<br>"
+			NORMAL_DAMAGE_TOOLTIP;
+	}
 };

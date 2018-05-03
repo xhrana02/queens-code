@@ -11,10 +11,10 @@
 
 using namespace glm;
 
-Flash::Flash(Game* inGame, Unit* inUnit, vec4 color, int intensity)
+Flash::Flash(Game* inGame, Unit* inUnit, vec4 color, int intensity, int customPeakFrame)
 {
 	goal = 5 * intensity;
-	subgoal = 4;
+	subgoal = customPeakFrame;
 	flashingUnit = inUnit->GetRenderingObject();
 	normalColor = flashingUnit->GetNormalColor();
 	flashColor = color;

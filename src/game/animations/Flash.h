@@ -23,6 +23,6 @@ class Flash : public AbilityAnimation
 	glm::vec4 normalColor;
 	glm::vec4 flashColor;
 public:
-	Flash(Game* inGame, Unit* inUnit, glm::vec4 color, int intensity);
+	Flash(Game* inGame, Unit* inUnit, glm::vec4 color, int intensity, int customPeakFrame = 3);
 	bool Iteration() override;
 };

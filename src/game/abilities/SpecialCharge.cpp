@@ -17,10 +17,10 @@ using namespace glm;
 
 SpecialCharge::SpecialCharge()
 {
-	costEN = 7;
+	costEN = 8;
 	name = "Charge";
 	iconPath = "icons/SpecialCharge.png";
-	description = "<b><u>Charge</u> ( 7 EN ) Line 1-2</b><br><br>"
+	description = "<b><u>Charge</u> ( 8 EN ) Line 2-4</b><br><br>"
 		"Deals 3 HP damage to the target, pushes it 1 tile away and takes its place. If the tile behind the target is"
 		"occupied, instead of pushing, the target takes 3 more HP damage and is stunned for 1 turn.<br>"
 		STUN_TOOLTIP
@@ -38,7 +38,7 @@ bool SpecialCharge::Effect(Board* board, Unit* abilityUser, Field* target)
 		if (!IsTargetPushable(board, abilityUser, targetUnit))
 		{
 			targetUnit->Stun(1);
-			targetUnit->TakeDamage(0, 2*damageHP);
+			targetUnit->TakeDamage(Line, 0, 2*damageHP);
 			fieldInFront->MoveUnitToThisField(abilityUser);
 			if (!targetUnit->IsUnitAlive())
 			{
@@ -61,7 +61,7 @@ bool SpecialCharge::Effect(Board* board, Unit* abilityUser, Field* target)
 		}
 		else
 		{
-			targetUnit->TakeDamage(0, damageHP);
+			targetUnit->TakeDamage(Line, 0, damageHP);
 			fieldBehind->MoveUnitToThisField(targetUnit);
 			target->MoveUnitToThisField(abilityUser);
 			if(game != nullptr)
@@ -70,7 +70,7 @@ bool SpecialCharge::Effect(Board* board, Unit* abilityUser, Field* target)
 				{
 					game->PanCameraToField(target);
 					// ReSharper disable once CppNonReclaimedResourceAcquisition
-					new Flash(game, targetUnit, vec4(1.0f, 0.5f, 0.0f, 1.0f), 5 + 1.5*damageHP);
+					new Flash(game, targetUnit, vec4(1.0f, 0.5f, 0.0f, 1.0f), 5 + 1.5*damageHP, 5);
 					// ReSharper disable once CppNonReclaimedResourceAcquisition
 					new MovementAnimation(game, abilityUser, std::forward_list<Field*>({userField,target}), 6, false);
 					// ReSharper disable once CppNonReclaimedResourceAcquisition
@@ -90,7 +90,7 @@ bool SpecialCharge::CanUse(Board* board, Unit* abilityUser, Field* target)
 		return false;
 	}
 
-	auto candidates = Targetfinding::GetLineEnemyTargets(board, abilityUser, 1, 2);
+	auto candidates = Targetfinding::GetLineEnemyTargets(board, abilityUser, rangeMin, rangeMax);
 	for (auto candidate : candidates)
 	{
 		if (candidate == target)
@@ -110,7 +110,7 @@ bool SpecialCharge::CanUse(Board* board, Unit* abilityUser, Field* target)
 
 void SpecialCharge::OnSelected(Board* board, Unit* abilityUser)
 {
-	auto candidates = Targetfinding::GetLineEnemyTargets(board, abilityUser, 1, 2, true);
+	auto candidates = Targetfinding::GetLineEnemyTargets(board, abilityUser, rangeMin, rangeMax, true);
 	auto viableTargets = std::vector<Field*>();
 	for (auto candidate : candidates)
 	{
@@ -138,11 +138,11 @@ void SpecialCharge::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUse
 		abilityUser->ReduceTheoreticalEN(costEN);
 		if (!IsTargetPushable(board, abilityUser, hoveredField->GetUnitOnField()))
 		{
-			hoveredField->GetUnitOnField()->TakeTheoreticalDamage(0, 2*damageHP);
+			hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Line, 0, 2*damageHP);
 		}
 		else
 		{
-			hoveredField->GetUnitOnField()->TakeTheoreticalDamage(0, damageHP);
+			hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Line, 0, damageHP);
 		}
 	}
 }

@@ -5,34 +5,21 @@
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
-#include "AttackWarhammer.h"
+#include "AttackMelee.h"
 #include "Game.h"
 #include "Field.h"
 #include "Flash.h"
 #include "Targetfinding.h"
-#include "CommonTooltips.h"
 
 using namespace glm;
 
-AttackWarhammer::AttackWarhammer()
-{
-	costEN = 7;
-	name = "Warhammer Attack";
-	iconPath = "icons/AttackWarhammer.png";
-	description = "<b><u>Warhammer Attack</u> ( 7 EN ) Melee</b><br><br>"
-		"Deals 5 HP and 5 normal damage to the target.<br>"
-		HP_DAMAGE_TOOLTIP
-		NORMAL_DAMAGE_TOOLTIP
-		COMBINED_DAMAGE_TOOLTIP;
-}
-
-bool AttackWarhammer::Effect(Board* board, Unit* abilityUser, Field* target)
+bool AttackMelee::Effect(Board* board, Unit* abilityUser, Field* target)
 {
 	if(CanUse(board, abilityUser, target))
 	{
 		abilityUser->ReduceEN(costEN);
 		auto targetUnit = target->GetUnitOnField();
-		targetUnit->TakeDamage(damageNormal, damageHP);
+		targetUnit->TakeDamage(Melee, damageNormal, damageHP, damageEN);
 
 		if (!targetUnit->IsUnitAlive())
 		{
@@ -46,7 +33,7 @@ bool AttackWarhammer::Effect(Board* board, Unit* abilityUser, Field* target)
 				{
 					game->PanCameraToField(target);
 					// ReSharper disable once CppNonReclaimedResourceAcquisition
-					new Flash(game, target->GetUnitOnField(), vec4(1.0f, 0.0f, 0.0f, 1.0f), 1.5*damageHP + damageNormal);
+					new Flash(game, target->GetUnitOnField(), vec4(1.0f, 0.0f, 0.0f, 1.0f), damageNormal + 1.5*damageHP + 0.75*damageEN);
 				}
 			}
 		}
@@ -55,7 +42,7 @@ bool AttackWarhammer::Effect(Board* board, Unit* abilityUser, Field* target)
 	return false;
 }
 
-bool AttackWarhammer::CanUse(Board* board, Unit* abilityUser, Field* target)
+bool AttackMelee::CanUse(Board* board, Unit* abilityUser, Field* target)
 {
 	if (target == nullptr)
 	{
@@ -73,17 +60,17 @@ bool AttackWarhammer::CanUse(Board* board, Unit* abilityUser, Field* target)
 	return false;
 }
 
-void AttackWarhammer::OnSelected(Board* board, Unit* abilityUser)
+void AttackMelee::OnSelected(Board* board, Unit* abilityUser)
 {
 	board->HalflightFields(Targetfinding::GetMeleeEnemyTargets(board, abilityUser, true));
 }
 
-void AttackWarhammer::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
+void AttackMelee::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
 {
 	board->HighlightField(hoveredField);
 	if(CanUse(board, abilityUser, hoveredField))
 	{
 		abilityUser->ReduceTheoreticalEN(costEN);
-		hoveredField->GetUnitOnField()->TakeTheoreticalDamage(damageNormal, damageHP);
+		hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Melee, damageNormal, damageHP, damageEN);
 	}
 }

@@ -28,6 +28,9 @@ public:
 	virtual ~Ability() = default;
 	virtual bool Effect(Board* board, Unit* abilityUser, Field* target) = 0;
 	virtual bool CanUse(Board* board, Unit* abilityUser, Field* target) = 0;
+	virtual void OnSelected(Board* board, Unit* abilityUser) = 0;
+	virtual void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField);
+
 	bool CanAfford(Unit* abilityUser) const;
 
 	QString GetName() const
@@ -55,6 +58,4 @@ public:
 		game = activeGame;
 	}
 
-	virtual void OnSelected(Board* board, Unit* abilityUser) = 0;
-	virtual void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField);
 };

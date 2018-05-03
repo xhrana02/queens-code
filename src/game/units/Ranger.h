@@ -8,6 +8,9 @@
 #pragma once
 #include "Unit.h"
 #include "Movement.h"
+#include "AttackLongbow.h"
+#include "AttackShortSword.h"
+#include "PassiveQuickReflexes.h"
 
 class Ranger : public Unit
 {
@@ -19,8 +22,8 @@ public:
 		currentHP = maximumHP;
 		currentEN = maximumEN;
 		abilities.push_back(std::make_shared<Movement>());
-		// longbow
-		// short sword
-		// reflex
+		abilities.push_back(std::make_shared<AttackLongbow>());
+		abilities.push_back(std::make_shared<AttackShortSword>());
+		abilities.push_back(std::make_shared<PassiveQuickReflexes>(this));
 	}
 };

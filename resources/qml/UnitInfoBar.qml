@@ -30,7 +30,14 @@ Item {
     property var borderColor: "#604020"
     property var textColor: "#CCE6FF"
     property var statusTextColor: "#F0E0A8"
+    property var textLetterSpacing: 2
+    property var hpFlyingNumbersScale: 1
+    property var enFlyingNumbersScale: 1
 
+    property var currentHP: 1
+    property var currentEN: 1
+    property var deltaHP: 0
+    property var deltaEN: 0
     property var stunnedTurns: 0
     property var restlessTurns: 0
     property var blessedTurns: 0
@@ -72,7 +79,7 @@ Item {
     Rectangle {
         id: hpBar
 
-        width: barWidth
+        width: infoBar.barWidth * infoBar.currentHP / infoBar.maxValue
         height: barHeight
 
         anchors.top: parent.top
@@ -96,13 +103,57 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
 
-        text: "-/-"
+        text: infoBar.currentHP + "/" + infoBar.maxValue
         color: textColor
         font.pixelSize: fontSize
+        font.letterSpacing: infoBar.textLetterSpacing
         font.bold: true
         style: Text.Outline
         styleColor: emptyColor
         z: 4
+    }
+
+    Text {
+        id: hpFlyingNumbers
+
+        anchors.right: parent.horizontalCenter
+        anchors.rightMargin: 4
+
+        z: 7
+        
+        verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: Text.AlignHCenter
+
+        opacity: 0
+        color: infoBar.hpColor
+        font.pixelSize: infoBar.fontSize * infoBar.hpFlyingNumbersScale
+        font.bold: true
+        style: Text.Raised
+        styleColor: "#CC000000"
+        text: infoBar.deltaHP > 0 ? "+" + infoBar.deltaHP : infoBar.deltaHP
+
+        ParallelAnimation {
+            id: hpFlyingNumbersAnimation
+
+            YAnimator {
+                id: hpFlyingNumbersAnimationYpos
+
+                target: hpFlyingNumbers
+                easing.type: Easing.Linear
+                from: -20
+                to: -80
+                duration: 2000 * infoBar.hpFlyingNumbersScale
+            }
+            OpacityAnimator {
+                id: hpFlyingNumbersAnimationOpacity
+
+                target: hpFlyingNumbers
+                easing.type: Easing.InQuint
+                from: 1
+                to: 0
+                duration: 2000 * infoBar.hpFlyingNumbersScale
+            }
+        }
     }
 
     // ENERGY
@@ -153,7 +204,7 @@ Item {
     Rectangle {
         id: enBar
 
-        width: barWidth
+        width: infoBar.barWidth * infoBar.currentEN / infoBar.maxValue
         height: barHeight
 
         anchors.bottom: parent.bottom
@@ -177,15 +228,60 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
 
-        text: "-/-"
+        text: infoBar.currentEN + "/" + infoBar.maxValue
         color: textColor
         font.pixelSize: fontSize
+        font.letterSpacing: infoBar.textLetterSpacing
         font.bold: true
         style: Text.Outline
         styleColor: emptyColor
         z: 5
     }
 
+    Text {
+        id: enFlyingNumbers
+
+        anchors.left: parent.horizontalCenter
+        anchors.leftMargin: 4
+
+        z: 6
+
+        verticalAlignment: Text.AlignVCenter
+        horizontalAlignment: Text.AlignHCenter
+
+        opacity: 0
+        color: infoBar.enColor
+        font.pixelSize: infoBar.fontSize * infoBar.enFlyingNumbersScale
+        font.bold: true
+        style: Text.Raised
+        styleColor: "#CC000000"
+        text: infoBar.deltaEN > 0 ? "+" + infoBar.deltaEN : infoBar.deltaEN
+
+        ParallelAnimation {
+            id: enFlyingNumbersAnimation
+
+            YAnimator {
+                id: enFlyingNumbersAnimationYpos
+
+                target: enFlyingNumbers
+                easing.type: Easing.Linear
+                from: 0
+                to: -60
+                duration: 2000 * infoBar.enFlyingNumbersScale
+            }
+            OpacityAnimator {
+                id: enFlyingNumbersAnimationOpacity
+
+                target: enFlyingNumbers
+                easing.type: Easing.InQuint
+                from: 1
+                to: 0
+                duration: 2000 * infoBar.enFlyingNumbersScale
+            }
+        }
+    }
+
+    // EXTRA TEXT INFO
     Text {
         id: unitNameText
 
@@ -201,6 +297,7 @@ Item {
         text: infoBar.unitName
         color: infoBar.statusTextColor
         font.pixelSize: infoBar.fontSize * 1.25
+        font.letterSpacing: infoBar.textLetterSpacing
         font.bold: true
         style: Text.Raised
         styleColor: "#CC000000"
@@ -225,6 +322,7 @@ Item {
 
             color: infoBar.statusTextColor
             font.pixelSize: infoBar.fontSize * 1.1
+            font.letterSpacing: infoBar.textLetterSpacing
             style: Text.Raised
             styleColor: "#CC000000"
 
@@ -241,6 +339,7 @@ Item {
 
             color: infoBar.statusTextColor
             font.pixelSize: infoBar.fontSize * 1.1
+            font.letterSpacing: infoBar.textLetterSpacing
             style: Text.Raised
             styleColor: "#CC000000"
 
@@ -257,6 +356,7 @@ Item {
 
             color: infoBar.statusTextColor
             font.pixelSize: infoBar.fontSize * 1.1
+            font.letterSpacing: infoBar.textLetterSpacing
             style: Text.Raised
             styleColor: "#CC000000"
 
@@ -273,6 +373,7 @@ Item {
 
             color: infoBar.statusTextColor
             font.pixelSize: infoBar.fontSize * 1.1
+            font.letterSpacing: infoBar.textLetterSpacing
             style: Text.Raised
             styleColor: "#CC000000"
 
@@ -284,6 +385,8 @@ Item {
     function setUnitConstants(name, maxHP) {
         unitName = name
         infoBar.maxValue = maxHP
+        infoBar.currentHP = maxHP
+        infoBar.currentEN = maxHP
     }
 
     function show() {
@@ -322,10 +425,18 @@ Item {
     }
     
     function updateValues(hp, en) {
-        hpBar.width = infoBar.barWidth * hp / infoBar.maxValue
-        enBar.width = infoBar.barWidth * en / infoBar.maxValue
-        hpNumbers.text = hp + "/" + infoBar.maxValue
-        enNumbers.text = en + "/" + infoBar.maxValue
+        if (hp != infoBar.currentHP) {
+            infoBar.deltaHP = hp - infoBar.currentHP
+            infoBar.hpFlyingNumbersScale = (1.5 + (Math.abs(infoBar.deltaHP) * 0.1))
+            hpFlyingNumbersAnimation.restart()
+        }
+        if (en != infoBar.currentEN) {
+            infoBar.deltaEN = en - infoBar.currentEN
+            infoBar.enFlyingNumbersScale = (1.5 + (Math.abs(infoBar.deltaEN) * 0.05))
+            enFlyingNumbersAnimation.restart()
+        }
+        infoBar.currentHP = hp
+        infoBar.currentEN = en
     }
     
     function updateTheoryValues(hpTheory, enTheory, fluctuation) {

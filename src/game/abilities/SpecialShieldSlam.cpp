@@ -16,10 +16,10 @@ using namespace glm;
 
 SpecialShieldSlam::SpecialShieldSlam()
 {
-	costEN = 4;
+	costEN = 3;
 	name = "Shield Slam";
 	iconPath = "icons/SpecialShieldSlam.png";
-	description = "<b><u>Shield Slam</u> ( 4 EN ) Melee</b><br><br>"
+	description = "<b><u>Shield Slam</u> ( 3 EN ) Melee</b><br><br>"
 		"The target takes 5 EN damage and is stunned for 1 turn.<br>"
 		STUN_TOOLTIP
 		EN_DAMAGE_TOOLTIP;
@@ -32,7 +32,7 @@ bool SpecialShieldSlam::Effect(Board* board, Unit* abilityUser, Field* target)
 		abilityUser->ReduceEN(costEN);
 		auto targetUnit = target->GetUnitOnField();
 		targetUnit->Stun(1);
-		targetUnit->TakeDamage(0, 0, damageEN);
+		targetUnit->TakeDamage(Melee, 0, 0, damageEN);
 
 		if (!targetUnit->IsUnitAlive())
 		{
@@ -84,6 +84,6 @@ void SpecialShieldSlam::SelectedAbilityOnFieldHovered(Board* board, Unit* abilit
 	if(CanUse(board, abilityUser, hoveredField))
 	{
 		abilityUser->ReduceTheoreticalEN(costEN);
-		hoveredField->GetUnitOnField()->TakeTheoreticalDamage(0, 0, damageEN);
+		hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Melee, 0, 0, damageEN);
 	}
 }

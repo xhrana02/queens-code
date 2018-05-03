@@ -7,20 +7,20 @@
 
 #pragma once
 
-#include "AttackMelee.h"
+#include "Ability.h"
+#include "Movement.h"
 #include "CommonTooltips.h"
 
-class AttackLongsword : public AttackMelee
+class MovementEnhanced : public Movement
 {
 public:
-	AttackLongsword()
+	MovementEnhanced()
 	{
-		costEN = 4;
-		damageNormal = 9;
-		name = "Longsword Attack";
-		iconPath = "icons/AttackLongsword.png";
-		description = "<b><u>Longsword Attack</u> ( 4 EN ) Melee</b><br><br>"
-			"Deals 9 normal damage to the target.<br>"
-			NORMAL_DAMAGE_TOOLTIP;
+		costEN = 1;
+		name = "Enhanced Movement";
+		iconPath = "icons/MovementEnhanced.png";
+		description = "<b><u>Enhanced Movement</u> ( 1 EN per tile )</b><br><br>"
+			"Move to a different tile.<br>"
+			MOVEMENT_TOOLTIP;
 	}
 };

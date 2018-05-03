@@ -23,7 +23,7 @@ Movement::Movement()
 	name = "Movement";
 	iconPath = "icons/Movement.png";
 	description = "<b><u>Movement</u> ( 2 EN per tile )</b><br><br>"
-		"Move to a different tile. <br><br>"
+		"Move to a different tile.<br>"
 		MOVEMENT_TOOLTIP;
 }
 
@@ -39,7 +39,7 @@ bool Movement::Effect(Board* board, Unit* abilityUser, Field* target)
 			{
 				if (neighborUnit->HasOpportunityAttack && abilityUser->IsEnemy(neighborUnit) && !neighborUnit->IsStunned())
 				{
-					abilityUser->TakeDamage(0, neighborUnit->DamageOpportunityAttack);
+					abilityUser->TakeDamage(Melee, 0, neighborUnit->DamageOpportunityAttack);
 					
 					if(game != nullptr)
 					{
@@ -117,7 +117,7 @@ void Movement::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Fi
 			{
 				if (neighborUnit->HasOpportunityAttack && abilityUser->IsEnemy(neighborUnit) && !neighborUnit->IsStunned())
 				{
-					abilityUser->TakeTheoreticalDamage(0, neighborUnit->DamageOpportunityAttack);
+					abilityUser->TakeTheoreticalDamage(Melee, 0, neighborUnit->DamageOpportunityAttack);
 				}
 			}
 		}

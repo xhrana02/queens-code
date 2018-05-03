@@ -11,6 +11,7 @@
 #include "RenderingObject.h"
 #include <memory>
 #include <QObject>
+#include "GameEnums.h"
 
 class QQuickItem;
 class QQmlEngine;
@@ -33,7 +34,8 @@ protected:
 	void checkCurrentHitPoints();
 	void checkCurrentEnergy();
 
-	int damageReduction = 0;
+	int armor = 0;
+	float damageModifierLine = 1.0f;
 	int regenerationHP = 0;
 	int regenerationEN = 3;
 	int restHP = 1;
@@ -146,11 +148,23 @@ public:
 	int RegainEN(int amount);
 	void IncreaseArmor(int amount)
 	{
-		damageReduction += amount;
+		armor += amount;
 	}
 	void DecreaseArmor(int amount)
 	{
-		damageReduction -= amount;
+		armor -= amount;
+	}
+	void IncreaseDamageReductionLine(float amount)
+	{
+		damageModifierLine *= 1.0f - amount;
+	}
+	void DecreaseDamageReductionLine(float amount)
+	{
+		damageModifierLine /= 1.0f - amount;
+	}
+	float GetDamageReductionLine() const
+	{
+		return 1.0f - damageModifierLine;
 	}
 	void IncreaseRegenerationHP(int amount)
 	{
@@ -191,7 +205,7 @@ public:
 	}
 	void OnUnitDeath();
 
-	int TakeDamage(int damageNormal, int damageHP = 0, int damageEN = 0);
+	int TakeDamage(AttackType attackType, int damageNormal, int damageHP = 0, int damageEN = 0);
 	int Heal(int healHP, int healEN = 0);
 	void Stun(int duration);
 	void MakeRestless(int duration);
@@ -227,7 +241,7 @@ public:
 	int ReduceTheoreticalEN(int amount);
 	int RegainTheoreticalHP(int amount);
 	int RegainTheoreticalEN(int amount);
-	void TakeTheoreticalDamage(int damageNormal, int damageHP = 0, int damageEN = 0);
+	void TakeTheoreticalDamage(AttackType attackType, int damageNormal, int damageHP = 0, int damageEN = 0);
 	void TheoreticalHeal(int healHP, int healEN = 0);
 
 	// PASSIVE ABILITIES RELATED PROPERTIES

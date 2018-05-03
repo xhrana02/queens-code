@@ -5,32 +5,21 @@
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
-#include "AttackCrossbow.h"
+#include "AttackLine.h"
 #include "Game.h"
 #include "Field.h"
 #include "Flash.h"
 #include "Targetfinding.h"
-#include "CommonTooltips.h"
 
 using namespace glm;
 
-AttackCrossbow::AttackCrossbow()
-{
-	costEN = 9;
-	name = "Crossbow Attack";
-	iconPath = "icons/AttackCrossbow.png";
-	description = "<b><u>Crossbow Attack</u> ( 9 EN ) Line 2-8</b><br><br>"
-		"Deals 11 normal damage to the target.<br>"
-		NORMAL_DAMAGE_TOOLTIP;
-}
-
-bool AttackCrossbow::Effect(Board* board, Unit* abilityUser, Field* target)
+bool AttackLine::Effect(Board* board, Unit* abilityUser, Field* target)
 {
 	if(CanUse(board, abilityUser, target))
 	{
 		abilityUser->ReduceEN(costEN);
 		auto targetUnit = target->GetUnitOnField();
-		targetUnit->TakeDamage(damageNormal);
+		targetUnit->TakeDamage(Line, damageNormal, damageHP, damageEN);
 
 		if (!targetUnit->IsUnitAlive())
 		{
@@ -44,7 +33,7 @@ bool AttackCrossbow::Effect(Board* board, Unit* abilityUser, Field* target)
 				{
 					game->PanCameraToField(target);
 					// ReSharper disable once CppNonReclaimedResourceAcquisition
-					new Flash(game, target->GetUnitOnField(), vec4(1.0f, 0.0f, 0.0f, 1.0f), damageNormal);
+					new Flash(game, target->GetUnitOnField(), vec4(1.0f, 0.0f, 0.0f, 1.0f), damageNormal + 1.5*damageHP + 0.75*damageEN);
 				}
 			}
 		}
@@ -53,7 +42,7 @@ bool AttackCrossbow::Effect(Board* board, Unit* abilityUser, Field* target)
 	return false;
 }
 
-bool AttackCrossbow::CanUse(Board* board, Unit* abilityUser, Field* target)
+bool AttackLine::CanUse(Board* board, Unit* abilityUser, Field* target)
 {
 	if (target == nullptr)
 	{
@@ -71,17 +60,17 @@ bool AttackCrossbow::CanUse(Board* board, Unit* abilityUser, Field* target)
 	return false;
 }
 
-void AttackCrossbow::OnSelected(Board* board, Unit* abilityUser)
+void AttackLine::OnSelected(Board* board, Unit* abilityUser)
 {
 	board->HalflightFields(Targetfinding::GetLineEnemyTargets(board, abilityUser, rangeMin, rangeMax, true));
 }
 
-void AttackCrossbow::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
+void AttackLine::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
 {
 	board->HighlightField(hoveredField);
 	if(CanUse(board, abilityUser, hoveredField))
 	{
 		abilityUser->ReduceTheoreticalEN(costEN);
-		hoveredField->GetUnitOnField()->TakeTheoreticalDamage(damageNormal);
+		hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Line, damageNormal);
 	}
 }

@@ -45,6 +45,14 @@ Item {
     }
 
     Loader {
+        id: loaderCredits
+        anchors.fill: parent
+        source: "Credits.qml"
+        visible: false
+        z: 5
+    }
+
+    Loader {
         id: loaderPlayMenu
         anchors.fill: parent
         source: "PlayMenu.qml"
@@ -176,6 +184,7 @@ Item {
 
     function cleanUI() {
         loaderMainMenu.visible      = false
+        loaderCredits.visible       = false
         loaderPlayMenu.visible      = false
         loaderOptionsMenu.visible   = false
         loaderLoadingScreen.visible = false
@@ -192,6 +201,11 @@ Item {
         cleanUI()
         loaderMainMenu.visible      = true
         menuBackground.visible      = true
+    }
+
+    function showCredits() {
+        cleanUI()
+        loaderCredits.visible      = true
     }
 
     function showPlayMenu() {

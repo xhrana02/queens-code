@@ -30,7 +30,9 @@ Rectangle {
 
             styledText: "Continue"
 
-            onClicked: gameOverlay.gameContinue()
+            onClicked: {
+                gameOverlay.gameContinue()
+            }
         }
     
         Item {
@@ -40,23 +42,15 @@ Rectangle {
         }
 
         MenuButton {
-            id: gameMenuButtonTEMP
-
-            anchors.horizontalCenter: parent.horizontalCenter
-
-            styledText: "TEMP"
-
-            onClicked: guiRoot.consoleWrite("This button does nothing")
-        }
-
-        MenuButton {
             id: gameMenuButtonOptions
 
             anchors.horizontalCenter: parent.horizontalCenter
 
             styledText: "Options"
 
-            onClicked: guiRoot.showOptionsMenu()
+            onClicked: {
+                guiRoot.showOptionsMenu()
+            }
         }
     
         Item {
@@ -85,7 +79,9 @@ Rectangle {
 
             styledText: "Quit"
 
-            onClicked: Qt.quit()
+            onClicked: {
+                Qt.quit()
+            }
         }
     }
 }
