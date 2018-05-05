@@ -1,7 +1,7 @@
 //----------------------------------------------//
-//	Author: Pavel Hranáè (xhrana02)				//
-//	School: Vysoké uèení technické v Brnì		//
-//	Faculty: Fakulta informaèních technologií	//
+//  Author: Pavel Hranáè (xhrana02)             //
+//  School: Vysoké uèení technické v Brnì       //
+//  Faculty: Fakulta informaèních technologií   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -9,9 +9,9 @@
 
 void Buff::StartEffect(Unit* buffTarget)
 {
-	affectedUnit = buffTarget;
-	remainingDuration = maxDuration;
-	onEffectStart();
+    affectedUnit = buffTarget;
+    remainingDuration = maxDuration;
+    onEffectStart();
 }
 
 /**
@@ -19,11 +19,11 @@ void Buff::StartEffect(Unit* buffTarget)
  */
 bool Buff::OnTurnStart()
 {
-	remainingDuration--;
-	if (remainingDuration <= 0)
-	{
-		onEffectEnd();
-		return true;
-	}
-	return false;
+    remainingDuration--;
+    if (remainingDuration <= 0)
+    {
+        onEffectEnd();
+        return true;
+    }
+    return false;
 }

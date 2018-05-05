@@ -1,7 +1,7 @@
 //----------------------------------------------//
-//	Modified by (5%): Pavel Hranáè (xhrana02)	//
-//	School: Vysoké uèení technické v Brnì		//
-//	Faculty: Fakulta informaèních technologií	//
+//    Modified by (5%): Pavel Hranáè (xhrana02)    //
+//  School: Vysoké uèení technické v Brnì       //
+//  Faculty: Fakulta informaèních technologií   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -36,12 +36,12 @@ GLSceneProcessor::GLSceneProcessor(shared_ptr<Context> context)
  */
 shared_ptr<GLScene> GLSceneProcessor::processScene(shared_ptr<Scene> scene, shared_ptr<Context> context, shared_ptr<TextureFactory> textureFactory)
 {
-	auto glscene(make_shared<GLScene>());
-	processMeshes(scene, glscene, context);
-	createTextures(scene, glscene, context, textureFactory);
-	glscene->scene = scene;
+    auto glscene(make_shared<GLScene>());
+    processMeshes(scene, glscene, context);
+    createTextures(scene, glscene, context, textureFactory);
+    glscene->scene = scene;
 
-	return glscene;
+    return glscene;
 }
 
 /**
@@ -52,18 +52,18 @@ shared_ptr<GLScene> GLSceneProcessor::processScene(shared_ptr<Scene> scene, shar
  */
 void GLSceneProcessor::processMeshes(shared_ptr<Scene>& scene, shared_ptr<GLScene>& glscene, shared_ptr<Context> context)
 {
-	for(auto model : scene->models)
-	{
-		for(auto mesh : model->meshes)
-		{
-			glscene->GLMeshes[mesh.get()] = GLScene::GLAttribArray();
-			for(auto attribute : mesh->attributes)
-			{
-				auto buff(make_shared<Buffer>(context->getFunctionTable(), attribute->size, static_cast<char*>(attribute->data.get()) + attribute->offset));
-				glscene->GLMeshes[mesh.get()].emplace_back(attribute, buff);
-			}
-		}
-	}
+    for(auto model : scene->models)
+    {
+        for(auto mesh : model->meshes)
+        {
+            glscene->GLMeshes[mesh.get()] = GLScene::GLAttribArray();
+            for(auto attribute : mesh->attributes)
+            {
+                auto buff(make_shared<Buffer>(context->getFunctionTable(), attribute->size, static_cast<char*>(attribute->data.get()) + attribute->offset));
+                glscene->GLMeshes[mesh.get()].emplace_back(attribute, buff);
+            }
+        }
+    }
 }
 
 /**
@@ -75,26 +75,26 @@ void GLSceneProcessor::processMeshes(shared_ptr<Scene>& scene, shared_ptr<GLScen
  */
 void GLSceneProcessor::createTextures(shared_ptr<Scene> scene, shared_ptr<GLScene> glscene, shared_ptr<Context> context, shared_ptr<TextureFactory> textureFactory)
 {
-	for(auto model : scene->models)
-	{
-		for(auto material : model->materials)
-		{
-			//continue if we already processed this material
-			for(auto materialComponent : material->materialComponents)
-			{
-				if(materialComponent->getType() == MaterialComponent::ComponentType::IMAGE)
-				{
-					auto img = static_cast<MaterialImageComponent*>(materialComponent.get());
-					//if the image of MaterialImageComponent hasn't been created
-					if(img && !img->image)
-					{
-						img->image = make_shared<DefaultImage>();
-					}
-					glscene->textures[img] = textureFactory->create(img, context);
-				}
-			}
-		}
-	}
+    for(auto model : scene->models)
+    {
+        for(auto material : model->materials)
+        {
+            //continue if we already processed this material
+            for(auto materialComponent : material->materialComponents)
+            {
+                if(materialComponent->getType() == MaterialComponent::ComponentType::IMAGE)
+                {
+                    auto img = static_cast<MaterialImageComponent*>(materialComponent.get());
+                    //if the image of MaterialImageComponent hasn't been created
+                    if(img && !img->image)
+                    {
+                        img->image = make_shared<DefaultImage>();
+                    }
+                    glscene->textures[img] = textureFactory->create(img, context);
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -106,22 +106,22 @@ void GLSceneProcessor::createTextures(shared_ptr<Scene> scene, shared_ptr<GLScen
  */
 shared_ptr<Texture> DefaultTextureFactory::create(MaterialImageComponent* img, shared_ptr<Context>& context)
 {
-	auto w = int(img->image->getWidth());
-	auto h = int(img->image->getHeight());
-	auto l = 0;
-	while(h > 0 || w > 0)
-	{
-		h >>= 1;
-		w >>= 1;
-		++l;
-	}
-	auto tex(make_shared<Texture>(context->getFunctionTable(),GL_TEXTURE_2D, GL_RGBA8, l, GLsizei(img->image->getWidth()), GLsizei(img->image->getHeight())));
-	//copying data might not be needed
-	context->glTextureSubImage2DEXT(tex->getId(), GL_TEXTURE_2D, 0, 0, 0, GLsizei(img->image->getWidth()), GLsizei(img->image->getHeight()),
-		translateEnum(img->image->getFormat()),translateEnum(img->image->getDataType()), img->image->getBits());
-	context->glGenerateTextureMipmap(tex->getId());
-	context->glTextureParameteri(tex->getId(), GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	context->glTextureParameteri(tex->getId(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    auto w = int(img->image->getWidth());
+    auto h = int(img->image->getHeight());
+    auto l = 0;
+    while(h > 0 || w > 0)
+    {
+        h >>= 1;
+        w >>= 1;
+        ++l;
+    }
+    auto tex(make_shared<Texture>(context->getFunctionTable(),GL_TEXTURE_2D, GL_RGBA8, l, GLsizei(img->image->getWidth()), GLsizei(img->image->getHeight())));
+    //copying data might not be needed
+    context->glTextureSubImage2DEXT(tex->getId(), GL_TEXTURE_2D, 0, 0, 0, GLsizei(img->image->getWidth()), GLsizei(img->image->getHeight()),
+        translateEnum(img->image->getFormat()),translateEnum(img->image->getDataType()), img->image->getBits());
+    context->glGenerateTextureMipmap(tex->getId());
+    context->glTextureParameteri(tex->getId(), GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    context->glTextureParameteri(tex->getId(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	return tex;
+    return tex;
 }

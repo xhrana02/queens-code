@@ -1,7 +1,7 @@
 //----------------------------------------------//
-//	Author: Pavel Hranáè (xhrana02)				//
-//	School: Vysoké uèení technické v Brnì		//
-//	Faculty: Fakulta informaèních technologií	//
+//  Author: Pavel Hranáè (xhrana02)             //
+//  School: Vysoké uèení technické v Brnì       //
+//  Faculty: Fakulta informaèních technologií   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -13,14 +13,14 @@
 class AttackLongsword : public AttackMelee
 {
 public:
-	AttackLongsword()
-	{
-		costEN = 4;
-		damageNormal = 9;
-		name = "Longsword Attack";
-		iconPath = "icons/AttackLongsword.png";
-		description = "<b><u>Longsword Attack</u> ( 4 EN ) Melee</b><br><br>"
-			"Deals 9 normal damage to the target.<br>"
-			NORMAL_DAMAGE_TOOLTIP;
-	}
+    AttackLongsword()
+    {
+        costEN = 4;
+        damageNormal = 9;
+        name = "Longsword Attack";
+        iconPath = "icons/AttackLongsword.png";
+        description = "<b><u>Longsword Attack</u> ( 4 EN ) Melee</b><br><br>"
+            "Deals 9 normal damage to the target.<br>"
+            NORMAL_DAMAGE_TOOLTIP;
+    }
 };

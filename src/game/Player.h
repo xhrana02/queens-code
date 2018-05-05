@@ -1,7 +1,7 @@
 ﻿//----------------------------------------------//
-//	Author: Pavel Hranáč (xhrana02)				//
-//	School: Vysoké učení technické v Brně		//
-//	Faculty: Fakulta informačních technologií	//
+//  Author: Pavel Hranáč (xhrana02)             //
+//  School: Vysoké učení technické v Brně       //
+//  Faculty: Fakulta informačních technologií   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -30,54 +30,54 @@ class Game;
 class Player
 {
 protected:
-	ApplicationControl* appControl;
-	Game* game;
+    ApplicationControl* appControl;
+    Game* game;
 
-	QString name;
-	PlayerID id;
-	int playerType;
-	int aiType;
-	std::set<Unit*> units = std::set<Unit*>();
-	std::set<Unit*> deadUnits = std::set<Unit*>();
+    QString name;
+    PlayerID id;
+    int playerType;
+    int aiType;
+    std::set<Unit*> units = std::set<Unit*>();
+    std::set<Unit*> deadUnits = std::set<Unit*>();
 
-	glm::vec4 normalColor;
-	glm::vec4 halflightColor;
-	glm::vec4 highlightColor;
+    glm::vec4 normalColor;
+    glm::vec4 halflightColor;
+    glm::vec4 highlightColor;
 
-	int commandPoints = 0;
+    int commandPoints = 0;
 
 public:
-	virtual ~Player();
-	Player(Game* inGame, PlayerID inID, QString inName, int inCode) : Player(nullptr, game, inID, inName, inCode){}
-	Player(ApplicationControl* inAppControl, Game* inGame, PlayerID inID, QString inName, int inCode);
+    virtual ~Player();
+    Player(Game* inGame, PlayerID inID, QString inName, int inCode) : Player(nullptr, game, inID, inName, inCode){}
+    Player(ApplicationControl* inAppControl, Game* inGame, PlayerID inID, QString inName, int inCode);
 
-	void DecodePlayerType(int code);
+    void DecodePlayerType(int code);
 
-	void GamePopup(QString message) const;
+    void GamePopup(QString message) const;
 
-	QString GetName() const
-	{
-		return name;
-	}
-	PlayerID GetID() const
-	{
-		return id;
-	}
+    QString GetName() const
+    {
+        return name;
+    }
+    PlayerID GetID() const
+    {
+        return id;
+    }
 
-	virtual Player* GetEnemyPlayer();
-	virtual std::vector<Player*> GetAllEnemyPlayers();
+    virtual Player* GetEnemyPlayer();
+    virtual std::vector<Player*> GetAllEnemyPlayers();
 
-	virtual std::set<Unit*> GetUnits() const
-	{
-		return units;
-	}
+    virtual std::set<Unit*> GetUnits() const
+    {
+        return units;
+    }
 
-	void AddNewUnit(Unit* newUnit);
-	virtual void AddNewUnitAndCreateUI(Unit* newUnit, QQmlEngine* engine, QQuickItem* guiRoot);
-	virtual void OnUnitDeath(Unit* dyingUnit);
+    void AddNewUnit(Unit* newUnit);
+    virtual void AddNewUnitAndCreateUI(Unit* newUnit, QQmlEngine* engine, QQuickItem* guiRoot);
+    virtual void OnUnitDeath(Unit* dyingUnit);
 
-	void BeginTurn();
-	void OnAbilityUsed();
-	bool IsOutOfCommandPoints() const;
-	void EndTurn();
+    void BeginTurn();
+    void OnAbilityUsed();
+    bool IsOutOfCommandPoints() const;
+    void EndTurn();
 };

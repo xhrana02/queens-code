@@ -1,7 +1,7 @@
 //----------------------------------------------//
-//	Author: Pavel Hranáè (xhrana02)				//
-//	School: Vysoké uèení technické v Brnì		//
-//	Faculty: Fakulta informaèních technologií	//
+//  Author: Pavel Hranáè (xhrana02)             //
+//  School: Vysoké uèení technické v Brnì       //
+//  Faculty: Fakulta informaèních technologií   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -13,14 +13,14 @@
 class AttackShortSword : public AttackMelee
 {
 public:
-	AttackShortSword()
-	{
-		costEN = 3;
-		damageNormal = 7;
-		name = "Short Sword Attack";
-		iconPath = "icons/AttackShortSword.png";
-		description = "<b><u>Short Sword Attack</u> ( 3 EN ) Melee</b><br><br>"
-			"Deals 7 normal damage to the target.<br>"
-			NORMAL_DAMAGE_TOOLTIP;
-	}
+    AttackShortSword()
+    {
+        costEN = 3;
+        damageNormal = 7;
+        name = "Short Sword Attack";
+        iconPath = "icons/AttackShortSword.png";
+        description = "<b><u>Short Sword Attack</u> ( 3 EN ) Melee</b><br><br>"
+            "Deals 7 normal damage to the target.<br>"
+            NORMAL_DAMAGE_TOOLTIP;
+    }
 };

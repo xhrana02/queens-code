@@ -1,7 +1,7 @@
 //----------------------------------------------//
-//	Author: Pavel Hranáè (xhrana02)				//
-//	School: Vysoké uèení technické v Brnì		//
-//	Faculty: Fakulta informaèních technologií	//
+//  Author: Pavel Hranáè (xhrana02)             //
+//  School: Vysoké uèení technické v Brnì       //
+//  Faculty: Fakulta informaèních technologií   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -10,11 +10,11 @@
 
 bool AbilityAnimation::LockGame(Game* inGame)
 {
-	game = inGame;
-	if (game != nullptr)
-	{
-		game->LockGame(this);
-		return true;
-	}
-	return false;
+    game = inGame;
+    if (game != nullptr)
+    {
+        game->LockGame(this);
+        return true;
+    }
+    return false;
 }

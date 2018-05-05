@@ -1,7 +1,7 @@
 //----------------------------------------------//
-//	Author: Pavel Hranáè (xhrana02)				//
-//	School: Vysoké uèení technické v Brnì		//
-//	Faculty: Fakulta informaèních technologií	//
+//  Author: Pavel Hranáè (xhrana02)             //
+//  School: Vysoké uèení technické v Brnì       //
+//  Faculty: Fakulta informaèních technologií   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -17,10 +17,10 @@ class Board;
 class Pathfinding
 {
 public:
-	static std::forward_list<Field*> FindPath(Board* board, Field* origin, Field* target);
-	static std::forward_list<Field*> ReconstructPath(std::unordered_map<Field*, Field*> cameFrom, Field* current);
-	static double HeuristicCostEstimate(Field* origin, Field* target);
+    static std::forward_list<Field*> FindPath(Board* board, Field* origin, Field* target);
+    static std::forward_list<Field*> ReconstructPath(std::unordered_map<Field*, Field*> cameFrom, Field* current);
+    static double HeuristicCostEstimate(Field* origin, Field* target);
 
-	static std::vector<Field*> GetAllPossibleTargets(Board* board, Field* origin, int maxLength);
-	static std::vector<Field*> ConvertSetToVector(std::set<Field*> convertingSet);
+    static std::vector<Field*> GetAllPossibleTargets(Board* board, Field* origin, int maxLength);
+    static std::vector<Field*> ConvertSetToVector(std::set<Field*> convertingSet);
 };

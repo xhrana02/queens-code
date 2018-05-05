@@ -14,15 +14,15 @@ class QuickRendererBase : public QObject
 {
    Q_OBJECT
 public:
-	explicit QuickRendererBase(QObject * parent = nullptr);
+    explicit QuickRendererBase(QObject * parent = nullptr);
 
-	void setParentWindow(QQuickWindow * qqw);
-	QQuickWindow *parentWindow() const { return _qqw; }
+    void setParentWindow(QQuickWindow * qqw);
+    QQuickWindow *parentWindow() const { return _qqw; }
 public slots:
-	virtual void beforeRendering();
-	virtual void onOGLContextCreated(QOpenGLContext * context);
-	virtual void onSceneGraphInvalidated();
-	virtual void onFrameSwapped();
+    virtual void beforeRendering();
+    virtual void onOGLContextCreated(QOpenGLContext * context);
+    virtual void onSceneGraphInvalidated();
+    virtual void onFrameSwapped();
 protected:
-	QQuickWindow *_qqw;
+    QQuickWindow *_qqw;
 };

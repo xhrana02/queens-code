@@ -1,7 +1,7 @@
 //----------------------------------------------//
-//	Author: Pavel Hranáè (xhrana02)				//
-//	School: Vysoké uèení technické v Brnì		//
-//	Faculty: Fakulta informaèních technologií	//
+//  Author: Pavel Hranáè (xhrana02)             //
+//  School: Vysoké uèení technické v Brnì       //
+//  Faculty: Fakulta informaèních technologií   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -25,79 +25,79 @@ class Board;
 
 class Field
 {
-	Board* board = nullptr;
-	int positionX;
-	int positionY;
-	TerrainType terrainType;
-	std::shared_ptr<fsg::RenderingObject> fieldBorder = nullptr;
-	std::shared_ptr<fsg::RenderingObject> fieldTerrain = nullptr;
-	std::shared_ptr<fsg::RenderingObject> fieldIceBlock = nullptr;
-	std::shared_ptr<IceBlock> iceBlockUnit = nullptr;
-	bool frozen = false;
-	Unit* unitOnField = nullptr;
+    Board* board = nullptr;
+    int positionX;
+    int positionY;
+    TerrainType terrainType;
+    std::shared_ptr<fsg::RenderingObject> fieldBorder = nullptr;
+    std::shared_ptr<fsg::RenderingObject> fieldTerrain = nullptr;
+    std::shared_ptr<fsg::RenderingObject> fieldIceBlock = nullptr;
+    std::shared_ptr<IceBlock> iceBlockUnit = nullptr;
+    bool frozen = false;
+    Unit* unitOnField = nullptr;
 
 public:
-	Field(Board* inBoard, int position_x, int position_y, TerrainType terrain_type = Empty)
-		: board(inBoard),
-	      positionX(position_x),
-		  positionY(position_y),
-		  terrainType(terrain_type)
-	{
-	}
+    Field(Board* inBoard, int position_x, int position_y, TerrainType terrain_type = Empty)
+        : board(inBoard),
+          positionX(position_x),
+          positionY(position_y),
+          terrainType(terrain_type)
+    {
+    }
 
-	std::vector<fsg::RenderingObject*> GetRenderingObjects() const;
+    std::vector<fsg::RenderingObject*> GetRenderingObjects() const;
 
-	void SetFieldBorderObject(std::shared_ptr<fsg::RenderingObject> newBorder)
-	{
-		fieldBorder = newBorder;
-	}
-	void SetFieldTerrainObject(std::shared_ptr<fsg::RenderingObject> newTerrain)
-	{
-		fieldTerrain = newTerrain;
-	}
-	void SetFieldIceBlockObject(std::shared_ptr<fsg::RenderingObject> newIceBlock);
-	void SetFieldIceBlockUnit(std::shared_ptr<IceBlock> newIceBlock);
+    void SetFieldBorderObject(std::shared_ptr<fsg::RenderingObject> newBorder)
+    {
+        fieldBorder = newBorder;
+    }
+    void SetFieldTerrainObject(std::shared_ptr<fsg::RenderingObject> newTerrain)
+    {
+        fieldTerrain = newTerrain;
+    }
+    void SetFieldIceBlockObject(std::shared_ptr<fsg::RenderingObject> newIceBlock);
+    void SetFieldIceBlockUnit(std::shared_ptr<IceBlock> newIceBlock);
 
-	Board* GetBoard() const
-	{
-		return board;
-	}
+    Board* GetBoard() const
+    {
+        return board;
+    }
 
-	int GetX() const
-	{
-		return positionX;
-	}
+    int GetX() const
+    {
+        return positionX;
+    }
 
-	int GetY() const
-	{
-		return positionY;
-	}
+    int GetY() const
+    {
+        return positionY;
+    }
 
-	float GetRenderingPosX() const;
-	float GetRenderingPosZ() const;
+    float GetRenderingPosX() const;
+    float GetRenderingPosZ() const;
 
-	TerrainType GetTerrainType() const
-	{
-		return terrainType;
-	}
+    TerrainType GetTerrainType() const
+    {
+        return terrainType;
+    }
 
-	void SetTerrainType(TerrainType type)
-	{
-		terrainType = type;
-	}
+    void SetTerrainType(TerrainType type)
+    {
+        terrainType = type;
+    }
 
-	Unit* GetUnitOnField() const;
-	bool IsFieldOccupied() const;
-	bool IsFieldFrozen() const;
+    Unit* GetUnitOnField() const;
+    bool IsFieldOccupied() const;
+    bool IsFieldFrozen() const;
 
-	void MoveUnitToThisField(Unit* unit);
-	void UnitLeavesThisField();
-	void FreezeField();
-	void IceBlockDestroyed();
+    void MoveUnitToThisField(Unit* unit);
+    void UnitLeavesThisField();
+    void FreezeField();
+    void IceBlockDestroyed();
 
-	void HighlightField() const;
-	void UnhighlightField() const;
-	void HalflightField() const;
-	void UnhalflightField() const;
+    void HighlightField() const;
+    void UnhighlightField() const;
+    void HalflightField() const;
+    void UnhalflightField() const;
 
 };

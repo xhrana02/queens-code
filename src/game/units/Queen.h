@@ -1,7 +1,7 @@
 //----------------------------------------------//
-//	Author: Pavel Hranáè (xhrana02)				//
-//	School: Vysoké uèení technické v Brnì		//
-//	Faculty: Fakulta informaèních technologií	//
+//  Author: Pavel Hranáè (xhrana02)             //
+//  School: Vysoké uèení technické v Brnì       //
+//  Faculty: Fakulta informaèních technologií   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -13,13 +13,13 @@
 class Queen : public Unit
 {
 public:
-	Queen()
-	{
-		name = "Queen";
-		this->maximumHP = 10;
-		currentHP = maximumHP;
-		currentEN = maximumEN;
-		abilities.push_back(std::make_shared<Movement>());
-		abilities.push_back(std::make_shared<PassiveThroneClaim>(this));
-	}
+    Queen()
+    {
+        name = "Queen";
+        this->maximumHP = 10;
+        currentHP = maximumHP;
+        currentEN = maximumEN;
+        abilities.push_back(std::make_shared<Movement>());
+        abilities.push_back(std::make_shared<PassiveThroneClaim>(this));
+    }
 };

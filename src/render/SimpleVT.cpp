@@ -1,7 +1,7 @@
 //----------------------------------------------//
-//	Modified by (50%): Pavel Hranáè (xhrana02)	//
-//	School: Vysoké uèení technické v Brnì		//
-//	Faculty: Fakulta informaèních technologií	//
+//    Modified by (50%): Pavel Hranáè (xhrana02)    //
+//  School: Vysoké uèení technické v Brnì       //
+//  Faculty: Fakulta informaèních technologií   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -28,15 +28,15 @@ using namespace ge::glsg;
  */
 void SimpleVT::drawSetup(RenderingObject* object) const
 {
-	auto colorVector = object->GetColor();
-	program->set4fv("color", value_ptr(colorVector));
+    auto colorVector = object->GetColor();
+    program->set4fv("color", value_ptr(colorVector));
 
-	auto translationMatrix = translate(mat4(1.0f), object->position);
-	auto rotationMatrix = rotate(mat4(1.0f), radians(object->rotation), vec3(0.0f, 1.0f, 0.0f));
-	auto modelMatrix = translationMatrix * rotationMatrix;
-	program->setMatrix4fv("modelMatrix", value_ptr(modelMatrix));
+    auto translationMatrix = translate(mat4(1.0f), object->position);
+    auto rotationMatrix = rotate(mat4(1.0f), radians(object->rotation), vec3(0.0f, 1.0f, 0.0f));
+    auto modelMatrix = translationMatrix * rotationMatrix;
+    program->setMatrix4fv("modelMatrix", value_ptr(modelMatrix));
 
-	program->set1f("texRepeat", object->TextureRepeat);
+    program->set1f("texRepeat", object->TextureRepeat);
 }
 
 /**
@@ -44,30 +44,30 @@ void SimpleVT::drawSetup(RenderingObject* object) const
  */
 void SimpleVT::draw(RenderingObject* object) const
 {
-	object->PrepareObject(gl);
+    object->PrepareObject(gl);
 
-	if (!object->IsVisible())
-	{
-		return;
-	}
+    if (!object->IsVisible())
+    {
+        return;
+    }
 
-	drawSetup(object);
+    drawSetup(object);
 
-	for (auto model : object->GetGLScene()->scene->models)
-	{
-		for (auto mesh : model->meshes)
-		{
-			auto texture = object->GetTexture(mesh.get()).get();
-			texture->bind(0);
+    for (auto model : object->GetGLScene()->scene->models)
+    {
+        for (auto mesh : model->meshes)
+        {
+            auto texture = object->GetTexture(mesh.get()).get();
+            texture->bind(0);
 
-			auto VAO = object->GetVAO(mesh.get()).get();
-			VAO->bind();
+            auto VAO = object->GetVAO(mesh.get()).get();
+            VAO->bind();
 
-			gl->glDrawElements(translateEnum(mesh->primitive), GLsizei(mesh->count),
-				translateEnum(mesh->getAttribute(AttributeDescriptor::Semantic::indices)->type), nullptr);
+            gl->glDrawElements(translateEnum(mesh->primitive), GLsizei(mesh->count),
+                translateEnum(mesh->getAttribute(AttributeDescriptor::Semantic::indices)->type), nullptr);
 
-			VAO->unbind();
-		}
-	}
+            VAO->unbind();
+        }
+    }
 }
 

@@ -42,14 +42,14 @@ target_include_directories(${APP_NAME} PUBLIC ${INCLUDE_DIRS})
 target_link_libraries(${APP_NAME} Qt5::Quick Qt5::QuickWidgets geGL geSG AssimpModelLoader QtImageLoader)
 
 set_target_properties(${APP_NAME} PROPERTIES COMPILE_DEFINITIONS "APP_RESOURCES=\"Data\""
-											 VS_DEBUGGER_WORKING_DIRECTORY "$(OutDir)")
+                                             VS_DEBUGGER_WORKING_DIRECTORY "$(OutDir)")
 
 set_property(TARGET ${APP_NAME} PROPERTY FOLDER "${APP_NAME}")
 
 add_custom_command(TARGET ${APP_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory 	"${CMAKE_SOURCE_DIR}/libs/$<CONFIG>"
-												"$<TARGET_FILE_DIR:QueensRegicide>"
-													
-	COMMAND ${CMAKE_COMMAND} -E copy_directory 	"${CMAKE_SOURCE_DIR}/resources"
-												"$<TARGET_FILE_DIR:QueensRegicide>/Data"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory     "${CMAKE_SOURCE_DIR}/libs/$<CONFIG>"
+                                                "$<TARGET_FILE_DIR:QueensRegicide>"
+                                                    
+    COMMAND ${CMAKE_COMMAND} -E copy_directory     "${CMAKE_SOURCE_DIR}/resources"
+                                                "$<TARGET_FILE_DIR:QueensRegicide>/Data"
 )

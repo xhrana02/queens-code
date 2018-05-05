@@ -1,7 +1,7 @@
 //----------------------------------------------//
-//	Author: Pavel Hranáè (xhrana02)				//
-//	School: Vysoké uèení technické v Brnì		//
-//	Faculty: Fakulta informaèních technologií	//
+//  Author: Pavel Hranáè (xhrana02)             //
+//  School: Vysoké uèení technické v Brnì       //
+//  Faculty: Fakulta informaèních technologií   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -15,15 +15,15 @@
 class Priest : public Unit
 {
 public:
-	Priest()
-	{
-		name = "Priest";
-		this->maximumHP = 14;
-		currentHP = maximumHP;
-		currentEN = maximumEN;
-		abilities.push_back(std::make_shared<Movement>());
-		abilities.push_back(std::make_shared<SpecialSmite>());
-		abilities.push_back(std::make_shared<SpecialBlessing>());
-		abilities.push_back(std::make_shared<SpecialHealingCircle>());
-	}
+    Priest()
+    {
+        name = "Priest";
+        this->maximumHP = 14;
+        currentHP = maximumHP;
+        currentEN = maximumEN;
+        abilities.push_back(std::make_shared<Movement>());
+        abilities.push_back(std::make_shared<SpecialSmite>());
+        abilities.push_back(std::make_shared<SpecialBlessing>());
+        abilities.push_back(std::make_shared<SpecialHealingCircle>());
+    }
 };

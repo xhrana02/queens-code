@@ -1,7 +1,7 @@
 //----------------------------------------------//
-//	Author (85%): Pavel Hranáè (xhrana02)		//
-//	School: Vysoké uèení technické v Brnì		//
-//	Faculty: Fakulta informaèních technologií	//
+//    Author (85%): Pavel Hranáè (xhrana02)        //
+//  School: Vysoké uèení technické v Brnì       //
+//  Faculty: Fakulta informaèních technologií   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -20,174 +20,174 @@ using namespace ge::glsg;
 
 RenderingObject::RenderingObject(shared_ptr<Scene> inModel)
 {
-	model = inModel;
+    model = inModel;
 }
 
 void RenderingObject::SetModel(shared_ptr<Scene> newModel)
 {
-	model = newModel;
-	needToUpdateGLScene = true;
+    model = newModel;
+    needToUpdateGLScene = true;
 }
 
 vec4 RenderingObject::GetColor() const
 {
-	if (flashing)
-	{
-		return flashingColor;
-	}
-	if (highlighted)
-	{
-		return fluctuatedColor;
-	}
-	if (halflighted)
-	{
-		return halflightColor;
-	}
-	if (selected)
-	{
-		return highlightColor;
-	}
-	return normalColor;
+    if (flashing)
+    {
+        return flashingColor;
+    }
+    if (highlighted)
+    {
+        return fluctuatedColor;
+    }
+    if (halflighted)
+    {
+        return halflightColor;
+    }
+    if (selected)
+    {
+        return highlightColor;
+    }
+    return normalColor;
 }
 
 void RenderingObject::SetColors(vec4 normal, vec4 halflight, vec4 highlight)
 {
-	normalColor = normal;
-	halflightColor = halflight;
-	highlightColor = highlight;
+    normalColor = normal;
+    halflightColor = halflight;
+    highlightColor = highlight;
 }
 
 void RenderingObject::Highlight()
 {
-	highlighted = true;
+    highlighted = true;
 }
 
 void RenderingObject::Unhighlight()
 {
-	highlighted = false;
+    highlighted = false;
 }
 
 void RenderingObject::Halflight()
 {
-	halflighted = true;
+    halflighted = true;
 }
 
 void RenderingObject::Unhalflight()
 {
-	halflighted = false;
+    halflighted = false;
 }
 
 void RenderingObject::Select()
 {
-	selected = true;
+    selected = true;
 }
 
 void RenderingObject::Unselect()
 {
-	selected = false;
+    selected = false;
 }
 
 void RenderingObject::Fluctuate(float phase)
 {
-	vec4 baseColor;
-	if (halflighted)
-	{
-		baseColor = halflightColor;
-	}
-	else
-	{
-		baseColor = normalColor;
-	}
+    vec4 baseColor;
+    if (halflighted)
+    {
+        baseColor = halflightColor;
+    }
+    else
+    {
+        baseColor = normalColor;
+    }
 
-	fluctuatedColor =
-		highlightColor * phase +
-		baseColor * (1 - phase);
+    fluctuatedColor =
+        highlightColor * phase +
+        baseColor * (1 - phase);
 }
 
 void RenderingObject::SetFlashColor(vec4 flash)
 {
-	flashingColor = flash;
+    flashingColor = flash;
 }
 
 void RenderingObject::StartFlash()
 {
-	flashing = true;
-	SetFlashColor(normalColor);
+    flashing = true;
+    SetFlashColor(normalColor);
 }
 
 void RenderingObject::EndFlash()
 {
-	flashing = false;
+    flashing = false;
 }
 
 void RenderingObject::SetVisible()
 {
-	visible = true;
+    visible = true;
 }
 
 void RenderingObject::SetInvisible()
 {
-	visible = false;
+    visible = false;
 }
 
 void RenderingObject::PrepareObject(shared_ptr<Context> context)
 {
-	if(context != glContext)
-	{
-		glContext = context;
-		needToUpdateGLScene = true;
-	}
-	
-	if(needToUpdateGLScene)
-	{
-		updateGLScene();
-		needToUpdateGLScene = false;
-	}
+    if(context != glContext)
+    {
+        glContext = context;
+        needToUpdateGLScene = true;
+    }
+    
+    if(needToUpdateGLScene)
+    {
+        updateGLScene();
+        needToUpdateGLScene = false;
+    }
 }
 
 void RenderingObject::updateGLScene()
 {
-	if(glContext.get() == nullptr)
-	{
-		cerr << "GL Context not set for an object being accessed." << endl;
-	}
+    if(glContext.get() == nullptr)
+    {
+        cerr << "GL Context not set for an object being accessed." << endl;
+    }
 
-	glScene = GLSceneProcessor::processScene(model, glContext);
+    glScene = GLSceneProcessor::processScene(model, glContext);
 
-	for (auto& meshIt : glScene->GLMeshes)
-	{
-		//mesh geometry
-		auto VAO = make_shared<VertexArray>(glContext->getFunctionTable());
-		for (auto& glattrib : meshIt.second)
-		{
-			if (glattrib.attributeDescriptor->semantic == AttributeDescriptor::Semantic::indices)
-			{
-				VAO->addElementBuffer(glattrib.BO);
-			}
-			else
-			{
-				auto attribLocation = semantic2Attribute(glattrib.attributeDescriptor->semantic);
-				if (attribLocation != -1)
-				{
-					VAO->addAttrib(glattrib.BO, attribLocation, glattrib.attributeDescriptor->numComponents,
-						translateEnum(glattrib.attributeDescriptor->type), GLsizei(glattrib.attributeDescriptor->stride));
-				}
-			}
-		}
-		vaoContainer[meshIt.first] = VAO;
+    for (auto& meshIt : glScene->GLMeshes)
+    {
+        //mesh geometry
+        auto VAO = make_shared<VertexArray>(glContext->getFunctionTable());
+        for (auto& glattrib : meshIt.second)
+        {
+            if (glattrib.attributeDescriptor->semantic == AttributeDescriptor::Semantic::indices)
+            {
+                VAO->addElementBuffer(glattrib.BO);
+            }
+            else
+            {
+                auto attribLocation = semantic2Attribute(glattrib.attributeDescriptor->semantic);
+                if (attribLocation != -1)
+                {
+                    VAO->addAttrib(glattrib.BO, attribLocation, glattrib.attributeDescriptor->numComponents,
+                        translateEnum(glattrib.attributeDescriptor->type), GLsizei(glattrib.attributeDescriptor->stride));
+                }
+            }
+        }
+        vaoContainer[meshIt.first] = VAO;
 
-		//material
-		auto mat = meshIt.first->material.get();
+        //material
+        auto mat = meshIt.first->material.get();
 
-		for (auto& comp : mat->materialComponents)
-		{
-			if (comp->getType() == MaterialComponent::ComponentType::IMAGE)
-			{
-				auto imageComponent = static_cast<MaterialImageComponent*>(comp.get());
-				textureContainer[meshIt.first] = glScene->textures[imageComponent];
-			}
-		}
-	}
+        for (auto& comp : mat->materialComponents)
+        {
+            if (comp->getType() == MaterialComponent::ComponentType::IMAGE)
+            {
+                auto imageComponent = static_cast<MaterialImageComponent*>(comp.get());
+                textureContainer[meshIt.first] = glScene->textures[imageComponent];
+            }
+        }
+    }
 }
 
 /**
@@ -196,11 +196,11 @@ void RenderingObject::updateGLScene()
 */
 int RenderingObject::semantic2Attribute(AttributeDescriptor::Semantic semantic)
 {
-	switch (semantic)
-	{
-		case AttributeDescriptor::Semantic::position: return 0;
-		case AttributeDescriptor::Semantic::normal: return 1;
-		case AttributeDescriptor::Semantic::texcoord: return 2;
-		default: return -1;
-	}
+    switch (semantic)
+    {
+        case AttributeDescriptor::Semantic::position: return 0;
+        case AttributeDescriptor::Semantic::normal: return 1;
+        case AttributeDescriptor::Semantic::texcoord: return 2;
+        default: return -1;
+    }
 }

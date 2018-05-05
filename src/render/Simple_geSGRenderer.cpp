@@ -1,7 +1,7 @@
 //----------------------------------------------//
-//	Modified by (75%): Pavel Hranáè (xhrana02)	//
-//	School: Vysoké uèení technické v Brnì		//
-//	Faculty: Fakulta informaèních technologií	//
+//    Modified by (75%): Pavel Hranáè (xhrana02)    //
+//  School: Vysoké uèení technické v Brnì       //
+//  Faculty: Fakulta informaèních technologií   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -41,39 +41,39 @@ void Simple_geSGRenderer::SetupGLState() const
  */
 void Simple_geSGRenderer::beforeRendering()
 {
-	SetupGLState();
+    SetupGLState();
 
-	VT->program->setMatrix4fv("projectionMatrix", value_ptr(perspectiveMatrix));
-	VT->program->setMatrix4fv("viewMatrix", value_ptr(viewMatrix));
-	VT->program->set3fv("lightPos", value_ptr(vec3(200.0f, 1000.0f, 100.0f)));
-	VT->program->set4fv("lightCol", value_ptr(vec4(1.0f, 1.0f, 0.9f, 1.0f)));
+    VT->program->setMatrix4fv("projectionMatrix", value_ptr(perspectiveMatrix));
+    VT->program->setMatrix4fv("viewMatrix", value_ptr(viewMatrix));
+    VT->program->set3fv("lightPos", value_ptr(vec3(200.0f, 1000.0f, 100.0f)));
+    VT->program->set4fv("lightCol", value_ptr(vec4(1.0f, 1.0f, 0.9f, 1.0f)));
 
-	VT->program->use();
-	for (auto object : renderingObjects)
-	{
-		VT->draw(object);
-	}
+    VT->program->use();
+    for (auto object : renderingObjects)
+    {
+        VT->draw(object);
+    }
 
-	_qqw->resetOpenGLState();
+    _qqw->resetOpenGLState();
 }
 
 void Simple_geSGRenderer::onOGLContextCreated(QOpenGLContext* context)
 {
-	context->makeCurrent(_qqw);
+    context->makeCurrent(_qqw);
 
-	//init geGL gl context
-	init();
-	gl = make_shared<Context>();
-	VT->gl = gl;
+    //init geGL gl context
+    init();
+    gl = make_shared<Context>();
+    VT->gl = gl;
 
-	//load shaders
-	string shaderDir(APP_RESOURCES"/shaders/");
-	auto draw_vs(make_shared<Shader>(GL_VERTEX_SHADER, ge::core::loadTextFile(shaderDir + "draw_vs.glsl")));
-	auto draw_fs(make_shared<Shader>(GL_FRAGMENT_SHADER, ge::core::loadTextFile(shaderDir + "draw_fs.glsl")));
-	auto prog = make_shared<Program>(draw_vs, draw_fs);
-	VT->program = prog;
+    //load shaders
+    string shaderDir(APP_RESOURCES"/shaders/");
+    auto draw_vs(make_shared<Shader>(GL_VERTEX_SHADER, ge::core::loadTextFile(shaderDir + "draw_vs.glsl")));
+    auto draw_fs(make_shared<Shader>(GL_FRAGMENT_SHADER, ge::core::loadTextFile(shaderDir + "draw_fs.glsl")));
+    auto prog = make_shared<Program>(draw_vs, draw_fs);
+    VT->program = prog;
 
-	context->doneCurrent();
+    context->doneCurrent();
 }
 
 /**
@@ -81,21 +81,21 @@ void Simple_geSGRenderer::onOGLContextCreated(QOpenGLContext* context)
  */
 void Simple_geSGRenderer::SetMatrices(Camera* camera)
 {
-	if (abs(camera->EyePosition.x - camera->LookAtPosition.x) == 0 &&
-		abs(camera->EyePosition.y - camera->LookAtPosition.y) == 0 && 
-		abs(camera->EyePosition.z - camera->LookAtPosition.z) == 0)
-	{
-		throw exception("Simple_geSGRenderer.SetMatrices: Camera contains invalid values.");
-	}
+    if (abs(camera->EyePosition.x - camera->LookAtPosition.x) == 0 &&
+        abs(camera->EyePosition.y - camera->LookAtPosition.y) == 0 && 
+        abs(camera->EyePosition.z - camera->LookAtPosition.z) == 0)
+    {
+        throw exception("Simple_geSGRenderer.SetMatrices: Camera contains invalid values.");
+    }
 
-	perspectiveMatrix = perspective(
-		radians(camera->FOVHorizontal),
-		static_cast<float>(GetWindowWidth()) / static_cast<float>(GetWindowHeight()),
-		camera->ClipPlaneNear,
-		camera->ClipPlaneFar);
+    perspectiveMatrix = perspective(
+        radians(camera->FOVHorizontal),
+        static_cast<float>(GetWindowWidth()) / static_cast<float>(GetWindowHeight()),
+        camera->ClipPlaneNear,
+        camera->ClipPlaneFar);
 
-	viewMatrix = lookAt(
-		camera->EyePosition,
-		camera->LookAtPosition,
-		camera->UpVector);
+    viewMatrix = lookAt(
+        camera->EyePosition,
+        camera->LookAtPosition,
+        camera->UpVector);
 }

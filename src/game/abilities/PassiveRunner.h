@@ -1,7 +1,7 @@
 //----------------------------------------------//
-//	Author: Pavel Hranáè (xhrana02)				//
-//	School: Vysoké uèení technické v Brnì		//
-//	Faculty: Fakulta informaèních technologií	//
+//  Author: Pavel Hranáè (xhrana02)             //
+//  School: Vysoké uèení technické v Brnì       //
+//  Faculty: Fakulta informaèních technologií   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -16,11 +16,11 @@
 class PassiveRunner : public PassiveAbility
 {
 public:
-	explicit PassiveRunner()
-	{
-		name = "Runner";
-		iconPath = "icons/PassiveRunner.png";
-		description = "<b><u>Runner</u> ( passive )</b><br><br>"
-			"Scout's Movement costs only 1 EN per tile.<br>";
-	}
+    explicit PassiveRunner()
+    {
+        name = "Runner";
+        iconPath = "icons/PassiveRunner.png";
+        description = "<b><u>Runner</u> ( passive )</b><br><br>"
+            "Scout's Movement costs only 1 EN per tile.<br>";
+    }
 };

@@ -228,7 +228,7 @@ unsigned * AssimpModelLoader::getindices(const aiMesh* aimesh, size_t* count/*=N
    //output
    if (count)
    {
-   	*count = numIndices;
+       *count = numIndices;
    }
    
    //copy indices from all faces into a single consecutive array - a.k.a. element buffer

@@ -1,7 +1,7 @@
 //----------------------------------------------//
-//	Author: Pavel Hranáè (xhrana02)				//
-//	School: Vysoké uèení technické v Brnì		//
-//	Faculty: Fakulta informaèních technologií	//
+//  Author: Pavel Hranáè (xhrana02)             //
+//  School: Vysoké uèení technické v Brnì       //
+//  Faculty: Fakulta informaèních technologií   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -12,27 +12,27 @@
 
 bool Ability::CanAfford(Unit* abilityUser) const
 {
-	if (abilityUser->GetCurrentEnergy() < costEN)
-	{
-		return false;
-	}
-	if (abilityUser->GetCurrentHitPoints() <= costHP)
-	{
-		// <= instead of < so a unit can't kill itself
-		return false;
-	}
-	return true;
+    if (abilityUser->GetCurrentEnergy() < costEN)
+    {
+        return false;
+    }
+    if (abilityUser->GetCurrentHitPoints() <= costHP)
+    {
+        // <= instead of < so a unit can't kill itself
+        return false;
+    }
+    return true;
 }
 
 void Ability::PanCameraToTarget(Field* target) const
 {
-	if(game->IsRealGame())
-	{
-		game->PanCameraToField(target);
-	}
+    if(game->IsRealGame())
+    {
+        game->PanCameraToField(target);
+    }
 }
 
 void Ability::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
 {
-	board->HighlightField(hoveredField);
+    board->HighlightField(hoveredField);
 }

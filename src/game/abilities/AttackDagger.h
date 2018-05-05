@@ -1,7 +1,7 @@
-//----------------------------------------------//
-//	Author: Pavel Hran·Ë (xhrana02)				//
-//	School: VysokÈ uËenÌ technickÈ v BrnÏ		//
-//	Faculty: Fakulta informaËnÌch technologiÌ	//
+Ôªø//----------------------------------------------//
+//  Author: Pavel Hran√°ƒç (xhrana02)             //
+//  School: Vysok√© uƒçen√≠ technick√© v Brnƒõ       //
+//  Faculty: Fakulta informaƒçn√≠ch technologi√≠   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -13,14 +13,14 @@
 class AttackDagger : public AttackMelee
 {
 public:
-	AttackDagger()
-	{
-		costEN = 2;
-		damageHP = 5;
-		name = "Dagger Attack";
-		iconPath = "icons/AttackDagger.png";
-		description = "<b><u>Dagger Attack</u> ( 2 EN ) Melee</b><br><br>"
-			"Deals 5 HP damage to the target.<br>"
-			HP_DAMAGE_TOOLTIP;
-	}
+    AttackDagger()
+    {
+        costEN = 2;
+        damageHP = 5;
+        name = "Dagger Attack";
+        iconPath = "icons/AttackDagger.png";
+        description = "<b><u>Dagger Attack</u> ( 2 EN ) Melee</b><br><br>"
+            "Deals 5 HP damage to the target.<br>"
+            HP_DAMAGE_TOOLTIP;
+    }
 };

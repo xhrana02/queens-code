@@ -1,7 +1,7 @@
-//----------------------------------------------//
-//	Author: Pavel Hran·Ë (xhrana02)				//
-//	School: VysokÈ uËenÌ technickÈ v BrnÏ		//
-//	Faculty: Fakulta informaËnÌch technologiÌ	//
+Ôªø//----------------------------------------------//
+//  Author: Pavel Hran√°ƒç (xhrana02)             //
+//  School: Vysok√© uƒçen√≠ technick√© v Brnƒõ       //
+//  Faculty: Fakulta informaƒçn√≠ch technologi√≠   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -13,19 +13,19 @@
 class AttackLightningBolt : public AttackLine
 {
 public:
-	AttackLightningBolt()
-	{
-		costEN = 5;
-		damageNormal = 5;
-		damageEN = 7;
-		rangeMin = 2;
-		rangeMax = 8;
-		name = "Lightning Bolt";
-		iconPath = "icons/AttackLightningBolt.png";
-		description = "<b><u>Lightning Bolt</u> ( 5 EN ) Line 2-8</b><br><br>"
-			"Deals 7 EN and 5 normal damage to the target.<br>"
-			EN_DAMAGE_TOOLTIP
-			NORMAL_DAMAGE_TOOLTIP
-			COMBINED_DAMAGE_TOOLTIP;
-	}
+    AttackLightningBolt()
+    {
+        costEN = 5;
+        damageNormal = 5;
+        damageEN = 7;
+        rangeMin = 2;
+        rangeMax = 8;
+        name = "Lightning Bolt";
+        iconPath = "icons/AttackLightningBolt.png";
+        description = "<b><u>Lightning Bolt</u> ( 5 EN ) Line 2-8</b><br><br>"
+            "Deals 7 EN and 5 normal damage to the target.<br>"
+            EN_DAMAGE_TOOLTIP
+            NORMAL_DAMAGE_TOOLTIP
+            COMBINED_DAMAGE_TOOLTIP;
+    }
 };

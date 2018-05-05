@@ -1,7 +1,7 @@
 //----------------------------------------------//
-//	Author: Pavel Hranáè (xhrana02)				//
-//	School: Vysoké uèení technické v Brnì		//
-//	Faculty: Fakulta informaèních technologií	//
+//  Author: Pavel Hranáè (xhrana02)             //
+//  School: Vysoké uèení technické v Brnì       //
+//  Faculty: Fakulta informaèních technologií   //
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
@@ -11,18 +11,18 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-	QApplication application(argc, argv);
+    QApplication application(argc, argv);
 
-	QQuickWindow mainWindow;
-	QQmlEngine qmlEngine;
+    QQuickWindow mainWindow;
+    QQmlEngine qmlEngine;
 
-	// ApplicationControl needs to exist until the end of the application
-	// ReSharper disable once CppNonReclaimedResourceAcquisition
-	new ApplicationControl(&application, &mainWindow, &qmlEngine);
+    // ApplicationControl needs to exist until the end of the application
+    // ReSharper disable once CppNonReclaimedResourceAcquisition
+    new ApplicationControl(&application, &mainWindow, &qmlEngine);
 
-	#ifdef NDEBUG
-		FreeConsole();
-	#endif
+    #ifdef NDEBUG
+        FreeConsole();
+    #endif
 
-	return application.exec();
+    return application.exec();
 }
