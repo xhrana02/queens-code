@@ -7,6 +7,7 @@
 
 #include "Field.h"
 #include "Board.h"
+#include "IceBlock.h"
 
 using namespace fsg;
 using namespace std;
@@ -22,12 +23,29 @@ vector<RenderingObject*> Field::GetRenderingObjects() const
 	{
 		objects.push_back(fieldTerrain.get());
 	}
-	if (GetUnitOnField() != nullptr)
+	if (unitOnField)
 	{
-		objects.push_back(GetUnitOnField()->GetRenderingObject());
+		objects.push_back(unitOnField->GetRenderingObject());
+	}
+	if (fieldIceBlock)
+	{
+		objects.push_back(iceBlockUnit->GetRenderingObject());
 	}
 
 	return objects;
+}
+
+void Field::SetFieldIceBlockObject(std::shared_ptr<fsg::RenderingObject> newIceBlock)
+{
+	fieldIceBlock = newIceBlock;
+	fieldIceBlock->SetInvisible();
+}
+
+void Field::SetFieldIceBlockUnit(std::shared_ptr<IceBlock> newIceBlock)
+{
+	iceBlockUnit = newIceBlock;
+	iceBlockUnit->SetOccupiedField(this);
+	iceBlockUnit->SetIceBlockObject(fieldIceBlock.get());
 }
 
 
@@ -45,6 +63,37 @@ float Field::GetRenderingPosX() const
 float Field::GetRenderingPosZ() const
 {
 	return positionY - (board->PlayableHeight() + 1) / 2.0f;
+}
+
+Unit* Field::GetUnitOnField() const
+{
+	if (IsFieldFrozen())
+	{
+		return iceBlockUnit.get();
+	}
+	return unitOnField;
+}
+
+bool Field::IsFieldOccupied() const
+{
+	if (GetTerrainType() != Empty && GetTerrainType() != Throne)
+	{
+		return true;
+	}
+	if (GetUnitOnField() != nullptr)
+	{
+		return true;
+	}
+	if (IsFieldFrozen())
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Field::IsFieldFrozen() const
+{
+	return frozen;
 }
 
 void Field::MoveUnitToThisField(Unit* unit)
@@ -76,17 +125,41 @@ void Field::UnitLeavesThisField()
 	fieldBorder->SetColors(BORDER_NORMAL_COLOR, BORDER_HALFLIGHT_COLOR, BORDER_HIGHLIGHT_COLOR);
 }
 
+void Field::FreezeField()
+{
+	frozen = true;
+	fieldIceBlock->SetVisible();
+	if (unitOnField != nullptr)
+	{
+		unitOnField->Stun(1);
+	}
+}
+
+void Field::IceBlockDestroyed()
+{
+	frozen = false;
+	fieldIceBlock->SetInvisible();
+	if (unitOnField)
+	{
+		unitOnField->OnFreezeEnd();
+	}
+}
+
 void Field::HighlightField() const
 {
-	if(fieldBorder)
+	if (fieldBorder)
 	{
 		fieldBorder->Highlight();
 	}
-	if(fieldTerrain)
+	if (fieldTerrain)
 	{
 		fieldTerrain->Highlight();
 	}
-	if(unitOnField)
+	if (fieldIceBlock)
+	{
+		fieldIceBlock->Highlight();
+	}
+	if (unitOnField)
 	{
 		unitOnField->GetRenderingObject()->Highlight();
 	}
@@ -94,15 +167,19 @@ void Field::HighlightField() const
 
 void Field::UnhighlightField() const
 {
-	if(fieldBorder)
+	if (fieldBorder)
 	{
 		fieldBorder->Unhighlight();
 	}
-	if(fieldTerrain)
+	if (fieldTerrain)
 	{
 		fieldTerrain->Unhighlight();
 	}
-	if(unitOnField)
+	if (fieldIceBlock)
+	{
+		fieldIceBlock->Unhighlight();
+	}
+	if (unitOnField)
 	{
 		unitOnField->GetRenderingObject()->Unhighlight();
 	}
@@ -110,15 +187,19 @@ void Field::UnhighlightField() const
 
 void Field::HalflightField() const
 {
-	if(fieldBorder)
+	if (fieldBorder)
 	{
 		fieldBorder->Halflight();
 	}
-	if(fieldTerrain)
+	if (fieldTerrain)
 	{
 		fieldTerrain->Halflight();
 	}
-	if(unitOnField)
+	if (fieldIceBlock)
+	{
+		fieldIceBlock->Halflight();
+	}
+	if (unitOnField)
 	{
 		unitOnField->GetRenderingObject()->Halflight();
 	}
@@ -126,15 +207,19 @@ void Field::HalflightField() const
 
 void Field::UnhalflightField() const
 {
-	if(fieldBorder)
+	if (fieldBorder)
 	{
 		fieldBorder->Unhalflight();
 	}
-	if(fieldTerrain)
+	if (fieldTerrain)
 	{
 		fieldTerrain->Unhalflight();
 	}
-	if(unitOnField)
+	if (fieldIceBlock)
+	{
+		fieldIceBlock->Unhalflight();
+	}
+	if (unitOnField)
 	{
 		unitOnField->GetRenderingObject()->Unhalflight();
 	}

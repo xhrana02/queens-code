@@ -11,6 +11,7 @@
 
 class BoardFactory
 {
+	static void PopulateNewBoard(Board* newBoard, fsg::ModelLoader* modelLoader);
 public:
 	static std::shared_ptr<Board> CreateStandardBoard(fsg::ModelLoader* modelLoader);
 	static std::shared_ptr<Board> CreateTrainingDuelBoard(fsg::ModelLoader* modelLoader);

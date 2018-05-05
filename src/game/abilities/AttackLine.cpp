@@ -27,16 +27,13 @@ bool AttackLine::Effect(Board* board, Unit* abilityUser, Field* target)
 		}
 		else
 		{
-			if(game != nullptr)
+			if(game->IsRealGame())
 			{
-				if(game->IsRealGame())
-				{
-					game->PanCameraToField(target);
-					// ReSharper disable once CppNonReclaimedResourceAcquisition
-					new Flash(game, target->GetUnitOnField(), vec4(1.0f, 0.0f, 0.0f, 1.0f), damageNormal + 1.5*damageHP + 0.75*damageEN);
-				}
+				// ReSharper disable once CppNonReclaimedResourceAcquisition
+				new Flash(game, target->GetUnitOnField(), vec4(1.0f, 0.0f, 0.0f, 1.0f), damageNormal + 1.5*damageHP + 0.75*damageEN);
 			}
 		}
+		PanCameraToTarget(target);
 		return true;
 	}
 	return false;
@@ -71,6 +68,6 @@ void AttackLine::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, 
 	if(CanUse(board, abilityUser, hoveredField))
 	{
 		abilityUser->ReduceTheoreticalEN(costEN);
-		hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Line, damageNormal);
+		hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Line, damageNormal, damageHP, damageEN);
 	}
 }

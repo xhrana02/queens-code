@@ -19,12 +19,6 @@ vector<Field*> Targetfinding::GetMeleeEnemyTargets(Board* board, Unit* origin, b
 
 	for (auto neighbor : board->GetAllMeleeNeighborFields(origin->GetOccupiedField()))
 	{
-		if (neighbor->GetTerrainType() == IceBlock)
-		{
-			targets.push_back(neighbor);
-			continue;
-		}
-
 		auto neighborUnit = neighbor->GetUnitOnField();
 		if (neighborUnit != nullptr)
 		{
@@ -70,7 +64,7 @@ vector<Field*> Targetfinding::GetLineEnemyTargets(Board* board, Unit* origin, in
 		while (true)
 		{
 			if (isDiagonal) {
-				diagonalTraveled += 1.4142;
+				diagonalTraveled += 1.4142f;
 				range = ceil(diagonalTraveled);
 			} else {
 				range++;
@@ -84,12 +78,6 @@ vector<Field*> Targetfinding::GetLineEnemyTargets(Board* board, Unit* origin, in
 			// Is there an obstacle?
 			if (field->IsFieldOccupied())
 			{
-				if (field->GetTerrainType() == IceBlock) {
-					if (range < rangeMin) { break; } // Obstacle is too near
-					targets.push_back(field);
-					break;
-				}
-
 				if (field->GetUnitOnField() == nullptr) {
 					// Dead end, blocked by terrain or border
 					break;
@@ -128,11 +116,6 @@ vector<Field*> Targetfinding::GetIndirectEnemyTargets(Board* board, Unit* origin
 		{
 			continue;
 		}
-		if (field->GetTerrainType() == IceBlock)
-		{
-			targets.push_back(field);
-			continue;
-		}
 		auto unit = field->GetUnitOnField();
 		if (unit == nullptr)
 		{
@@ -163,10 +146,6 @@ vector<Field*> Targetfinding::GetIndirectAllyTargets(Board* board, Unit* origin,
 		{
 			continue;
 		}
-		if (field->GetTerrainType() == IceBlock)
-		{
-			continue;
-		}
 		auto unit = field->GetUnitOnField();
 		if (unit == nullptr)
 		{
@@ -186,14 +165,14 @@ vector<Field*> Targetfinding::GetIndirectAllyTargets(Board* board, Unit* origin,
 	return targets;
 }
 
-vector<Field*> Targetfinding::GetIndirectEmptyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax)
+vector<Field*> Targetfinding::GetIndirectEmptyTargets(Board* board, Field* origin, int rangeMin, int rangeMax)
 {
 	auto targets = vector<Field*>();
 
 	auto allFields = board->GetAllEmptyFields();
 	for (auto field : allFields)
 	{
-		if (!IsInRange(origin->GetOccupiedField(), field, rangeMin, rangeMax))
+		if (!IsInRange(origin, field, rangeMin, rangeMax))
 		{
 			continue;
 		}
@@ -203,14 +182,14 @@ vector<Field*> Targetfinding::GetIndirectEmptyTargets(Board* board, Unit* origin
 	return targets;
 }
 
-vector<Field*> Targetfinding::GetIndirectAllTargets(Board* board, Unit* origin, int rangeMin, int rangeMax)
+vector<Field*> Targetfinding::GetIndirectAllTargets(Board* board, Field* origin, int rangeMin, int rangeMax)
 {
 	auto targets = vector<Field*>();
 
 	auto allFields = board->GetAllPlayFields();
 	for (auto field : allFields)
 	{
-		if (!IsInRange(origin->GetOccupiedField(), field, rangeMin, rangeMax))
+		if (!IsInRange(origin, field, rangeMin, rangeMax))
 		{
 			continue;
 		}

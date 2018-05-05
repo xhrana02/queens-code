@@ -25,12 +25,10 @@ Game::~Game()
 
 /**
  * \brief Game constructor.
- * \param inBoard Game board.
  */
-Game::Game(ApplicationControl* inAppControl, shared_ptr<Board> inBoard)
+Game::Game(ApplicationControl* inAppControl)
 {
 	appControl = inAppControl;
-	gameBoard = inBoard;
 }
 
 void Game::StartGame() const
@@ -309,7 +307,7 @@ void Game::SelectUnit(Unit* newSelectedUnit)
 
 	if (newSelectedUnit != nullptr)
 	{
-		auto isEnemy = newSelectedUnit->GetOwner() != activePlayer;
+		auto isEnemy = newSelectedUnit->GetOwnerID() != activePlayer->GetID();
 		newSelectedUnit->Select(isEnemy);
 	}
 }
@@ -331,7 +329,7 @@ void Game::UseAbility(Field* clickedField)
 		return;
 	}
 
-	if (selectedUnit->GetOwner() != activePlayer)
+	if (selectedUnit->GetOwnerID() != activePlayer->GetID())
 	{
 		return;
 	}

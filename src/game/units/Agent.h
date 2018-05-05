@@ -15,7 +15,7 @@
 class Agent : public Unit
 {
 public:
-	Agent::Agent()
+	Agent()
 	{
 		name = "Agent";
 		this->maximumHP = 12;

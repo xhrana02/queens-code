@@ -21,7 +21,7 @@ public:
 
 	static std::vector<Field*> GetIndirectEnemyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax, bool includeEmpty = false);
 	static std::vector<Field*> GetIndirectAllyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax, bool includeEmpty = false);
-	static std::vector<Field*> GetIndirectEmptyTargets(Board* board, Unit* origin, int rangeMin, int rangeMax);
-	static std::vector<Field*> GetIndirectAllTargets(Board* board, Unit* origin, int rangeMin, int rangeMax);
+	static std::vector<Field*> GetIndirectEmptyTargets(Board* board, Field* origin, int rangeMin, int rangeMax);
+	static std::vector<Field*> GetIndirectAllTargets(Board* board, Field* origin, int rangeMin, int rangeMax);
 	static bool IsInRange(Field* origin, Field* target, int rangeMin, int rangeMax);
 };

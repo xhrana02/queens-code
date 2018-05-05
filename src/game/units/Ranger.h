@@ -15,7 +15,7 @@
 class Ranger : public Unit
 {
 public:
-	Ranger::Ranger()
+	Ranger()
 	{
 		name = "Ranger";
 		this->maximumHP = 16;

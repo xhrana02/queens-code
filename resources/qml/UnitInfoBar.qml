@@ -30,12 +30,13 @@ Item {
     property var borderColor: "#604020"
     property var textColor: "#CCE6FF"
     property var statusTextColor: "#F0E0A8"
-    property var textLetterSpacing: 2
+    property var textLetterSpacing: 3
     property var hpFlyingNumbersScale: 1
     property var enFlyingNumbersScale: 1
 
     property var currentHP: 1
     property var currentEN: 1
+    property var currentArmor: 0
     property var deltaHP: 0
     property var deltaEN: 0
     property var stunnedTurns: 0
@@ -119,7 +120,7 @@ Item {
         anchors.right: parent.horizontalCenter
         anchors.rightMargin: 4
 
-        z: 7
+        z: 8
         
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter
@@ -244,7 +245,7 @@ Item {
         anchors.left: parent.horizontalCenter
         anchors.leftMargin: 4
 
-        z: 6
+        z: 7
 
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignHCenter
@@ -281,7 +282,7 @@ Item {
         }
     }
 
-    // EXTRA TEXT INFO
+    // EXTRA INFO
     Text {
         id: unitNameText
 
@@ -381,6 +382,41 @@ Item {
         }
     }
 
+    Image {
+        id: armorInfo
+
+        anchors.right: parent.left
+        anchors.rightMargin: -15
+        anchors.verticalCenter: parent.verticalCenter
+        visible: armorValue.text != "0" ? true : false
+
+        z: 6
+
+        width: 50
+        height: 50
+        fillMode: Image.Stretch
+
+        source: "icons/InfoBarArmor.png"
+
+        Text {
+            id: armorValue
+
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.verticalCenter
+            anchors.bottomMargin: -5
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            
+            color: "#FFFFFF"
+            font.pixelSize: infoBar.fontSize * 1.25
+            font.bold: true
+            style: Text.Outline
+            styleColor: "#CC000000"
+
+            text: infoBar.currentArmor
+        }
+    }
+
 
     function setUnitConstants(name, maxHP) {
         unitName = name
@@ -424,7 +460,7 @@ Item {
         }
     }
     
-    function updateValues(hp, en) {
+    function updateValues(hp, en, armor) {
         if (hp != infoBar.currentHP) {
             infoBar.deltaHP = hp - infoBar.currentHP
             infoBar.hpFlyingNumbersScale = (1.5 + (Math.abs(infoBar.deltaHP) * 0.1))
@@ -437,6 +473,7 @@ Item {
         }
         infoBar.currentHP = hp
         infoBar.currentEN = en
+        infoBar.currentArmor = armor
     }
     
     function updateTheoryValues(hpTheory, enTheory, fluctuation) {

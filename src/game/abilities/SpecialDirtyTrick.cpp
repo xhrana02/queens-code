@@ -32,14 +32,11 @@ bool SpecialDirtyTrick::Effect(Board* board, Unit* abilityUser, Field* target)
 		auto targetUnit = target->GetUnitOnField();
 		targetUnit->Stun(1);
 
-		if(game != nullptr)
+		if(game->IsRealGame())
 		{
-			if(game->IsRealGame())
-			{
-				game->PanCameraToField(target);
-				// ReSharper disable once CppNonReclaimedResourceAcquisition
-				new Flash(game, target->GetUnitOnField(), vec4(1.0f, 1.0f, 0.0f, 1.0f), 5);
-			}
+			game->PanCameraToField(target);
+			// ReSharper disable once CppNonReclaimedResourceAcquisition
+			new Flash(game, target->GetUnitOnField(), vec4(1.0f, 1.0f, 0.0f, 1.0f), 5);
 		}
 		return true;
 	}
@@ -56,7 +53,7 @@ bool SpecialDirtyTrick::CanUse(Board* board, Unit* abilityUser, Field* target)
 	auto viableTargets = Targetfinding::GetMeleeEnemyTargets(board, abilityUser);
 	for (auto viableTarget : viableTargets)
 	{
-		if (target == viableTarget)
+		if (target == viableTarget && !target->IsFieldFrozen())
 		{
 			return true;
 		}

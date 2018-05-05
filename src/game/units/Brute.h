@@ -15,7 +15,7 @@
 class Brute : public Unit
 {
 public:
-	Brute::Brute()
+	Brute()
 	{
 		name = "Brute";
 		this->maximumHP = 20;

@@ -13,7 +13,7 @@
 class Queen : public Unit
 {
 public:
-	Queen::Queen()
+	Queen()
 	{
 		name = "Queen";
 		this->maximumHP = 10;

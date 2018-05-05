@@ -8,19 +8,22 @@
 #pragma once
 #include "Unit.h"
 #include "Movement.h"
+#include "SpecialSmite.h"
+#include "SpecialBlessing.h"
+#include "SpecialHealingCircle.h"
 
 class Priest : public Unit
 {
 public:
-	Priest::Priest()
+	Priest()
 	{
 		name = "Priest";
 		this->maximumHP = 14;
 		currentHP = maximumHP;
 		currentEN = maximumEN;
 		abilities.push_back(std::make_shared<Movement>());
-		// smite
-		// blessing
-		// healing circle
+		abilities.push_back(std::make_shared<SpecialSmite>());
+		abilities.push_back(std::make_shared<SpecialBlessing>());
+		abilities.push_back(std::make_shared<SpecialHealingCircle>());
 	}
 };

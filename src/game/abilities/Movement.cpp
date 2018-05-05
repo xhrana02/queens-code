@@ -41,13 +41,10 @@ bool Movement::Effect(Board* board, Unit* abilityUser, Field* target)
 				{
 					abilityUser->TakeDamage(Melee, 0, neighborUnit->DamageOpportunityAttack);
 					
-					if(game != nullptr)
+					if(game->IsRealGame())
 					{
-						if(game->IsRealGame())
-						{
-							// ReSharper disable once CppNonReclaimedResourceAcquisition
-							new Flash(game, abilityUser, vec4(1.0f, 0.0f, 0.0f, 1.0f), 1.5*neighborUnit->DamageOpportunityAttack);
-						}
+						// ReSharper disable once CppNonReclaimedResourceAcquisition
+						new Flash(game, abilityUser, vec4(1.0f, 0.0f, 0.0f, 1.0f), 1.5*neighborUnit->DamageOpportunityAttack);
 					}
 				}
 			}
@@ -59,13 +56,11 @@ bool Movement::Effect(Board* board, Unit* abilityUser, Field* target)
 		else
 		{
 			target->MoveUnitToThisField(abilityUser);
-			if (game != nullptr)
+
+			if (game->IsRealGame())
 			{
-				if (game->IsRealGame())
-				{
-					// ReSharper disable once CppNonReclaimedResourceAcquisition
-					new MovementAnimation(game, abilityUser, calculatedPath);
-				}
+				// ReSharper disable once CppNonReclaimedResourceAcquisition
+				new MovementAnimation(game, abilityUser, calculatedPath);
 			}
 		}
 		return true;

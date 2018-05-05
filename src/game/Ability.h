@@ -32,6 +32,7 @@ public:
 	virtual void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField);
 
 	bool CanAfford(Unit* abilityUser) const;
+	void PanCameraToTarget(Field* target) const;
 
 	QString GetName() const
 	{

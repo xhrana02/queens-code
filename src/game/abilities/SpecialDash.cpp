@@ -29,14 +29,11 @@ bool SpecialDash::Effect(Board* board, Unit* abilityUser, Field* target)
 		abilityUser->ReduceEN(costEN);
 		target->MoveUnitToThisField(abilityUser);
 
-		if(game != nullptr)
+		if(game->IsRealGame())
 		{
-			if(game->IsRealGame())
-			{
-				game->PanCameraToField(target);
-				// ReSharper disable once CppNonReclaimedResourceAcquisition
-				new Flash(game, abilityUser, vec4(0.0f, 0.0f, 0.0f, 0.0f), 10, 0);
-			}
+			game->PanCameraToField(target);
+			// ReSharper disable once CppNonReclaimedResourceAcquisition
+			new Flash(game, abilityUser, vec4(0.0f, 0.0f, 0.0f, 0.0f), 10, 0);
 		}
 		return true;
 	}
@@ -50,7 +47,7 @@ bool SpecialDash::CanUse(Board* board, Unit* abilityUser, Field* target)
 		return false;
 	}
 
-	auto viableTargets = Targetfinding::GetIndirectEmptyTargets(board, abilityUser, rangeMin, rangeMax);
+	auto viableTargets = Targetfinding::GetIndirectEmptyTargets(board, abilityUser->GetOccupiedField(), rangeMin, rangeMax);
 	for (auto viableTarget : viableTargets)
 	{
 		if (target == viableTarget)
@@ -63,7 +60,7 @@ bool SpecialDash::CanUse(Board* board, Unit* abilityUser, Field* target)
 
 void SpecialDash::OnSelected(Board* board, Unit* abilityUser)
 {
-	board->HalflightFields(Targetfinding::GetIndirectEmptyTargets(board, abilityUser, rangeMin, rangeMax));
+	board->HalflightFields(Targetfinding::GetIndirectEmptyTargets(board, abilityUser->GetOccupiedField(), rangeMin, rangeMax));
 }
 
 void SpecialDash::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)

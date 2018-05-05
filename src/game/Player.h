@@ -20,11 +20,16 @@
 #define PLAYER2_HALFLIGHT_COLOR glm::vec4(0.95f, 0.13f, 0.95f, 1.0f)
 #define PLAYER2_HIGHLIGHT_COLOR glm::vec4(0.58f, 0.37f, 1.0f, 1.0f)
 
+#define NEUTRAL_NORMAL_COLOR glm::vec4(0.88f, 0.88f, 0.88f, 1.0f)
+#define NEUTRAL_HALFLIGHT_COLOR glm::vec4(0.94f, 0.94f, 0.94f, 1.0f)
+#define NEUTRAl_HIGHLIGHT_COLOR glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)
+
 class ApplicationControl;
 class Game;
 
 class Player
 {
+protected:
 	ApplicationControl* appControl;
 	Game* game;
 
@@ -32,8 +37,8 @@ class Player
 	PlayerID id;
 	int playerType;
 	int aiType;
-	std::set<Unit*> units;
-	std::set<Unit*> deadUnits;
+	std::set<Unit*> units = std::set<Unit*>();
+	std::set<Unit*> deadUnits = std::set<Unit*>();
 
 	glm::vec4 normalColor;
 	glm::vec4 halflightColor;
@@ -42,9 +47,9 @@ class Player
 	int commandPoints = 0;
 
 public:
-	~Player();
-	explicit Player(Game* inGame, PlayerID inID, QString inName, int inCode) : Player(nullptr, game, inID, inName, inCode){}
-	explicit Player(ApplicationControl* inAppControl, Game* inGame, PlayerID inID, QString inName, int inCode);
+	virtual ~Player();
+	Player(Game* inGame, PlayerID inID, QString inName, int inCode) : Player(nullptr, game, inID, inName, inCode){}
+	Player(ApplicationControl* inAppControl, Game* inGame, PlayerID inID, QString inName, int inCode);
 
 	void DecodePlayerType(int code);
 
@@ -59,17 +64,17 @@ public:
 		return id;
 	}
 
-	Player* GetEnemyPlayer();
-	std::vector<Player*> GetAllEnemyPlayers();
+	virtual Player* GetEnemyPlayer();
+	virtual std::vector<Player*> GetAllEnemyPlayers();
 
-	std::set<Unit*> GetUnits() const
+	virtual std::set<Unit*> GetUnits() const
 	{
 		return units;
 	}
 
 	void AddNewUnit(Unit* newUnit);
-	void AddNewUnitAndCreateUI(Unit* newUnit, Game* game, QQmlEngine* engine, QQuickItem* guiRoot);
-	void OnUnitDeath(Unit* dyingUnit);
+	virtual void AddNewUnitAndCreateUI(Unit* newUnit, QQmlEngine* engine, QQuickItem* guiRoot);
+	virtual void OnUnitDeath(Unit* dyingUnit);
 
 	void BeginTurn();
 	void OnAbilityUsed();

@@ -19,6 +19,7 @@
 #include "Warlock.h"
 #include "Wizard.h"
 #include "../../ApplicationControl.h"
+#include "IceBlock.h"
 
 using namespace fsg;
 using namespace std;
@@ -31,32 +32,29 @@ Game* GameFactory::CreateStandardGame(QString p1Name, int p1Code, QString p2Name
 	appControl->UpdateLoadingProgress(0.01f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/StandardGround/StandardGround.obj", "StandardGround");
 	appControl->UpdateLoadingProgress(0.10f);
-	modelLoader->LoadModel(APP_RESOURCES"/models/FieldBorder/FieldBorder.obj", "FieldBorder");
-	modelLoader->LoadModel(APP_RESOURCES"/models/StoneWall/StoneWall.obj", "StoneWall");
-	modelLoader->LoadModel(APP_RESOURCES"/models/Throne/Throne.obj", "Throne");
-	appControl->UpdateLoadingProgress(0.12f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitQueen/UnitQueen.obj", "UnitQueen");
-	appControl->UpdateLoadingProgress(0.20f);
+	appControl->UpdateLoadingProgress(0.18f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitKnight/UnitKnight.obj", "UnitKnight");
-	appControl->UpdateLoadingProgress(0.28f);
+	appControl->UpdateLoadingProgress(0.26f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitSpearman/UnitSpearman.obj", "UnitSpearman");
-	appControl->UpdateLoadingProgress(0.36f);
+	appControl->UpdateLoadingProgress(0.34f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitBrute/UnitBrute.obj", "UnitBrute");
-	appControl->UpdateLoadingProgress(0.44f);
+	appControl->UpdateLoadingProgress(0.42f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitRanger/UnitRanger.obj", "UnitRanger");
-	appControl->UpdateLoadingProgress(0.52f);
+	appControl->UpdateLoadingProgress(0.50f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitScout/UnitScout.obj", "UnitScout");
-	appControl->UpdateLoadingProgress(0.60f);
+	appControl->UpdateLoadingProgress(0.58f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitAgent/UnitAgent.obj", "UnitAgent");
-	appControl->UpdateLoadingProgress(0.68f);
+	appControl->UpdateLoadingProgress(0.66f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitWarlock/UnitWarlock.obj", "UnitWarlock");
-	appControl->UpdateLoadingProgress(0.76f);
+	appControl->UpdateLoadingProgress(0.74f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitPriest/UnitPriest.obj", "UnitPriest");
-	appControl->UpdateLoadingProgress(0.84f);
+	appControl->UpdateLoadingProgress(0.82f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitWizard/UnitWizard.obj", "UnitWizard");
-	appControl->UpdateLoadingProgress(0.92f);
+	appControl->UpdateLoadingProgress(0.90f);
 
-	auto newGame = new Game(appControl, BoardFactory::CreateStandardBoard(modelLoader));
+	auto newGame = new Game(appControl);
+	newGame->SetGameBoard(BoardFactory::CreateStandardBoard(modelLoader));
 	newGame->ThisIsRealGame();
 	newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player1, p1Name, p1Code));
 	newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player2, p2Name, p2Code));
@@ -102,7 +100,7 @@ Game* GameFactory::CreateStandardGame(QString p1Name, int p1Code, QString p2Name
 	p1Units.push_back(p1Wizard);
 	for (auto unit : p1Units)
 	{
-		newGame->GetPlayer1()->AddNewUnitAndCreateUI(unit, newGame, engine, guiRoot);
+		newGame->GetPlayer1()->AddNewUnitAndCreateUI(unit, engine, guiRoot);
 	}
 	// PLAYER 1 UNITS POSITIONS
 	newGame->GetGameBoard()->GetPlayField(8, 1)->MoveUnitToThisField(p1Queen);
@@ -154,7 +152,7 @@ Game* GameFactory::CreateStandardGame(QString p1Name, int p1Code, QString p2Name
 	for (auto unit : p2Units)
 	{
 		unit->GetRenderingObject()->rotation = p2Rotation;
-		newGame->GetPlayer2()->AddNewUnitAndCreateUI(unit, newGame, engine, guiRoot);
+		newGame->GetPlayer2()->AddNewUnitAndCreateUI(unit, engine, guiRoot);
 	}
 	// PLAYER 2 UNITS POSITIONS
 	newGame->GetGameBoard()->GetPlayField(8, 15)->MoveUnitToThisField(p2Queen);
@@ -194,16 +192,16 @@ Game* GameFactory::CreateScenarioGame(QString scenarioName,
 Game* GameFactory::CreateTrainingDuel(ApplicationControl* appControl, ModelLoader* modelLoader, QQmlEngine* engine, QQuickItem* guiRoot)
 {
 	modelLoader->LoadModel(APP_RESOURCES"/models/Cursor/Cursor.obj", "Cursor");
-	appControl->UpdateLoadingProgress(0.02f);
+	appControl->UpdateLoadingProgress(0.01f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/StandardGround/StandardGround.obj", "StandardGround");
-	appControl->UpdateLoadingProgress(0.32f);
-	modelLoader->LoadModel(APP_RESOURCES"/models/FieldBorder/FieldBorder.obj", "FieldBorder");
+	appControl->UpdateLoadingProgress(0.30f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitKnight/UnitKnight.obj", "UnitKnight");
-	appControl->UpdateLoadingProgress(0.62f);
-	modelLoader->LoadModel(APP_RESOURCES"/models/UnitSpearman/UnitSpearman.obj", "UnitSpearman");
-	appControl->UpdateLoadingProgress(0.92f);
+	appControl->UpdateLoadingProgress(0.60f);
+	modelLoader->LoadModel(APP_RESOURCES"/models/UnitWizard/UnitWizard.obj", "UnitWizard");
+	appControl->UpdateLoadingProgress(0.90f);
 
-	auto newGame = new Game(appControl, BoardFactory::CreateTrainingDuelBoard(modelLoader));
+	auto newGame = new Game(appControl);
+	newGame->SetGameBoard(BoardFactory::CreateTrainingDuelBoard(modelLoader));
 	newGame->ThisIsRealGame();
 	newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player1, "Player", 0));
 	newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player2, "Training AI", 1));
@@ -222,15 +220,15 @@ Game* GameFactory::CreateTrainingDuel(ApplicationControl* appControl, ModelLoade
 	p1Units.push_back(p1Knight);
 	for (auto unit : p1Units)
 	{
-		newGame->GetPlayer1()->AddNewUnitAndCreateUI(unit, newGame, engine, guiRoot);
+		newGame->GetPlayer1()->AddNewUnitAndCreateUI(unit, engine, guiRoot);
 	}
 	// PLAYER 1 UNITS POSITIONS
 	newGame->GetGameBoard()->GetPlayField(3, 2)->MoveUnitToThisField(p1Knight);
 
 	////////////////////////////////////////////////////////////////////////////////
 	// PLAYER 2 UNITS
-	auto p2Spearman = new Spearman();
-	p2Spearman->SetRenderingObject(make_shared<RenderingObject>(modelLoader->GetModel("UnitSpearman")));
+	auto p2Spearman = new Wizard();
+	p2Spearman->SetRenderingObject(make_shared<RenderingObject>(modelLoader->GetModel("UnitWizard")));
 	// PLAYER 2 UNITS COMMON COMMANDS
 	auto p2Rotation = 180.0f;
 	vector<Unit*> p2Units;
@@ -238,7 +236,7 @@ Game* GameFactory::CreateTrainingDuel(ApplicationControl* appControl, ModelLoade
 	for (auto unit : p2Units)
 	{
 		unit->GetRenderingObject()->rotation = p2Rotation;
-		newGame->GetPlayer2()->AddNewUnitAndCreateUI(unit, newGame, engine, guiRoot);
+		newGame->GetPlayer2()->AddNewUnitAndCreateUI(unit, engine, guiRoot);
 	}
 	// PLAYER 2 UNITS POSITIONS
 	newGame->GetGameBoard()->GetPlayField(3, 11)->MoveUnitToThisField(p2Spearman);
@@ -253,21 +251,21 @@ Game* GameFactory::CreateChess(ApplicationControl* appControl, ModelLoader* mode
 	appControl->UpdateLoadingProgress(0.01f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/StandardGround/StandardGround.obj", "StandardGround");
 	appControl->UpdateLoadingProgress(0.14f);
-	modelLoader->LoadModel(APP_RESOURCES"/models/FieldBorder/FieldBorder.obj", "FieldBorder");
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitQueen/UnitQueen.obj", "UnitQueen");
-	appControl->UpdateLoadingProgress(0.27f);
+	appControl->UpdateLoadingProgress(0.25f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitSpearman/UnitSpearman.obj", "UnitSpearman");
-	appControl->UpdateLoadingProgress(0.30f);
+	appControl->UpdateLoadingProgress(0.38f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitBrute/UnitBrute.obj", "UnitBrute");
-	appControl->UpdateLoadingProgress(0.43f);
+	appControl->UpdateLoadingProgress(0.51f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitAgent/UnitAgent.obj", "UnitAgent");
-	appControl->UpdateLoadingProgress(0.56f);
+	appControl->UpdateLoadingProgress(0.64f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitWarlock/UnitWarlock.obj", "UnitWarlock");
-	appControl->UpdateLoadingProgress(0.69f);
+	appControl->UpdateLoadingProgress(0.77f);
 	modelLoader->LoadModel(APP_RESOURCES"/models/UnitPriest/UnitPriest.obj", "UnitPriest");
-	appControl->UpdateLoadingProgress(0.92f);
+	appControl->UpdateLoadingProgress(0.90f);
 
-	auto newGame = new Game(appControl, BoardFactory::CreateChessBoard(modelLoader));
+	auto newGame = new Game(appControl);
+	newGame->SetGameBoard(BoardFactory::CreateChessBoard(modelLoader));
 	newGame->ThisIsRealGame();
 	newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player1, "Player", 0));
 	newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player2, "Chess Master 5000", 3));
@@ -331,7 +329,7 @@ Game* GameFactory::CreateChess(ApplicationControl* appControl, ModelLoader* mode
 	p1Units.push_back(p1Spearman8);
 	for (auto unit : p1Units)
 	{
-		newGame->GetPlayer1()->AddNewUnitAndCreateUI(unit, newGame, engine, guiRoot);
+		newGame->GetPlayer1()->AddNewUnitAndCreateUI(unit, engine, guiRoot);
 	}
 	// PLAYER 1 UNITS POSITIONS
 	newGame->GetGameBoard()->GetPlayField(4, 1)->MoveUnitToThisField(p1Queen);
@@ -407,7 +405,7 @@ Game* GameFactory::CreateChess(ApplicationControl* appControl, ModelLoader* mode
 	for (auto unit : p2Units)
 	{
 		unit->GetRenderingObject()->rotation = p2Rotation;
-		newGame->GetPlayer2()->AddNewUnitAndCreateUI(unit, newGame, engine, guiRoot);
+		newGame->GetPlayer2()->AddNewUnitAndCreateUI(unit, engine, guiRoot);
 	}
 	// PLAYER 2 UNITS POSITIONS
 	newGame->GetGameBoard()->GetPlayField(4, 8)->MoveUnitToThisField(p2Queen);

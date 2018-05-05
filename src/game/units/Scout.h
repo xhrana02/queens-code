@@ -14,7 +14,7 @@
 class Scout : public Unit
 {
 public:
-	Scout::Scout()
+	Scout()
 	{
 		name = "Scout";
 		this->maximumHP = 14;

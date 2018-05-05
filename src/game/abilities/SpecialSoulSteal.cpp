@@ -5,21 +5,35 @@
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
-#include "AttackMelee.h"
+#include "SpecialSoulSteal.h"
 #include "Game.h"
 #include "Field.h"
 #include "Flash.h"
 #include "Targetfinding.h"
+#include "CommonTooltips.h"
 
 using namespace glm;
 
-bool AttackMelee::Effect(Board* board, Unit* abilityUser, Field* target)
+SpecialSoulSteal::SpecialSoulSteal()
+{
+	costHP = 3;
+	costEN = 3;
+	name = "Soul Steal";
+	iconPath = "icons/SpecialSoulSteal.png";
+	description = "<b><u>Soul Steal</u> ( 3 HP, 3 EN ) Melee</b><br><br>"
+		"Deals 6 HP damage to the target. Regains HP equal to the damage dealt.<br>"
+		HP_DAMAGE_TOOLTIP;
+}
+
+bool SpecialSoulSteal::Effect(Board* board, Unit* abilityUser, Field* target)
 {
 	if(CanUse(board, abilityUser, target))
 	{
 		abilityUser->ReduceEN(costEN);
+		abilityUser->ReduceHP(costHP);
 		auto targetUnit = target->GetUnitOnField();
-		targetUnit->TakeDamage(Melee, damageNormal, damageHP, damageEN);
+		auto damageDealt = targetUnit->TakeDamage(Melee, 0, damageHP);
+		abilityUser->Heal(damageDealt);
 
 		if (!targetUnit->IsUnitAlive())
 		{
@@ -30,7 +44,9 @@ bool AttackMelee::Effect(Board* board, Unit* abilityUser, Field* target)
 			if(game->IsRealGame())
 			{
 				// ReSharper disable once CppNonReclaimedResourceAcquisition
-				new Flash(game, target->GetUnitOnField(), vec4(1.0f, 0.0f, 0.0f, 1.0f), damageNormal + 1.5*damageHP + 0.75*damageEN);
+				new Flash(game, abilityUser, vec4(0.0f, 1.0f, 0.0f, 1.0f), 3 + 1.5*damageHP);
+				// ReSharper disable once CppNonReclaimedResourceAcquisition
+				new Flash(game, targetUnit, vec4(0.5f, 0.0f, 0.0f, 0.5f), 1.5*damageHP, 0);
 			}
 		}
 		PanCameraToTarget(target);
@@ -39,7 +55,7 @@ bool AttackMelee::Effect(Board* board, Unit* abilityUser, Field* target)
 	return false;
 }
 
-bool AttackMelee::CanUse(Board* board, Unit* abilityUser, Field* target)
+bool SpecialSoulSteal::CanUse(Board* board, Unit* abilityUser, Field* target)
 {
 	if (target == nullptr)
 	{
@@ -57,17 +73,19 @@ bool AttackMelee::CanUse(Board* board, Unit* abilityUser, Field* target)
 	return false;
 }
 
-void AttackMelee::OnSelected(Board* board, Unit* abilityUser)
+void SpecialSoulSteal::OnSelected(Board* board, Unit* abilityUser)
 {
 	board->HalflightFields(Targetfinding::GetMeleeEnemyTargets(board, abilityUser, true));
 }
 
-void AttackMelee::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
+void SpecialSoulSteal::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
 {
 	board->HighlightField(hoveredField);
 	if(CanUse(board, abilityUser, hoveredField))
 	{
 		abilityUser->ReduceTheoreticalEN(costEN);
-		hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Melee, damageNormal, damageHP, damageEN);
+		abilityUser->ReduceTheoreticalHP(costHP);
+		auto damageDealt = hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Melee, 0, damageHP);
+		abilityUser->TheoreticalHeal(damageDealt);
 	}
 }

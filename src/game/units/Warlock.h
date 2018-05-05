@@ -8,19 +8,22 @@
 #pragma once
 #include "Unit.h"
 #include "Movement.h"
+#include "SpecialFireball.h"
+#include "SpecialDemonShield.h"
+#include "SpecialSoulSteal.h"
 
 class Warlock : public Unit
 {
 public:
-	Warlock::Warlock()
+	Warlock()
 	{
 		name = "Warlock";
 		this->maximumHP = 16;
 		currentHP = maximumHP;
 		currentEN = maximumEN;
 		abilities.push_back(std::make_shared<Movement>());
-		// fireball
-		// demon shield
-		// soul steal
+		abilities.push_back(std::make_shared<SpecialFireball>());
+		abilities.push_back(std::make_shared<SpecialDemonShield>());
+		abilities.push_back(std::make_shared<SpecialSoulSteal>());
 	}
 };

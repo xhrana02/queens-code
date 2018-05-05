@@ -6,14 +6,46 @@
 //----------------------------------------------//
 
 #include "BoardFactory.h"
+#include "IceBlock.h"
+#include "Player.h"
 
 using namespace fsg;
 using namespace std;
 using namespace glm;
 
+void BoardFactory::PopulateNewBoard(Board* newBoard, fsg::ModelLoader* modelLoader)
+{
+	modelLoader->LoadModel(APP_RESOURCES"/models/FieldBorder/FieldBorder.obj", "FieldBorder");
+	modelLoader->LoadModel(APP_RESOURCES"/models/IceBlock/IceBlock.obj", "IceBlock");
+
+	for (auto x = 1; x <= newBoard->PlayableWidth(); x++)
+	{
+		for (auto y = 1; y <= newBoard->PlayableHeight(); y++)
+		{
+			auto field = newBoard->GetField(x, y);
+
+			auto newBorderObject = make_shared<RenderingObject>(modelLoader->GetModel("FieldBorder"));
+			newBorderObject->position = vec3(field->GetRenderingPosX(), 0.0f, field->GetRenderingPosZ());
+			newBorderObject->SetColors(BORDER_NORMAL_COLOR, BORDER_HALFLIGHT_COLOR, BORDER_HIGHLIGHT_COLOR);
+			field->SetFieldBorderObject(newBorderObject);
+
+			auto newIceBlockObject = make_shared<RenderingObject>(modelLoader->GetModel("IceBlock"));
+			newIceBlockObject->position = vec3(field->GetRenderingPosX(), 0.0f, field->GetRenderingPosZ());
+			newIceBlockObject->SetColors(ICE_BLOCK_NORMAL_COLOR, ICE_BLOCK_HALFLIGHT_COLOR, ICE_BLOCK_HIGHLIGHT_COLOR);
+			field->SetFieldIceBlockObject(newIceBlockObject);
+
+			auto newIceBlockUnit = make_shared<IceBlock>();
+			field->SetFieldIceBlockUnit(newIceBlockUnit);
+		}
+	}
+}
+
 shared_ptr<Board> BoardFactory::CreateStandardBoard(ModelLoader* modelLoader)
 {
 	auto newBoard = make_shared<Board>(15, 15);
+
+	modelLoader->LoadModel(APP_RESOURCES"/models/Throne/Throne.obj", "Throne");
+	modelLoader->LoadModel(APP_RESOURCES"/models/StoneWall/StoneWall.obj", "StoneWall");
 
 	auto throneObject = make_shared<RenderingObject>(modelLoader->GetModel("Throne"));
 	throneObject->TextureRepeat = 10;
@@ -46,35 +78,17 @@ shared_ptr<Board> BoardFactory::CreateStandardBoard(ModelLoader* modelLoader)
 		field->SetTerrainType(Wall);
 	}
 
-	for (auto x = 1; x <= newBoard->PlayableWidth(); x++)
-	{
-		for (auto y = 1; y <= newBoard->PlayableHeight(); y++)
-		{
-			auto field = newBoard->GetField(x, y);
-			auto newBorderObject = make_shared<RenderingObject>(modelLoader->GetModel("FieldBorder"));
-			newBorderObject->position = vec3(field->GetRenderingPosX(), 0.0f, field->GetRenderingPosZ());
-			newBorderObject->SetColors(BORDER_NORMAL_COLOR, BORDER_HALFLIGHT_COLOR, BORDER_HIGHLIGHT_COLOR);
-			field->SetFieldBorderObject(newBorderObject);
-		}
-	}
+	PopulateNewBoard(newBoard.get(), modelLoader);
+
 	return newBoard;
 }
 
 shared_ptr<Board> BoardFactory::CreateTrainingDuelBoard(ModelLoader* modelLoader)
 {
 	auto newBoard = make_shared<Board>(5, 12);
-	
-	for (auto x = 1; x <= newBoard->PlayableWidth(); x++)
-	{
-		for (auto y = 1; y <= newBoard->PlayableHeight(); y++)
-		{
-			auto field = newBoard->GetField(x, y);
-			auto newBorderObject = make_shared<RenderingObject>(modelLoader->GetModel("FieldBorder"));
-			newBorderObject->position = vec3(field->GetRenderingPosX(), 0.0f, field->GetRenderingPosZ());
-			newBorderObject->SetColors(BORDER_NORMAL_COLOR, BORDER_HALFLIGHT_COLOR, BORDER_HIGHLIGHT_COLOR);
-			field->SetFieldBorderObject(newBorderObject);
-		}
-	}
+
+	PopulateNewBoard(newBoard.get(), modelLoader);
+
 	return newBoard;
 }
 
@@ -82,16 +96,7 @@ shared_ptr<Board> BoardFactory::CreateChessBoard(ModelLoader* modelLoader)
 {
 	auto newBoard = make_shared<Board>(8, 8);
 
-	for (auto x = 1; x <= newBoard->PlayableWidth(); x++)
-	{
-		for (auto y = 1; y <= newBoard->PlayableHeight(); y++)
-		{
-			auto field = newBoard->GetField(x, y);
-			auto newBorderObject = make_shared<RenderingObject>(modelLoader->GetModel("FieldBorder"));
-			newBorderObject->position = vec3(field->GetRenderingPosX(), 0.0f, field->GetRenderingPosZ());
-			newBorderObject->SetColors(BORDER_NORMAL_COLOR, BORDER_HALFLIGHT_COLOR, BORDER_HIGHLIGHT_COLOR);
-			field->SetFieldBorderObject(newBorderObject);
-		}
-	}
+	PopulateNewBoard(newBoard.get(), modelLoader);
+
 	return newBoard;
 }

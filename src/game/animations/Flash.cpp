@@ -13,6 +13,11 @@ using namespace glm;
 
 Flash::Flash(Game* inGame, Unit* inUnit, vec4 color, int intensity, int customPeakFrame)
 {
+	if (!inGame || !inUnit)
+	{
+		delete this;
+		return;
+	}
 	goal = 5 * intensity;
 	subgoal = customPeakFrame;
 	flashingUnit = inUnit->GetRenderingObject();

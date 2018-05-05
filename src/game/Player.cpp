@@ -48,6 +48,11 @@ Player::Player(ApplicationControl* inAppControl, Game* inGame, PlayerID inID, QS
 		halflightColor = PLAYER2_HALFLIGHT_COLOR;
 		highlightColor = PLAYER2_HIGHLIGHT_COLOR;
 		break;
+	case Neutral:
+		normalColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		halflightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		highlightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		break;
 	default:
 		throw exception("Player CTOR - Unknown player ID.");
 	}
@@ -78,55 +83,65 @@ vector<Player*> Player::GetAllEnemyPlayers()
  */
 void Player::DecodePlayerType(int code)
 {
-	auto lastDigit = code % 10;
-	if (lastDigit > 0){
-		playerType = AI;
-		switch(lastDigit)
-		{
-		case 1:
-			aiType = Easy;
-			return;
-		case 2:
-			aiType = Normal;
-			return;
-		case 3:
-			aiType = Hard;
-			return;
-		case 4:
-			aiType = Custom;
-			return;
-		default: 
-			throw exception("Player.DecodePlayerType: Invalid player code.");
-		}
+	if (code < 0)
+	{
+		playerType = NeutralType;
+		aiType = None;
+		return;
 	}
 
-	playerType = Human;
-	aiType = None;
+	auto lastDigit = code % 10;
+	if (lastDigit == 0)
+	{
+		playerType = Human;
+		aiType = None;
+		return;
+	}
+
+	playerType = AI;
+	switch(lastDigit)
+	{
+	case 1:
+		aiType = Easy;
+		return;
+	case 2:
+		aiType = Normal;
+		return;
+	case 3:
+		aiType = Hard;
+		return;
+	case 4:
+		aiType = Custom;
+		return;
+	default: 
+		throw exception("Player.DecodePlayerType: Invalid player code.");
+	}
 }
 
 void Player::AddNewUnit(Unit* newUnit)
 {
 	units.insert(newUnit);
 	newUnit->SetOwner(this);
-	newUnit->GetRenderingObject()->SetColors(normalColor, halflightColor, highlightColor);
-}
-
-void Player::AddNewUnitAndCreateUI(Unit* newUnit, Game* game, QQmlEngine* engine, QQuickItem* guiRoot)
-{
-	AddNewUnit(newUnit);
 	newUnit->SetAppControl(appControl);
-	newUnit->CreateInfoBar(engine, guiRoot);
-	newUnit->CreateAbilitiesBar(engine, guiRoot);
 	for (auto ability : newUnit->GetAbilites())
 	{
 		ability->SetGame(game);
 	}
 }
 
+void Player::AddNewUnitAndCreateUI(Unit* newUnit, QQmlEngine* engine, QQuickItem* guiRoot)
+{
+	AddNewUnit(newUnit);
+	newUnit->GetRenderingObject()->SetColors(normalColor, halflightColor, highlightColor);
+	newUnit->CreateInfoBar(engine, guiRoot);
+	newUnit->CreateAbilitiesBar(engine, guiRoot);
+}
+
 void Player::OnUnitDeath(Unit* dyingUnit)
 {
 	units.erase(dyingUnit);
 	deadUnits.insert(dyingUnit);
+
 	if (game->IsRealGame())
 	{
 		GamePopup(name + "'s " + dyingUnit->GetName() + " died");

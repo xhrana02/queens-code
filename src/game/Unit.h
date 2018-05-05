@@ -66,7 +66,7 @@ protected:
 	QQuickItem* abilitiesBar = nullptr;
 
 public:
-	~Unit();
+	virtual ~Unit();
 	void SetAppControl(ApplicationControl* inAppControl)
 	{
 		appControl = inAppControl;
@@ -75,7 +75,7 @@ public:
 
 	float GetRenderingPosX() const;
 	float GetRenderingPosZ() const;
-	fsg::RenderingObject* GetRenderingObject() const
+	virtual fsg::RenderingObject* GetRenderingObject() const
 	{
 		return renderingObject.get();
 	}
@@ -106,10 +106,8 @@ public:
 	{
 		return owner;
 	}
-	void SetOwner(Player* player)
-	{
-		owner = player;
-	}
+	virtual PlayerID GetOwnerID() const;
+	void SetOwner(Player* player);
 
 	void CreateInfoBar(QQmlEngine* engine, QQuickItem* guiRoot);
 	void UpdateInfoBar(glm::mat4 perspective, glm::mat4 view, int winWidth, int winHeight, float fluctuation) const;
@@ -203,12 +201,13 @@ public:
 	{
 		return currentHP > 0;
 	}
-	void OnUnitDeath();
+	virtual void OnUnitDeath();
 
-	int TakeDamage(AttackType attackType, int damageNormal, int damageHP = 0, int damageEN = 0);
-	int Heal(int healHP, int healEN = 0);
+	virtual int TakeDamage(AttackType attackType, int damageNormal, int damageHP = 0, int damageEN = 0);
+	virtual int Heal(int healHP, int healEN = 0);
 	void Stun(int duration);
 	void MakeRestless(int duration);
+	void OnFreezeEnd();
 
 	bool IsStunned() const
 	{
@@ -227,7 +226,7 @@ public:
 	{
 		return buffs;
 	}
-	void ApplyBuff(Buff* newBuff);
+	virtual void ApplyBuff(Buff* newBuff);
 	void CheckBuffDurations();
 	void CheckStatusDurations();
 	void CheckThroneClaim() const;
@@ -241,8 +240,8 @@ public:
 	int ReduceTheoreticalEN(int amount);
 	int RegainTheoreticalHP(int amount);
 	int RegainTheoreticalEN(int amount);
-	void TakeTheoreticalDamage(AttackType attackType, int damageNormal, int damageHP = 0, int damageEN = 0);
-	void TheoreticalHeal(int healHP, int healEN = 0);
+	virtual int TakeTheoreticalDamage(AttackType attackType, int damageNormal, int damageHP = 0, int damageEN = 0);
+	virtual int TheoreticalHeal(int healHP, int healEN = 0);
 
 	// PASSIVE ABILITIES RELATED PROPERTIES
 	bool IsRoyalty = false;

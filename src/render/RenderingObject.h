@@ -17,15 +17,16 @@ namespace fsg
 	class RenderingObject
 	{
 		std::shared_ptr<ge::sg::Scene> model;
-		glm::vec4 normalColor = glm::vec4(0.88f,0.88f,0.88f,1);
-		glm::vec4 halflightColor = glm::vec4(0.94f,0.94f,0.94f,1);
-		glm::vec4 fluctuatedColor = glm::vec4(1,1,1,1);
-		glm::vec4 highlightColor = glm::vec4(1,1,1,1);
-		glm::vec4 flashingColor = glm::vec4(1,1,1,1);
+		glm::vec4 normalColor = glm::vec4(0.88f,0.88f,0.88f,1.0f);
+		glm::vec4 halflightColor = glm::vec4(0.94f,0.94f,0.94f,1.0f);
+		glm::vec4 fluctuatedColor = glm::vec4(1.0f,1.0f,1.0f,1.0f);
+		glm::vec4 highlightColor = glm::vec4(1.0f,1.0f,1.0f,1.0f);
+		glm::vec4 flashingColor = glm::vec4(1.0f,1.0f,1.0f,1.0f);
 		bool highlighted = false;
 		bool halflighted = false;
 		bool selected = false;
 		bool flashing = false;
+		bool visible = true;
 
 		std::shared_ptr<ge::gl::Context> glContext;
 		std::shared_ptr<ge::glsg::GLScene> glScene;
@@ -72,6 +73,12 @@ namespace fsg
 		void SetFlashColor(glm::vec4 flash);
 		void StartFlash();
 		void EndFlash();
+		void SetVisible();
+		void SetInvisible();
+		bool IsVisible() const
+		{
+			return visible;
+		}
 
 		std::shared_ptr<ge::glsg::GLScene> GetGLScene() const
 		{

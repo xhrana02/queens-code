@@ -23,7 +23,7 @@ RenderingObject::RenderingObject(shared_ptr<Scene> inModel)
 	model = inModel;
 }
 
-void RenderingObject::SetModel(std::shared_ptr<ge::sg::Scene> newModel)
+void RenderingObject::SetModel(shared_ptr<Scene> newModel)
 {
 	model = newModel;
 	needToUpdateGLScene = true;
@@ -35,10 +35,6 @@ vec4 RenderingObject::GetColor() const
 	{
 		return flashingColor;
 	}
-	if (selected)
-	{
-		return highlightColor;
-	}
 	if (highlighted)
 	{
 		return fluctuatedColor;
@@ -46,6 +42,10 @@ vec4 RenderingObject::GetColor() const
 	if (halflighted)
 	{
 		return halflightColor;
+	}
+	if (selected)
+	{
+		return highlightColor;
 	}
 	return normalColor;
 }
@@ -120,9 +120,19 @@ void RenderingObject::EndFlash()
 	flashing = false;
 }
 
+void RenderingObject::SetVisible()
+{
+	visible = true;
+}
+
+void RenderingObject::SetInvisible()
+{
+	visible = false;
+}
+
 void RenderingObject::PrepareObject(shared_ptr<Context> context)
 {
-	if(context.get() != glContext.get())
+	if(context != glContext)
 	{
 		glContext = context;
 		needToUpdateGLScene = true;

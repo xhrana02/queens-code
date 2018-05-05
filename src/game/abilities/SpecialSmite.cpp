@@ -5,7 +5,7 @@
 //  Date: Spring 2018                           //
 //----------------------------------------------//
 
-#include "SpecialShieldSlam.h"
+#include "SpecialSmite.h"
 #include "Game.h"
 #include "Field.h"
 #include "Flash.h"
@@ -14,25 +14,25 @@
 
 using namespace glm;
 
-SpecialShieldSlam::SpecialShieldSlam()
+SpecialSmite::SpecialSmite()
 {
 	costEN = 3;
-	name = "Shield Slam";
-	iconPath = "icons/SpecialShieldSlam.png";
-	description = "<b><u>Shield Slam</u> ( 3 EN ) Melee</b><br><br>"
-		"The target takes 4 EN damage and is stunned for 1 turn.<br>"
+	name = "Smite";
+	iconPath = "icons/SpecialSmite.png";
+	description = "<b><u>Smite</u> ( 5 EN ) Indirect 1-5</b><br><br>"
+		"The target takes 3 EN and 2 normal damage and is Stunned for 1 turn.<br>"
 		STUN_TOOLTIP
 		EN_DAMAGE_TOOLTIP;
 }
 
-bool SpecialShieldSlam::Effect(Board* board, Unit* abilityUser, Field* target)
+bool SpecialSmite::Effect(Board* board, Unit* abilityUser, Field* target)
 {
 	if(CanUse(board, abilityUser, target))
 	{
 		abilityUser->ReduceEN(costEN);
 		auto targetUnit = target->GetUnitOnField();
 		targetUnit->Stun(1);
-		targetUnit->TakeDamage(Melee, 0, 0, damageEN);
+		targetUnit->TakeDamage(Melee, damageNormal, 0, damageEN);
 
 		if (!targetUnit->IsUnitAlive())
 		{
@@ -43,7 +43,7 @@ bool SpecialShieldSlam::Effect(Board* board, Unit* abilityUser, Field* target)
 			if(game->IsRealGame())
 			{
 				// ReSharper disable once CppNonReclaimedResourceAcquisition
-				new Flash(game, target->GetUnitOnField(), vec4(1.0f, 1.0f, 0.0f, 1.0f), 5 + 0.75 * damageEN);
+				new Flash(game, target->GetUnitOnField(), vec4(1.0f, 1.0f, 0.5f, 0.5f), 5 + damageNormal + 0.75 * damageEN);
 			}
 		}
 		PanCameraToTarget(target);
@@ -52,14 +52,14 @@ bool SpecialShieldSlam::Effect(Board* board, Unit* abilityUser, Field* target)
 	return false;
 }
 
-bool SpecialShieldSlam::CanUse(Board* board, Unit* abilityUser, Field* target)
+bool SpecialSmite::CanUse(Board* board, Unit* abilityUser, Field* target)
 {
 	if (target == nullptr)
 	{
 		return false;
 	}
 
-	auto viableTargets = Targetfinding::GetMeleeEnemyTargets(board, abilityUser);
+	auto viableTargets = Targetfinding::GetIndirectEnemyTargets(board, abilityUser, rangeMin, rangeMax);
 	for (auto viableTarget : viableTargets)
 	{
 		if (target == viableTarget)
@@ -70,17 +70,17 @@ bool SpecialShieldSlam::CanUse(Board* board, Unit* abilityUser, Field* target)
 	return false;
 }
 
-void SpecialShieldSlam::OnSelected(Board* board, Unit* abilityUser)
+void SpecialSmite::OnSelected(Board* board, Unit* abilityUser)
 {
-	board->HalflightFields(Targetfinding::GetMeleeEnemyTargets(board, abilityUser, true));
+	board->HalflightFields(Targetfinding::GetIndirectEnemyTargets(board, abilityUser, rangeMin, rangeMax, true));
 }
 
-void SpecialShieldSlam::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
+void SpecialSmite::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
 {
 	board->HighlightField(hoveredField);
 	if(CanUse(board, abilityUser, hoveredField))
 	{
 		abilityUser->ReduceTheoreticalEN(costEN);
-		hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Melee, 0, 0, damageEN);
+		hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Melee, damageNormal, 0, damageEN);
 	}
 }

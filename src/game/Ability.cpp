@@ -8,6 +8,7 @@
 #include "Ability.h"
 #include "Unit.h"
 #include "Board.h"
+#include "Game.h"
 
 bool Ability::CanAfford(Unit* abilityUser) const
 {
@@ -21,6 +22,14 @@ bool Ability::CanAfford(Unit* abilityUser) const
 		return false;
 	}
 	return true;
+}
+
+void Ability::PanCameraToTarget(Field* target) const
+{
+	if(game->IsRealGame())
+	{
+		game->PanCameraToField(target);
+	}
 }
 
 void Ability::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)

@@ -36,4 +36,14 @@ public:
 	{
 		return remainingDuration;
 	}
+
+	int GetMaximumDuration() const
+	{
+		return maxDuration;
+	}
+
+	void RestartDuration()
+	{
+		remainingDuration = maxDuration;
+	}
 };

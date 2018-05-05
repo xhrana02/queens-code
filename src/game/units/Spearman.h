@@ -15,7 +15,7 @@
 class Spearman : public Unit
 {
 public:
-	Spearman::Spearman()
+	Spearman()
 	{
 		name = "Spearman";
 		this->maximumHP = 18;

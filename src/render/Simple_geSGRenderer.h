@@ -51,7 +51,12 @@ namespace fsg
 		void SetObjects(std::vector<RenderingObject*> newObjects)
 		{
 			renderingObjects = newObjects;
-		};
+		}
+
+		void ClearObjects()
+		{
+			renderingObjects.clear();
+		}
 
 		ge::gl::Context* GetGL() const
 		{

@@ -87,6 +87,16 @@ Board* Unit::GetBoard() const
 	throw exception("Unit GetBoard - This unit doesn't occupy a field. Weird.");
 }
 
+PlayerID Unit::GetOwnerID() const
+{
+	return owner->GetID();
+}
+
+void Unit::SetOwner(Player* player)
+{
+	owner = player;
+}
+
 void Unit::CreateInfoBar(QQmlEngine* engine, QQuickItem* guiRoot)
 {
 	if(infoBar != nullptr)
@@ -147,7 +157,8 @@ void Unit::UpdateInfoBar(mat4 perspective, mat4 view, int winWidth, int winHeigh
 		QMetaObject::invokeMethod(infoBar, "updateValues",
 			Q_RETURN_ARG(QVariant, returnedValue),
 			Q_ARG(QVariant, currentHP),
-			Q_ARG(QVariant, currentEN)
+			Q_ARG(QVariant, currentEN),
+			Q_ARG(QVariant, armor)
 		);
 		QMetaObject::invokeMethod(infoBar, "updateTheoryValues",
 			Q_RETURN_ARG(QVariant, returnedValue),
@@ -284,7 +295,7 @@ bool Unit::UseSelectedAbility(Field* target)
 
 bool Unit::IsEnemy(Unit* unit) const
 {
-	return owner->GetID() != unit->GetOwner()->GetID();
+	return GetOwnerID() != unit->GetOwnerID();
 }
 
 void Unit::checkCurrentHitPoints()
@@ -317,6 +328,7 @@ int Unit::ReduceHP(int amount)
 
 	currentHP -= amount;
 
+	checkCurrentEnergy();
 	return amount;
 }
 
@@ -453,7 +465,7 @@ void Unit::rest()
 
 void Unit::Stun(int duration)
 {
-	if(duration > stunDuration)
+	if (duration > stunDuration)
 	{
 		stunned = true;
 		stunDuration = duration;
@@ -463,15 +475,37 @@ void Unit::Stun(int duration)
 
 void Unit::MakeRestless(int duration)
 {
-	if(duration > restlessDuration)
+	if (duration > restlessDuration)
 	{
 		restless = true;
 		restlessDuration = duration;
 	}
 }
 
+void Unit::OnFreezeEnd()
+{
+	if (stunDuration == 1)
+	{
+		stunned = false;
+		stunDuration = 0;
+	}
+	if (restlessDuration == 1)
+	{
+		restless = false;
+		restlessDuration = 0;
+	}
+}
+
 void Unit::ApplyBuff(Buff* newBuff)
 {
+	for (auto buff : buffs)
+	{
+		if (buff->GetName() == newBuff->GetName())
+		{
+			buff->RestartDuration();
+			return;
+		}
+	}
 	buffs.push_back(newBuff);
 	newBuff->StartEffect(this);
 }
@@ -517,7 +551,7 @@ void Unit::CheckStatusDurations()
 	}
 
 	// Units in ice blocks become restunned
-	if (occupiedField->GetTerrainType() == IceBlock)
+	if (occupiedField->IsFieldFrozen())
 	{
 		Stun(1);
 	}
@@ -538,7 +572,7 @@ void Unit::CheckThroneClaim() const
 				{
 					auto game = appControl->GetGame();
 					// ReSharper disable once CppNonReclaimedResourceAcquisition
-					new Flash(game, enemy, vec4(0.0f, 0.0f, 0.0f, 0.75f), 10);
+					new Flash(game, enemy, vec4(0.0f, 0.0f, 0.0f, 0.75f), 5, 0);
 				}
 			}
 		}
@@ -590,6 +624,10 @@ int Unit::ReduceTheoreticalHP(int amount)
 
 	currentHpTheory -= amount;
 
+	if (currentEnTheory > currentHpTheory)
+	{
+		currentEnTheory = currentHpTheory;
+	}
 	return amount;
 }
 
@@ -642,8 +680,11 @@ int Unit::RegainTheoreticalEN(int amount)
 	return amount;
 }
 
-void Unit::TakeTheoreticalDamage(AttackType attackType, int damageNormal, int damageHP, int damageEN)
+int Unit::TakeTheoreticalDamage(AttackType attackType, int damageNormal, int damageHP, int damageEN)
 {
+	auto dealtToEN = 0;
+	auto dealtToHP = 0;
+
 	if (attackType == Line)
 	{
 		auto damageTotal = damageNormal + damageHP + damageEN;
@@ -661,35 +702,38 @@ void Unit::TakeTheoreticalDamage(AttackType attackType, int damageNormal, int da
 			damageEN = 0;
 			if (damageHP < 0)
 			{
-				return;
+				return 0;
 			}
 		}
 	}
 
 	if (damageHP > 0)
 	{
-		ReduceTheoreticalHP(damageHP);
+		dealtToHP += ReduceTheoreticalHP(damageHP);
 	}
 
 	if (damageEN > 0)
 	{
-		ReduceTheoreticalEN(damageEN);
+		dealtToEN += ReduceTheoreticalEN(damageEN);
 	}
 
 	if (damageNormal > 0)
 	{
 		auto ENpart = ReduceTheoreticalEN(damageNormal);
+		dealtToEN += ENpart;
 		damageNormal -= ENpart;
 		if (damageNormal > 0)
 		{
-			ReduceTheoreticalHP(damageNormal);
+			dealtToHP += ReduceTheoreticalHP(damageNormal);
 		}
 	}
+
+	return dealtToEN + dealtToHP;
 }
 
-void Unit::TheoreticalHeal(int healHP, int healEN)
+int Unit::TheoreticalHeal(int healHP, int healEN)
 {
-	RegainTheoreticalHP(healHP) + RegainTheoreticalEN(healEN);
+	return RegainTheoreticalHP(healHP) + RegainTheoreticalEN(healEN);
 }
 
 

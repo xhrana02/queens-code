@@ -49,8 +49,8 @@ class Game
 
 public:
 	~Game();
-	explicit Game(std::shared_ptr<Board> inBoard) : Game(nullptr, inBoard){}
-	Game(ApplicationControl* inAppControl, std::shared_ptr<Board> inBoard);
+	explicit Game() : Game(nullptr) {}
+	explicit Game(ApplicationControl* inAppControl);
 
 	void ThisIsRealGame()
 	{
@@ -91,11 +91,14 @@ public:
 		return turnNumber;
 	}
 
+	void SetGameBoard(std::shared_ptr<Board> newBoard)
+	{
+		gameBoard = newBoard;
+	}
 	Board* GetGameBoard() const
 	{
 		return gameBoard.get();
 	}
-
 	int GetMapSize() const;
 
 	void AddCursor(std::shared_ptr<Cursor> newCursor);

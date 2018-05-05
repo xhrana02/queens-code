@@ -28,8 +28,6 @@ using namespace ge::glsg;
  */
 void SimpleVT::drawSetup(RenderingObject* object) const
 {
-	object->PrepareObject(gl);
-
 	auto colorVector = object->GetColor();
 	program->set4fv("color", value_ptr(colorVector));
 
@@ -46,6 +44,13 @@ void SimpleVT::drawSetup(RenderingObject* object) const
  */
 void SimpleVT::draw(RenderingObject* object) const
 {
+	object->PrepareObject(gl);
+
+	if (!object->IsVisible())
+	{
+		return;
+	}
+
 	drawSetup(object);
 
 	for (auto model : object->GetGLScene()->scene->models)

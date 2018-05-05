@@ -15,7 +15,7 @@
 class Knight : public Unit
 {
 public:
-	Knight::Knight()
+	Knight()
 	{
 		name = "Knight";
 		this->maximumHP = 18;

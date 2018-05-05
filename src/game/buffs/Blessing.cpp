@@ -17,12 +17,12 @@ Blessing::Blessing()
 
 void Blessing::onEffectStart()
 {
-	affectedUnit->IncreaseRegenerationEN(1);
-	affectedUnit->IncreaseArmor(1);
+	affectedUnit->IncreaseRegenerationEN(enRegenIncrease);
+	affectedUnit->IncreaseArmor(armorIncrease);
 }
 
 void Blessing::onEffectEnd()
 {
-	affectedUnit->DecreaseRegenerationEN(1);
-	affectedUnit->DecreaseArmor(1);
+	affectedUnit->DecreaseRegenerationEN(enRegenIncrease);
+	affectedUnit->DecreaseArmor(armorIncrease);
 }

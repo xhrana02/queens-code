@@ -102,6 +102,8 @@ void ApplicationControl::LoadSettings()
  */
 void ApplicationControl::CleanAssets()
 {
+	renderer->ClearObjects();
+
 	if (activeGame != nullptr)
 	{
 		delete activeGame;
@@ -119,8 +121,6 @@ void ApplicationControl::CleanAssets()
 		delete cameraControl;
 		cameraControl = nullptr;
 	}
-
-	renderer->SetObjects(vector<RenderingObject*>());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -527,16 +527,20 @@ void ApplicationControl::Update() const
 
 void ApplicationControl::GamePause() const
 {
-	StopRendering();
 	activeGame->UnselectUnit();
+	StopRendering();
+	Update();
 }
 
 void ApplicationControl::GameContinue() const
 {
+	Update();
 	ActivateRendering();
 }
 
 void ApplicationControl::GameEnd()
 {
+	StopRendering();
+	Update();
 	CleanAssets();
 }

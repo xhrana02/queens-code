@@ -46,16 +46,12 @@ bool SpecialCharge::Effect(Board* board, Unit* abilityUser, Field* target)
 			}
 			else
 			{
-				if(game != nullptr)
+				if(game->IsRealGame())
 				{
-					if(game->IsRealGame())
-					{
-						game->PanCameraToField(target);
-						// ReSharper disable once CppNonReclaimedResourceAcquisition
-						new MovementAnimation(game, abilityUser, std::forward_list<Field*>({userField,fieldInFront}), 6, false);
-						// ReSharper disable once CppNonReclaimedResourceAcquisition
-						new Flash(game, targetUnit, vec4(1.0f, 0.0f, 0.0f, 1.0f), 5 + 3*damageHP);
-					}
+					// ReSharper disable once CppNonReclaimedResourceAcquisition
+					new MovementAnimation(game, abilityUser, std::forward_list<Field*>({userField,fieldInFront}), 6, false);
+					// ReSharper disable once CppNonReclaimedResourceAcquisition
+					new Flash(game, targetUnit, vec4(1.0f, 0.0f, 0.0f, 1.0f), 5 + 3*damageHP);
 				}
 			}
 		}
@@ -64,20 +60,24 @@ bool SpecialCharge::Effect(Board* board, Unit* abilityUser, Field* target)
 			targetUnit->TakeDamage(Line, 0, damageHP);
 			fieldBehind->MoveUnitToThisField(targetUnit);
 			target->MoveUnitToThisField(abilityUser);
-			if(game != nullptr)
+			if (!targetUnit->IsUnitAlive())
 			{
-				if(game->IsRealGame())
+				targetUnit->OnUnitDeath();
+			}
+			else
+			{
+				if (game->IsRealGame())
 				{
-					game->PanCameraToField(target);
 					// ReSharper disable once CppNonReclaimedResourceAcquisition
 					new Flash(game, targetUnit, vec4(1.0f, 0.5f, 0.0f, 1.0f), 5 + 1.5*damageHP, 5);
 					// ReSharper disable once CppNonReclaimedResourceAcquisition
-					new MovementAnimation(game, abilityUser, std::forward_list<Field*>({userField,target}), 6, false);
+					new MovementAnimation(game, abilityUser, std::forward_list<Field*>({ userField,target }), 6, false);
 					// ReSharper disable once CppNonReclaimedResourceAcquisition
-					new MovementAnimation(game, targetUnit, std::forward_list<Field*>({target,fieldBehind}), 8, false);
+					new MovementAnimation(game, targetUnit, std::forward_list<Field*>({ target,fieldBehind }), 8, false);
 				}
 			}
 		}
+		PanCameraToTarget(target);
 		return true;
 	}
 	return false;
@@ -155,6 +155,7 @@ bool SpecialCharge::IsTargetPushable(Board* board, Unit* abilityUser, Unit* targ
 	if (deltaX < -1) { deltaX = -1; }
 	if (deltaY >  1) { deltaY =  1; }
 	if (deltaY < -1) { deltaY = -1; }
+
 	fieldInFront = board->GetField(
 		target->GetOccupiedField()->GetX() - deltaX,
 		target->GetOccupiedField()->GetY() - deltaY
@@ -163,6 +164,11 @@ bool SpecialCharge::IsTargetPushable(Board* board, Unit* abilityUser, Unit* targ
 		target->GetOccupiedField()->GetX() + deltaX,
 		target->GetOccupiedField()->GetY() + deltaY
 	);
+
+	if (target->GetName() == "Ice Block")
+	{
+		return false;
+	}
 	if (fieldBehind->IsFieldOccupied())
 	{
 		return false;
