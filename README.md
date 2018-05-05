@@ -71,22 +71,22 @@ http://spiralgraphics.biz (ice, wizard's balls)
 http://game-icons.net/ (all ability icons)
 
 
-## KNOWN BUGS:
+## Known bugs:
 
 #### QApplicationCore unexpected null
 
-BUG: run in debug -> during game -> game menu -> to title -> error in the console for every ice block  
-REASON: If I don't delete the ice blocks at the end of the game (causing memory leak) the warnings don't show. No idea why.  
-PRIORITY: 4/10 (Mild annoyance but could be a symptom of a more serious problem)
+Bug: run in debug -> during game -> game menu -> to title -> error in the console for every ice block  
+Reason: If I don't delete the ice blocks at the end of the game (causing memory leak) the warnings don't show. No idea why.  
+Priority: 4/10 (Mild annoyance but could be a symptom of a more serious problem)
 
 #### Accidental game end in options menu
 
-BUG: during game -> game menu -> options -> fullscreen to windowed -> click in empty space -> jumps to main menu  
-REASON: Unknown  
-PRIORITY: 3/10 (Game-breaking but rare and avoidable)
+Bug: during game -> game menu -> options -> fullscreen to windowed -> click in empty space -> jumps to main menu  
+Reason: Unknown  
+Priority: 3/10 (Game-breaking but rare and avoidable)
 
 #### Macro redefinitions
 
-BUG: compile solution in MSVC -> macro redefinitions  
-REASON: Multiple sources (GPUEngine and Microsoft) set the same OpenGL macros  
-PRIORITY: 1/10 (Mild annoyance)
+Bug: compile solution in MSVC -> macro redefinitions  
+Reason: Multiple sources (GPUEngine and Microsoft) set the same OpenGL macros  
+Priority: 1/10 (Mild annoyance)
