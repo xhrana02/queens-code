@@ -1,37 +1,37 @@
 ﻿# Queens Regicide
 
-Bachelor's thesis (zadání bakalářské práce): Hra v OpenGL
+**Bachelor's thesis (zadání bakalářské práce): Hra v OpenGL**
 
-Author: Pavel Hranáč (xhrana02)
+**Author: Pavel Hranáč (xhrana02)**
 
 
-**Prebuilt Windows 64x Release**
+## Prebuilt Windows 64x Release
 
 https://drive.google.com/open?id=1FflLXqP8NIciPeTzc2IEI4n9J8Ogn9pO
 
 
-**Prerequisites:**
+## Prerequisites:
 
-* C++11
+* **C++11**
 
-* CMake 3.8
+* **CMake** 3.8
 
 	https://cmake.org/
 
-* GPUEngine (tested on version from 25.03.2018) 
+* **GPUEngine** (tested on version from 25.03.2018) 
 
 	https://github.com/Rendering-FIT/GPUEngine
 
-* Qt 5.7
+* **Qt** 5.7
 
 	https://www.qt.io/
 
-* assimp 3.3
+* **assimp** 3.3
 
 	http://www.assimp.org/
 
 
-**Instructions:**
+## Instructions:
 
 directory \libs\ needs following files in the following structure
 
@@ -82,7 +82,7 @@ directory \libs\ needs following files in the following structure
 These files are then copied to the output directory after build depending on the chosen build type. If this method doesn't work, copy the same files to the output directory manually.
 
 
-**Used software:**
+## Used software:
 
 CMake (solution builder)
 
@@ -95,7 +95,7 @@ Blender (modeling)
 GitHub (source control)
 
 
-**Resources:**
+## Resources:
 
 https://texture.ninja/ (grass, wall)
 
@@ -104,7 +104,9 @@ http://spiralgraphics.biz (ice, wizard's balls)
 http://game-icons.net/ (all ability icons)
 
 
-**KNOWN BUGS:**
+## KNOWN BUGS:
+
+###### QApplicationCore unexpected null
 
 BUG: run in debug -> during game -> game menu -> to title -> console outputs unexpected null reference for every ice block
 
@@ -112,11 +114,15 @@ REASON: If I don't delete the ice blocks at the end of the game (causing memory 
 
 PRIORITY: 4/10 (Mild annoyance but could be a symptom of a more serious problem)
 
+###### Accidental game end in options menu
+
 BUG: during game -> game menu -> options -> fullscreen to windowed -> click in empty space -> jumps to main menu
 
 REASON: Unknown
 
 PRIORITY: 3/10 (Game-breaking but rare and avoidable)
+
+###### Macro redefinitions
 
 BUG: compile solution in MSVC -> macro redefinitions
 
