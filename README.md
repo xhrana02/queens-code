@@ -1,7 +1,7 @@
 ﻿# Queens Regicide
 
-**Bachelor's thesis (zadání bakalářské práce): Hra v OpenGL**  
-**Author: Pavel Hranáč (xhrana02)**
+Bachelor's thesis (zadání bakalářské práce): **Hra v OpenGL**  
+Author: **Pavel Hranáč (xhrana02)**
 
 
 ## Prebuilt Windows 64x Release
@@ -13,16 +13,16 @@ https://drive.google.com/open?id=1FflLXqP8NIciPeTzc2IEI4n9J8Ogn9pO
 
 * **C++11**
 
-* **CMake** 3.8  
+* **CMake 3.8**  
 	https://cmake.org/
 
-* **GPUEngine** (tested on version from 25.03.2018)  
+* **GPUEngine (tested on version from 25.03.2018)**  
 	https://github.com/Rendering-FIT/GPUEngine
 
-* **Qt** 5.7  
+* **Qt 5.7**  
 	https://www.qt.io/
 
-* **assimp** 3.3  
+* **assimp 3.3**  
 	http://www.assimp.org/
 
 
@@ -66,26 +66,26 @@ GitHub (source control)
 
 ## Resources:
 
-https://texture.ninja/ (grass, wall)  
+https://texture.ninja/ (grass texture, wall texture)  
 http://spiralgraphics.biz (ice, wizard's balls)  
 http://game-icons.net/ (all ability icons)
 
 
 ## KNOWN BUGS:
 
-###### QApplicationCore unexpected null
+#### QApplicationCore unexpected null
 
-BUG: run in debug -> during game -> game menu -> to title -> console outputs unexpected null reference for every ice block  
+BUG: run in debug -> during game -> game menu -> to title -> error in the console for every ice block  
 REASON: If I don't delete the ice blocks at the end of the game (causing memory leak) the warnings don't show. No idea why.  
 PRIORITY: 4/10 (Mild annoyance but could be a symptom of a more serious problem)
 
-###### Accidental game end in options menu
+#### Accidental game end in options menu
 
 BUG: during game -> game menu -> options -> fullscreen to windowed -> click in empty space -> jumps to main menu  
 REASON: Unknown  
 PRIORITY: 3/10 (Game-breaking but rare and avoidable)
 
-###### Macro redefinitions
+#### Macro redefinitions
 
 BUG: compile solution in MSVC -> macro redefinitions  
 REASON: Multiple sources (GPUEngine and Microsoft) set the same OpenGL macros  
