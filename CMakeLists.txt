@@ -47,9 +47,9 @@ set_target_properties(${APP_NAME} PROPERTIES COMPILE_DEFINITIONS "APP_RESOURCES=
 set_property(TARGET ${APP_NAME} PROPERTY FOLDER "${APP_NAME}")
 
 add_custom_command(TARGET ${APP_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory     "${CMAKE_SOURCE_DIR}/libs/$<CONFIG>"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory  "${CMAKE_SOURCE_DIR}/libs/$<CONFIG>"
                                                 "$<TARGET_FILE_DIR:QueensRegicide>"
                                                     
-    COMMAND ${CMAKE_COMMAND} -E copy_directory     "${CMAKE_SOURCE_DIR}/resources"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory  "${CMAKE_SOURCE_DIR}/resources"
                                                 "$<TARGET_FILE_DIR:QueensRegicide>/Data"
 )

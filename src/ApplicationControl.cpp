@@ -206,12 +206,13 @@ void ApplicationControl::OnUnitUnselected() const
         Q_RETURN_ARG(QVariant, returnedValue));
 }
 
-void ApplicationControl::OnTurnBegin(int turnNumber) const
+void ApplicationControl::OnTurnBegin(int turnNumber, bool isAi) const
 {
     QVariant returnedValue;
     QMetaObject::invokeMethod(guiRoot, "onTurnBegin",
         Q_RETURN_ARG(QVariant, returnedValue),
-        Q_ARG(QVariant, turnNumber));
+        Q_ARG(QVariant, turnNumber),
+		Q_ARG(QVariant, isAi));
 }
 
 void ApplicationControl::OnAbilityUsed() const
@@ -226,6 +227,14 @@ void ApplicationControl::OnGameOver() const
     QVariant returnedValue;
     QMetaObject::invokeMethod(guiRoot, "onGameOver",
         Q_RETURN_ARG(QVariant, returnedValue));
+}
+
+void ApplicationControl::IsAiThinking(bool isThinking) const
+{
+	QVariant returnedValue;
+	QMetaObject::invokeMethod(guiRoot, "isAiThinking",
+		Q_RETURN_ARG(QVariant, returnedValue),
+		Q_ARG(QVariant, isThinking));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -296,7 +305,7 @@ void ApplicationControl::AbilitySelected(int slot) const
 
 void ApplicationControl::EndTurn() const
 {
-    activeGame->EndTurn();
+    activeGame->GetActivePlayer()->EndTurn();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -522,7 +531,7 @@ void ApplicationControl::Update() const
     // update the list of rendered objects
     GetObjectsForRendering();
     // force redraw
-    mainWindow->requestUpdate();
+	application->processEvents();
 }
 
 void ApplicationControl::GamePause() const

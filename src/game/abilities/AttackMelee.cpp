@@ -39,24 +39,6 @@ bool AttackMelee::Effect(Board* board, Unit* abilityUser, Field* target)
     return false;
 }
 
-bool AttackMelee::CanUse(Board* board, Unit* abilityUser, Field* target)
-{
-    if (target == nullptr)
-    {
-        return false;
-    }
-
-    auto viableTargets = Targetfinding::GetMeleeEnemyTargets(board, abilityUser);
-    for (auto viableTarget : viableTargets)
-    {
-        if (target == viableTarget)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 void AttackMelee::OnSelected(Board* board, Unit* abilityUser)
 {
     board->HalflightFields(Targetfinding::GetMeleeEnemyTargets(board, abilityUser, true));
@@ -70,4 +52,9 @@ void AttackMelee::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser,
         abilityUser->ReduceTheoreticalEN(costEN);
         hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Melee, damageNormal, damageHP, damageEN);
     }
+}
+
+void AttackMelee::calculateViableTargets(Board* board, Unit* abilityUser)
+{
+	viableTargets = Targetfinding::GetMeleeEnemyTargets(board, abilityUser);
 }

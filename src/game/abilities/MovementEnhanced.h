@@ -19,8 +19,14 @@ public:
         costEN = 1;
         name = "Enhanced Movement";
         iconPath = "icons/MovementEnhanced.png";
-        description = "<b><u>Enhanced Movement</u> ( 1 EN per tile )</b><br><br>"
+        description = "<b><u>Enhanced Movement</u> ( 0.5 EN per tile )</b><br><br>"
             "Move to a different tile.<br>"
             MOVEMENT_TOOLTIP;
+    }
+
+protected:
+	void calculateCost() override
+    {
+		calculatedCost = ceil((int(std::distance(calculatedPath.begin(), calculatedPath.end())) - 1) * costEN * 0.5f - 0.001f);
     }
 };

@@ -6,6 +6,7 @@
 //----------------------------------------------//
 
 #include "GameFactory.h"
+#include "../../ApplicationControl.h"
 #include "BoardFactory.h"
 #include "Cursor.h"
 #include "Queen.h"
@@ -18,8 +19,6 @@
 #include "Priest.h"
 #include "Warlock.h"
 #include "Wizard.h"
-#include "../../ApplicationControl.h"
-#include "IceBlock.h"
 
 using namespace fsg;
 using namespace std;
@@ -56,8 +55,8 @@ Game* GameFactory::CreateStandardGame(QString p1Name, int p1Code, QString p2Name
     auto newGame = new Game(appControl);
     newGame->SetGameBoard(BoardFactory::CreateStandardBoard(modelLoader));
     newGame->ThisIsRealGame();
-    newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player1, p1Name, p1Code));
-    newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player2, p2Name, p2Code));
+    newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player1, p1Name, Player::DecodeAiType(p1Code)));
+    newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player2, p2Name, Player::DecodeAiType(p2Code)));
     newGame->AddCursor(make_shared<Cursor>(make_shared<RenderingObject>(modelLoader->GetModel("Cursor"))));
 
     auto groundRO = make_shared<RenderingObject>(modelLoader->GetModel("StandardGround"));
@@ -197,14 +196,14 @@ Game* GameFactory::CreateTrainingDuel(ApplicationControl* appControl, ModelLoade
     appControl->UpdateLoadingProgress(0.30f);
     modelLoader->LoadModel(APP_RESOURCES"/models/UnitKnight/UnitKnight.obj", "UnitKnight");
     appControl->UpdateLoadingProgress(0.60f);
-    modelLoader->LoadModel(APP_RESOURCES"/models/UnitWizard/UnitWizard.obj", "UnitWizard");
+    modelLoader->LoadModel(APP_RESOURCES"/models/UnitSpearman/UnitSpearman.obj", "UnitSpearman");
     appControl->UpdateLoadingProgress(0.90f);
 
     auto newGame = new Game(appControl);
     newGame->SetGameBoard(BoardFactory::CreateTrainingDuelBoard(modelLoader));
     newGame->ThisIsRealGame();
-    newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player1, "Player", 0));
-    newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player2, "Training AI", 1));
+    newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player1, "Player", Human));
+    newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player2, "Training AI", Easy));
     newGame->AddCursor(make_shared<Cursor>(make_shared<RenderingObject>(modelLoader->GetModel("Cursor"))));
 
     auto groundRO = make_shared<RenderingObject>(modelLoader->GetModel("StandardGround"));
@@ -227,8 +226,8 @@ Game* GameFactory::CreateTrainingDuel(ApplicationControl* appControl, ModelLoade
 
     ////////////////////////////////////////////////////////////////////////////////
     // PLAYER 2 UNITS
-    auto p2Spearman = new Wizard();
-    p2Spearman->SetRenderingObject(make_shared<RenderingObject>(modelLoader->GetModel("UnitWizard")));
+    auto p2Spearman = new Spearman();
+    p2Spearman->SetRenderingObject(make_shared<RenderingObject>(modelLoader->GetModel("UnitSpearman")));
     // PLAYER 2 UNITS COMMON COMMANDS
     auto p2Rotation = 180.0f;
     vector<Unit*> p2Units;
@@ -267,8 +266,8 @@ Game* GameFactory::CreateChess(ApplicationControl* appControl, ModelLoader* mode
     auto newGame = new Game(appControl);
     newGame->SetGameBoard(BoardFactory::CreateChessBoard(modelLoader));
     newGame->ThisIsRealGame();
-    newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player1, "Player", 0));
-    newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player2, "Chess Master 5000", 3));
+    newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player1, "Player", Human));
+    newGame->AddPlayer(make_shared<Player>(appControl, newGame, Player2, "Chess Master 5000", Hard));
     newGame->AddCursor(make_shared<Cursor>(make_shared<RenderingObject>(modelLoader->GetModel("Cursor"))));
 
     auto groundRO = make_shared<RenderingObject>(modelLoader->GetModel("StandardGround"));

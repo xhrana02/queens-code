@@ -9,11 +9,17 @@ public:
         isPassive = true;
     }
 
-    bool Effect(Board* board, Unit* abilityUser, Field* target) override
+    bool Effect(Board* board, Unit* abilityUser, Field* target) final
     {
-        // Can be overriden in some passive abilities (like Opportunity Attack)
+		// IS PASSIVE, always does nothing
         return false;
     }
+
+	bool CanAfford(Unit* abilityUser) const final
+	{
+		// IS PASSIVE, always does nothing
+		return false;
+	}
 
     bool CanUse(Board* board, Unit* abilityUser, Field* target) final
     {
@@ -30,4 +36,10 @@ public:
     {
         // IS PASSIVE, always does nothing
     }
+
+protected:
+	void calculateViableTargets(Board* board, Unit* abilityUser) final
+	{
+		// IS PASSIVE, always does nothing
+	}
 };

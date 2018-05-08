@@ -21,6 +21,6 @@ public:
         name = "Runner";
         iconPath = "icons/PassiveRunner.png";
         description = "<b><u>Runner</u> ( passive )</b><br><br>"
-            "Scout's Movement costs only 1 EN per tile.<br>";
+            "Scout's Movement costs only 0.5 EN per tile.<br>";
     }
 };

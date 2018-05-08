@@ -12,7 +12,7 @@
 
 class SpecialFireball : public Ability
 {
-    static int const damageNormal0 = 6;
+    static int const damageNormal0 = 7;
     static int const damageNormal2 = 4;
     static int const rangeMin = 1;
     static int const rangeMax = 6;
@@ -23,9 +23,10 @@ class SpecialFireball : public Ability
 public:
     SpecialFireball();
     bool Effect(Board* board, Unit* abilityUser, Field* target) override;
-    bool CanUse(Board* board, Unit* abilityUser, Field* target) override;
     void OnSelected(Board* board, Unit* abilityUser) override;
     void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField) override;
-private:
+
+protected:
+	void calculateViableTargets(Board* board, Unit* abilityUser) final;
     void CalculateAreaOfEffect(Board* board, Field* center);
 };

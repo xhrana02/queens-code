@@ -12,6 +12,7 @@
 #include "Board.h"
 #include "RenderingObject.h"
 #include <glm/glm.hpp>
+#include <future>
 
 class AbilityAnimation;
 class Cursor;
@@ -24,6 +25,7 @@ class ApplicationControl;
 
 class Game
 {
+protected:
     ApplicationControl* appControl;
     bool isRealGame = false;
 
@@ -43,12 +45,18 @@ class Game
     Unit* selectedUnit = nullptr;
 
     bool locked = false;
+	bool finished = false;
     std::vector<AbilityAnimation*> lockingAnimations;
     Unit* selectUnitAfterUnlock = nullptr;
     bool endTurnAfterUnlock = false;
 
+	std::list<std::shared_ptr<AiMove>> aiMoves = std::list<std::shared_ptr<AiMove>>();
+	int aiMoveLockoutDuration = 0;
+	bool aiThinking = false;
+	std::future<std::list<std::shared_ptr<AiMove>>> aiMovesFuture;
+
 public:
-    ~Game();
+	virtual ~Game();
     explicit Game() : Game(nullptr) {}
     explicit Game(ApplicationControl* inAppControl);
 
@@ -73,12 +81,13 @@ public:
     {
         return player2.get();
     }
+	Player* GetPlayerByID(PlayerID playerID) const;
     Player* GetNextPlayer() const;
     Player* GetEnemyPlayer(Player* enemyOf) const;
     std::vector<Player*> GetAllEnemyPlayers(Player* enemiesOf) const;
 
     void PlayerDefeat(Player* defeatedPlayer);
-    void PlayerVictory(Player* victoriousPlayer);
+    virtual void PlayerVictory(Player* victoriousPlayer);
 
     void SetActivePlayer(Player* newActivePlayer);
     Player* GetActivePlayer() const
@@ -114,10 +123,10 @@ public:
     void SelectField(Field* clickedField);
     void SelectUnit(Unit* newSelectedUnit);
     void UnselectUnit();
-    void UseAbility(Field* clickedField);
+    void UseAbility(Field* clickedField) const;
     void SelectAbility(int slot) const;
     void OnAbilitySelected(int slot) const;
-    void EndTurn();
+    void OnTurnEnd();
 
     void LockGame(AbilityAnimation* lockingAnimation);
     void UnlockGame();
@@ -125,4 +134,5 @@ public:
 
     void IterationEvents();
     void ResetTheoryValues() const;
+	void ProcessAiTurn();
 };

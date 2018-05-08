@@ -11,14 +11,16 @@
 
 class SpecialSmite : public Ability
 {
-    static int const damageNormal = 2;
-    static int const damageEN = 3;
+    static int const damageNormal = 4;
+	static int const stunDuration = 1;
     static int const rangeMin = 1;
     static int const rangeMax = 5;
 public:
     SpecialSmite();
     bool Effect(Board* board, Unit* abilityUser, Field* target) override;
-    bool CanUse(Board* board, Unit* abilityUser, Field* target) override;
     void OnSelected(Board* board, Unit* abilityUser) override;
     void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField) override;
+
+protected:
+	void calculateViableTargets(Board* board, Unit* abilityUser) final;
 };

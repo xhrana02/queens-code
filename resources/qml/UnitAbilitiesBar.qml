@@ -55,12 +55,14 @@ Item {
         }
     }
 
-    function setAbility(slot, name, iconPath, description, selectable) {
+    function setAbility(slot, name, iconPath, description, selectable, costHP, costEN) {
         if(slot == 1) {
             ability1.name = name
             ability1.iconSource = iconPath
             ability1.description = description
             ability1.selectable = selectable
+            ability1.costHP = costHP
+            ability1.costEN = costEN
             ability1.visible = true
         }
         if(slot == 2) {
@@ -68,6 +70,8 @@ Item {
             ability2.iconSource = iconPath
             ability2.description = description
             ability2.selectable = selectable
+            ability2.costHP = costHP
+            ability2.costEN = costEN
             ability2.visible = true
         }
         if(slot == 3) {
@@ -75,6 +79,8 @@ Item {
             ability3.iconSource = iconPath
             ability3.description = description
             ability3.selectable = selectable
+            ability3.costHP = costHP
+            ability3.costEN = costEN
             ability3.visible = true
         }
         if(slot == 4) {
@@ -82,6 +88,8 @@ Item {
             ability4.iconSource = iconPath
             ability4.description = description
             ability4.selectable = selectable
+            ability4.costHP = costHP
+            ability4.costEN = costEN
             ability4.visible = true
         }
         if(slot == 5) {
@@ -89,6 +97,8 @@ Item {
             ability5.iconSource = iconPath
             ability5.description = description
             ability5.selectable = selectable
+            ability5.costHP = costHP
+            ability5.costEN = costEN
             ability5.visible = true
         }
     }

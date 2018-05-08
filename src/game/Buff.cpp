@@ -7,9 +7,13 @@
 
 #include "Buff.h"
 
-void Buff::StartEffect(Unit* buffTarget)
+Buff::Buff(Unit* buffTarget)
 {
-    affectedUnit = buffTarget;
+	affectedUnit = buffTarget;
+}
+
+void Buff::StartEffect()
+{
     remainingDuration = maxDuration;
     onEffectStart();
 }

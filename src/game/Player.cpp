@@ -24,38 +24,41 @@ Player::~Player()
     }
 }
 
-/**
- * \brief Player constructor.
- * \param inName Player inName.
- * \param inCode Player inCode.
- */
-Player::Player(ApplicationControl* inAppControl, Game* inGame, PlayerID inID, QString inName, int inCode)
+Player::Player(ApplicationControl* inAppControl, Game* inGame, PlayerID inID, QString inName, AiType inAiType)
 {
     appControl = inAppControl;
     game = inGame;
     id = inID;
     name = inName;
-    DecodePlayerType(inCode);
-    switch (id)
-    {
-    case Player1:
-        normalColor = PLAYER1_NORMAL_COLOR;
-        halflightColor = PLAYER1_HALFLIGHT_COLOR;
-        highlightColor = PLAYER1_HIGHLIGHT_COLOR;
-        break;
-    case Player2:
-        normalColor = PLAYER2_NORMAL_COLOR;
-        halflightColor = PLAYER2_HALFLIGHT_COLOR;
-        highlightColor = PLAYER2_HIGHLIGHT_COLOR;
-        break;
-    case Neutral:
-        normalColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        halflightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        highlightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        break;
-    default:
-        throw exception("Player CTOR - Unknown player ID.");
-    }
+	aiType = inAiType;
+	if (IsAI())
+	{
+		aiControl = make_unique<AiControl>(aiType, id);
+	}
+
+	if (game->IsRealGame())
+	{
+		switch (id)
+		{
+		case Player1:
+			normalColor = PLAYER1_NORMAL_COLOR;
+			halflightColor = PLAYER1_HALFLIGHT_COLOR;
+			highlightColor = PLAYER1_HIGHLIGHT_COLOR;
+			break;
+		case Player2:
+			normalColor = PLAYER2_NORMAL_COLOR;
+			halflightColor = PLAYER2_HALFLIGHT_COLOR;
+			highlightColor = PLAYER2_HIGHLIGHT_COLOR;
+			break;
+		case Neutral:
+			normalColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			halflightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			highlightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			break;
+		default:
+			throw exception("Player CTOR - Unknown player ID.");
+		}
+	}
 }
 
 void Player::GamePopup(QString message) const
@@ -65,6 +68,11 @@ void Player::GamePopup(QString message) const
         appControl->ConsoleWrite(message);
         appControl->GamePopup(message);
     }
+}
+
+bool Player::IsAI() const
+{
+	return aiType != Human;
 }
 
 Player* Player::GetEnemyPlayer()
@@ -79,42 +87,22 @@ vector<Player*> Player::GetAllEnemyPlayers()
 
 /**
  * \brief Decodes player's type from a code.
- * \param code Player's type encoded as integer.
+ * \param code Player's AI type encoded as integer.
  */
-void Player::DecodePlayerType(int code)
+AiType Player::DecodeAiType(int code)
 {
-    if (code < 0)
+    switch(code)
     {
-        playerType = NeutralType;
-        aiType = None;
-        return;
-    }
-
-    auto lastDigit = code % 10;
-    if (lastDigit == 0)
-    {
-        playerType = Human;
-        aiType = None;
-        return;
-    }
-
-    playerType = AI;
-    switch(lastDigit)
-    {
+	case 0:
+		return Human;
     case 1:
-        aiType = Easy;
-        return;
+        return Easy;
     case 2:
-        aiType = Normal;
-        return;
+        return Normal;
     case 3:
-        aiType = Hard;
-        return;
-    case 4:
-        aiType = Custom;
-        return;
+        return Hard;
     default: 
-        throw exception("Player.DecodePlayerType: Invalid player code.");
+        throw exception("Player.DecodeAiType: Invalid player code.");
     }
 }
 
@@ -122,11 +110,14 @@ void Player::AddNewUnit(Unit* newUnit)
 {
     units.insert(newUnit);
     newUnit->SetOwner(this);
-    newUnit->SetAppControl(appControl);
-    for (auto ability : newUnit->GetAbilites())
-    {
-        ability->SetGame(game);
-    }
+	if (game->IsRealGame())
+	{
+		newUnit->SetAppControl(appControl);
+		for (auto ability : newUnit->GetAbilites())
+		{
+			ability->SetGame(game);
+		}
+	}
 }
 
 void Player::AddNewUnitAndCreateUI(Unit* newUnit, QQmlEngine* engine, QQuickItem* guiRoot)
@@ -166,12 +157,12 @@ void Player::BeginTurn()
         unit->OnTurnBegin();
     }
     commandPoints = 3;
-    game->SetActivePlayer(this);
     if (game->IsRealGame())
     {
+		game->SetActivePlayer(this);
         game->UnselectUnit();
         game->SelectUnit(*units.begin());
-        appControl->OnTurnBegin(game->GetTurnNumber());
+        appControl->OnTurnBegin(game->GetTurnNumber(), IsAI());
         GamePopup(name + "'s turn");
         appControl->SetActivePlayer(name);
     }
@@ -185,8 +176,13 @@ void Player::OnAbilityUsed()
     commandPoints--;
     if (game->IsRealGame())
     {
+		game->ResetTheoryValues();
         appControl->OnAbilityUsed();
     }
+	if (IsOutOfCommandPoints())
+	{
+		EndTurn();
+	}
 }
 
 bool Player::IsOutOfCommandPoints() const
@@ -204,5 +200,10 @@ void Player::EndTurn()
     {
         unit->OnTurnEnd();
     }
-    game->GetNextPlayer()->BeginTurn();
+	game->OnTurnEnd();
+}
+
+list<shared_ptr<AiMove>> Player::GetAiMoves() const
+{
+	return aiControl->GetNextMoves(game);
 }

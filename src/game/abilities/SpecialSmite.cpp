@@ -16,13 +16,17 @@ using namespace glm;
 
 SpecialSmite::SpecialSmite()
 {
-    costEN = 3;
+    costEN = 4;
     name = "Smite";
     iconPath = "icons/SpecialSmite.png";
-    description = "<b><u>Smite</u> ( 5 EN ) Indirect 1-5</b><br><br>"
-        "The target takes 3 EN and 2 normal damage and is Stunned for 1 turn.<br>"
+    description = "<b><u>Smite</u> ( 4 EN ) Indirect 1-5</b><br><br>"
+        "The target takes 4 normal damage and is Stunned for 1 turn.<br>"
         STUN_TOOLTIP
         EN_DAMAGE_TOOLTIP;
+	aiTargetValue = 9;
+	aiTargetMissingHpMod = 0.1f;
+	aiTargetMissingEnMod = 0.3f;
+	aiTargetRelativeEnMod = 0.0f;
 }
 
 bool SpecialSmite::Effect(Board* board, Unit* abilityUser, Field* target)
@@ -31,8 +35,8 @@ bool SpecialSmite::Effect(Board* board, Unit* abilityUser, Field* target)
     {
         abilityUser->ReduceEN(costEN);
         auto targetUnit = target->GetUnitOnField();
-        targetUnit->Stun(1);
-        targetUnit->TakeDamage(Melee, damageNormal, 0, damageEN);
+        targetUnit->Stun(stunDuration);
+        targetUnit->TakeDamage(Melee, damageNormal);
 
         if (!targetUnit->IsUnitAlive())
         {
@@ -43,29 +47,11 @@ bool SpecialSmite::Effect(Board* board, Unit* abilityUser, Field* target)
             if(game->IsRealGame())
             {
                 // ReSharper disable once CppNonReclaimedResourceAcquisition
-                new Flash(game, target->GetUnitOnField(), vec4(1.0f, 1.0f, 0.5f, 0.5f), 5 + damageNormal + 0.75 * damageEN);
+                new Flash(game, target->GetUnitOnField(), vec4(1.0f, 1.0f, 0.5f, 0.5f), 5 + damageNormal);
             }
         }
         PanCameraToTarget(target);
         return true;
-    }
-    return false;
-}
-
-bool SpecialSmite::CanUse(Board* board, Unit* abilityUser, Field* target)
-{
-    if (target == nullptr)
-    {
-        return false;
-    }
-
-    auto viableTargets = Targetfinding::GetIndirectEnemyTargets(board, abilityUser, rangeMin, rangeMax);
-    for (auto viableTarget : viableTargets)
-    {
-        if (target == viableTarget)
-        {
-            return true;
-        }
     }
     return false;
 }
@@ -81,6 +67,11 @@ void SpecialSmite::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser
     if(CanUse(board, abilityUser, hoveredField))
     {
         abilityUser->ReduceTheoreticalEN(costEN);
-        hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Melee, damageNormal, 0, damageEN);
+        hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Melee, damageNormal);
     }
+}
+
+void SpecialSmite::calculateViableTargets(Board* board, Unit* abilityUser)
+{
+	viableTargets = Targetfinding::GetIndirectEnemyTargets(board, abilityUser, rangeMin, rangeMax);
 }

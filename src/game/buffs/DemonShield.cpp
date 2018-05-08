@@ -9,9 +9,10 @@
 #include "Unit.h"
 
 
-DemonShield::DemonShield()
+DemonShield::DemonShield(Unit* buffTarget)
+	: Buff(buffTarget)
 {
-    name = "Demon Shield";
+    id = demonshield;
     maxDuration = 3;
 }
 

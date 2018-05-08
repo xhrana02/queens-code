@@ -18,8 +18,15 @@ using namespace glm;
 
 Unit::~Unit()
 {
-    infoBar->deleteLater();
-    abilitiesBar->deleteLater();
+    if (infoBar)
+    {
+		infoBar->deleteLater();
+    }
+	if (abilitiesBar)
+	{
+		abilitiesBar->deleteLater();
+	}
+
     for (auto buff : buffs)
     {
         delete buff;
@@ -80,11 +87,11 @@ Board* Unit::GetBoard() const
         auto board = occupiedField->GetBoard();
         if (board == nullptr)
         {
-            throw exception("Unit GetBoard - This unit's field doesn't belong to a board. Weird.");
+            throw exception("Unit::GetBoard - This unit's field doesn't belong to a board. Weird.");
         }
         return board;
     }
-    throw exception("Unit GetBoard - This unit doesn't occupy a field. Weird.");
+    throw exception("Unit::GetBoard - This unit doesn't occupy a field. Weird.");
 }
 
 PlayerID Unit::GetOwnerID() const
@@ -127,14 +134,17 @@ void Unit::UpdateInfoBar(mat4 perspective, mat4 view, int winWidth, int winHeigh
     auto shieldedDuration = 0;
     for (auto buff : buffs)
     {
-        if (buff->GetName() == "Blessing")
-        {
-            blessedDuration = buff->GetRemainingDuration();
-        }
-        if (buff->GetName() == "Demon Shield")
-        {
-            shieldedDuration = buff->GetRemainingDuration();
-        }
+		switch (buff->GetID())
+		{
+		case blessing:
+			blessedDuration = buff->GetRemainingDuration();
+			break;
+		case demonshield:
+			shieldedDuration = buff->GetRemainingDuration();
+			break;
+		default:
+			throw exception("Unit::UpdateInfoBar - Invalid buff ID.");
+		}
     }
 
     QVariant returnedValue;
@@ -198,7 +208,9 @@ void Unit::CreateAbilitiesBar(QQmlEngine* engine, QQuickItem* guiRoot)
             Q_ARG(QVariant, ability->GetName()),
             Q_ARG(QVariant, ability->GetIconPath()),
             Q_ARG(QVariant, ability->GetDescription()),
-            Q_ARG(QVariant, !ability->IsPassive())
+            Q_ARG(QVariant, !ability->IsPassive()),
+			Q_ARG(QVariant, ability->GetCostHP()),
+			Q_ARG(QVariant, ability->GetCostEN())
         );
     }
 }
@@ -267,7 +279,7 @@ void Unit::OnAbilitySelected(int slot)
         }
         else
         {
-            GamePopup("Not enough EN (or HP) to use " + newSelectedAbility->GetName());
+            GamePopup("Not enough Energy (EN) or Hit Points (HP) to use " + newSelectedAbility->GetName());
         }
     }
 }
@@ -279,18 +291,35 @@ void Unit::RefreshAbilityHalflight()
 
 bool Unit::UseSelectedAbility(Field* target)
 {
-    if (stunned)
-    {
-        GamePopup("This unit is Stunned and cannot take any action");
-        return false;
-    }
     if (selectedAbilitySlot == 0)
     {
         GamePopup("No ability selected");
         return false;
     }
-    movedThisTurn = true;
-    return abilities[selectedAbilitySlot - 1]->Effect(GetBoard(), this, target);
+	return UseAbilityBySlot(target, selectedAbilitySlot);
+}
+
+bool Unit::UseAbilityBySlot(Field* target, int slot)
+{
+	if (stunned)
+	{
+		GamePopup("This unit is Stunned and cannot take any action");
+		return false;
+	}
+
+	auto didItWork = GetAbilityBySlot(slot)->Effect(GetBoard(), this, target);
+	if (didItWork)
+	{
+		movedThisTurn = true;
+		owner->OnAbilityUsed();
+		GamePopup(name + " used " + GetAbilityBySlot(slot)->GetName());
+	}
+	return didItWork;
+}
+
+Ability* Unit::GetAbilityBySlot(int slot)
+{
+	return abilities[slot - 1].get();
 }
 
 bool Unit::IsEnemy(Unit* unit) const
@@ -452,6 +481,12 @@ void Unit::regenerate()
 {
     RegainHP(regenerationHP);
     RegainEN(regenerationEN);
+	if (appControl != nullptr)
+	{
+		auto game = appControl->GetGame();
+		// ReSharper disable once CppNonReclaimedResourceAcquisition
+		new Flash(game, this, vec4(0.3f, 0.8f, 0.2f, 1.0f), 1);
+	}
 }
 
 void Unit::rest()
@@ -460,6 +495,13 @@ void Unit::rest()
     {
         RegainHP(restHP);
         RegainEN(restEN);
+
+		if (appControl != nullptr)
+		{
+			auto game = appControl->GetGame();
+			// ReSharper disable once CppNonReclaimedResourceAcquisition
+			new Flash(game, this, vec4(0.2f, 1.0f, 0.2f, 1.0f), 2);
+		}
     }
 }
 
@@ -500,14 +542,14 @@ void Unit::ApplyBuff(Buff* newBuff)
 {
     for (auto buff : buffs)
     {
-        if (buff->GetName() == newBuff->GetName())
+        if (buff->GetID() == newBuff->GetID())
         {
             buff->RestartDuration();
             return;
         }
     }
     buffs.push_back(newBuff);
-    newBuff->StartEffect(this);
+    newBuff->StartEffect();
 }
 
 void Unit::CheckBuffDurations()
@@ -581,7 +623,6 @@ void Unit::CheckThroneClaim() const
 
 void Unit::OnTurnBegin()
 {
-    movedThisTurn = false;
     // The order of these is very important!!!
     regenerate();
     CheckBuffDurations();
@@ -597,6 +638,7 @@ void Unit::OnTurnEnd()
         rest();
     }
     CheckStatusDurations();
+	movedThisTurn = false;
 }
 
 

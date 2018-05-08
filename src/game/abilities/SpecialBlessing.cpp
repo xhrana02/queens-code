@@ -17,14 +17,18 @@ using namespace glm;
 
 SpecialBlessing::SpecialBlessing()
 {
-    costEN = 5;
+    costEN = 4;
     name = "Blessing";
     iconPath = "icons/SpecialBlessing.png";
-    description = "<b><u>Blessing</u> ( 5 EN ) Indirect 0-2</b><br><br>"
+    description = "<b><u>Blessing</u> ( 4 EN )</b><br><br>"
         "Every allied unit in the range of 2 (including the priest) regains bonus 1 EN "
-        "when regenerating and gains 1 Armor for the next 3 turns.<br>"
+        "when regenerating and gains 1 Armor for the next 5 turns.<br>"
         ARMOR_TOOLTIP
         REGENERATION_TOOLTIP;
+	aiTargetValue = 15;
+	aiTargetMissingHpMod = 0.3f;
+	aiTargetMissingEnMod = 0.2f;
+	aiTargetRelativeEnMod = 0.5f;
 }
 
 bool SpecialBlessing::Effect(Board* board, Unit* abilityUser, Field* target)
@@ -33,9 +37,10 @@ bool SpecialBlessing::Effect(Board* board, Unit* abilityUser, Field* target)
     {
         abilityUser->ReduceEN(costEN);
 
-        for (auto aoeTarget : areaOfEffectTargets)
+        for (auto aoeTarget : viableTargets)
         {
-            aoeTarget->GetUnitOnField()->ApplyBuff(new Blessing());
+			auto targetUnit = aoeTarget->GetUnitOnField();
+			targetUnit->ApplyBuff(new Blessing(targetUnit));
 
             if(game->IsRealGame())
             {
@@ -49,49 +54,28 @@ bool SpecialBlessing::Effect(Board* board, Unit* abilityUser, Field* target)
     return false;
 }
 
-bool SpecialBlessing::CanUse(Board* board, Unit* abilityUser, Field* target)
-{
-    if (target == nullptr)
-    {
-        return false;
-    }
-
-    CalculateAreaOfEffect(board, abilityUser);
-    for (auto viableTarget : areaOfEffectTargets)
-    {
-        if (target == viableTarget)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 void SpecialBlessing::OnSelected(Board* board, Unit* abilityUser)
 {
-    CalculateAreaOfEffect(board, abilityUser);
-    board->HalflightFields(areaOfEffectCandidates);
+    board->HalflightFields(Targetfinding::GetIndirectAllyTargets(board, abilityUser, aoeRangeMin, aoeRangeMax, true));
 }
 
 void SpecialBlessing::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
 {
     if(CanUse(board, abilityUser, hoveredField))
     {
-        board->HighlightFields(areaOfEffectTargets);
+        board->HighlightFields(viableTargets);
         abilityUser->ReduceTheoreticalEN(costEN);
     }
 }
 
-void SpecialBlessing::CalculateAreaOfEffect(Board* board, Unit* abilityUser)
+void SpecialBlessing::calculateViableTargets(Board* board, Unit* abilityUser)
 {
-    areaOfEffectCandidates.clear();
-    areaOfEffectCandidates = Targetfinding::GetIndirectAllyTargets(board, abilityUser, aoeRangeMin, aoeRangeMax);
-    areaOfEffectTargets.clear();
-    for (auto field : areaOfEffectCandidates)
-    {
-        if (field->GetUnitOnField() && !field->IsFieldFrozen())
-        {
-            areaOfEffectTargets.push_back(field);
-        }
-    }
+	viableTargets.clear();
+	for (auto field : Targetfinding::GetIndirectAllyTargets(board, abilityUser, aoeRangeMin, aoeRangeMax))
+	{
+		if (!field->IsFieldFrozen())
+		{
+			viableTargets.push_back(field);
+		}
+	}
 }

@@ -16,13 +16,17 @@ using namespace glm;
 
 SpecialSoulSteal::SpecialSoulSteal()
 {
-    costHP = 3;
-    costEN = 3;
+    costHP = 2;
+    costEN = 2;
     name = "Soul Steal";
     iconPath = "icons/SpecialSoulSteal.png";
-    description = "<b><u>Soul Steal</u> ( 3 HP, 3 EN ) Melee</b><br><br>"
+    description = "<b><u>Soul Steal</u> ( 2 HP, 2 EN ) Melee</b><br><br>"
         "Deals 6 HP damage to the target. Regains HP equal to the damage dealt.<br>"
         HP_DAMAGE_TOOLTIP;
+	aiTargetValue = 12;
+	aiTargetMissingHpMod = 0.3f;
+	aiTargetMissingEnMod = 0.0f;
+	aiTargetRelativeEnMod = 0.0f;
 }
 
 bool SpecialSoulSteal::Effect(Board* board, Unit* abilityUser, Field* target)
@@ -55,24 +59,6 @@ bool SpecialSoulSteal::Effect(Board* board, Unit* abilityUser, Field* target)
     return false;
 }
 
-bool SpecialSoulSteal::CanUse(Board* board, Unit* abilityUser, Field* target)
-{
-    if (target == nullptr)
-    {
-        return false;
-    }
-
-    auto viableTargets = Targetfinding::GetMeleeEnemyTargets(board, abilityUser);
-    for (auto viableTarget : viableTargets)
-    {
-        if (target == viableTarget)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 void SpecialSoulSteal::OnSelected(Board* board, Unit* abilityUser)
 {
     board->HalflightFields(Targetfinding::GetMeleeEnemyTargets(board, abilityUser, true));
@@ -88,4 +74,9 @@ void SpecialSoulSteal::SelectedAbilityOnFieldHovered(Board* board, Unit* ability
         auto damageDealt = hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Melee, 0, damageHP);
         abilityUser->TheoreticalHeal(damageDealt);
     }
+}
+
+void SpecialSoulSteal::calculateViableTargets(Board* board, Unit* abilityUser)
+{
+	viableTargets = Targetfinding::GetMeleeEnemyTargets(board, abilityUser);
 }

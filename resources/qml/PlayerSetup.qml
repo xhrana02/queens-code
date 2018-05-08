@@ -128,10 +128,6 @@ Item {
                 styledText: "Hard"
                 exclusiveGroup: aiGroup
             }
-            MenuButtonDialog {
-                styledText: "Custom"
-                exclusiveGroup: aiGroup
-            }
         }
     }
 
@@ -166,12 +162,6 @@ Item {
             if(aiGroup.current.styledText == "Hard")
             {
                 return 3
-            }
-            if(aiGroup.current.styledText == "Custom")
-            {
-                var code = 4
-                // todo: encode Custom AI settings
-                return code
             }
         }
         return 0

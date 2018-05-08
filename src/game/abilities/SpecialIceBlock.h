@@ -12,11 +12,13 @@
 class SpecialIceBlock : public Ability
 {
     static int const rangeMin = 0;
-    static int const rangeMax = 3;
+    static int const rangeMax = 4;
 public:
     SpecialIceBlock();
     bool Effect(Board* board, Unit* abilityUser, Field* target) override;
-    bool CanUse(Board* board, Unit* abilityUser, Field* target) override;
     void OnSelected(Board* board, Unit* abilityUser) override;
     void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField) override;
+
+protected:
+	void calculateViableTargets(Board* board, Unit* abilityUser) final;
 };

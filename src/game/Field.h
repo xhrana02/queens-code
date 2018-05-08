@@ -56,7 +56,7 @@ public:
         fieldTerrain = newTerrain;
     }
     void SetFieldIceBlockObject(std::shared_ptr<fsg::RenderingObject> newIceBlock);
-    void SetFieldIceBlockUnit(std::shared_ptr<IceBlock> newIceBlock);
+    void SetFieldIceBlockUnit(std::shared_ptr<IceBlock> newIceBlock, bool provideRenderingObject = true);
 
     Board* GetBoard() const
     {
@@ -87,6 +87,7 @@ public:
     }
 
     Unit* GetUnitOnField() const;
+	Unit* GetPlayerUnitOnField() const;
     bool IsFieldOccupied() const;
     bool IsFieldFrozen() const;
 

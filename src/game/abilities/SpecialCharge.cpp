@@ -25,6 +25,10 @@ SpecialCharge::SpecialCharge()
         "occupied, instead of pushing, the target takes 3 more HP damage and is stunned for 1 turn.<br>"
         STUN_TOOLTIP
         HP_DAMAGE_TOOLTIP;
+	aiTargetValue = 15;
+	aiTargetMissingHpMod = 0.3f;
+	aiTargetMissingEnMod = 0.0f;
+	aiTargetRelativeEnMod = 0.0f;
 }
 
 bool SpecialCharge::Effect(Board* board, Unit* abilityUser, Field* target)
@@ -111,23 +115,20 @@ bool SpecialCharge::CanUse(Board* board, Unit* abilityUser, Field* target)
 void SpecialCharge::OnSelected(Board* board, Unit* abilityUser)
 {
     auto candidates = Targetfinding::GetLineEnemyTargets(board, abilityUser, rangeMin, rangeMax, true);
-    auto viableTargets = std::vector<Field*>();
+    auto highlightTargets = std::vector<Field*>();
     for (auto candidate : candidates)
     {
         auto unitCandidate = candidate->GetUnitOnField();
-        if (unitCandidate != nullptr)
+        if (unitCandidate != nullptr && !IsTargetPushable(board, abilityUser, unitCandidate))
         {
-            if (!IsTargetPushable(board, abilityUser, unitCandidate))
+            if (fieldInFront->IsFieldOccupied())
             {
-                if (fieldInFront->IsFieldOccupied())
-                {
-                    continue;
-                }
+                continue;
             }
         }
-        viableTargets.push_back(candidate);
+        highlightTargets.push_back(candidate);
     }
-    board->HalflightFields(viableTargets);
+    board->HalflightFields(highlightTargets);
 }
 
 void SpecialCharge::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
@@ -174,4 +175,21 @@ bool SpecialCharge::IsTargetPushable(Board* board, Unit* abilityUser, Unit* targ
         return false;
     }
     return true;
+}
+
+void SpecialCharge::calculateViableTargets(Board* board, Unit* abilityUser)
+{
+	auto candidates = Targetfinding::GetLineEnemyTargets(board, abilityUser, rangeMin, rangeMax);
+	viableTargets.clear();
+	for (auto candidate : candidates)
+	{
+		if (!IsTargetPushable(board, abilityUser, candidate->GetUnitOnField()))
+		{
+			if (fieldInFront->IsFieldOccupied())
+			{
+				continue;
+			}
+		}
+		viableTargets.push_back(candidate);
+	}
 }

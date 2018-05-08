@@ -34,8 +34,7 @@ void BoardFactory::PopulateNewBoard(Board* newBoard, fsg::ModelLoader* modelLoad
             newIceBlockObject->SetColors(ICE_BLOCK_NORMAL_COLOR, ICE_BLOCK_HALFLIGHT_COLOR, ICE_BLOCK_HIGHLIGHT_COLOR);
             field->SetFieldIceBlockObject(newIceBlockObject);
 
-            auto newIceBlockUnit = make_shared<IceBlock>();
-            field->SetFieldIceBlockUnit(newIceBlockUnit);
+            field->SetFieldIceBlockUnit(make_shared<IceBlock>());
         }
     }
 }
@@ -49,8 +48,8 @@ shared_ptr<Board> BoardFactory::CreateStandardBoard(ModelLoader* modelLoader)
 
     auto throneObject = make_shared<RenderingObject>(modelLoader->GetModel("Throne"));
     throneObject->TextureRepeat = 10;
-    newBoard->GetField(8, 8)->SetFieldTerrainObject(throneObject);
-    newBoard->GetField(8, 8)->SetTerrainType(Throne);
+	newBoard->SetThroneField(8, 8);
+	newBoard->GetThroneField()->SetFieldTerrainObject(throneObject);
 
     vector<Field*> wallFields;
     // bottom left corner

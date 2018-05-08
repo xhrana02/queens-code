@@ -23,4 +23,7 @@ public:
     void OnSelected(Board* board, Unit* abilityUser) override;
     void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField) override;
     bool IsTargetPushable(Board* board, Unit* abilityUser, Unit* target);
+
+protected:
+	void calculateViableTargets(Board* board, Unit* abilityUser) final;
 };

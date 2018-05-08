@@ -4,9 +4,9 @@ Bachelor's thesis (zadání bakalářské práce): **Hra v OpenGL**
 Author: **Pavel Hranáč (xhrana02)**
 
 
-## Prebuilt Windows 64x Release
+## Prebuilt Windows 64x Release with windeployqt
 
-https://drive.google.com/open?id=1FflLXqP8NIciPeTzc2IEI4n9J8Ogn9pO
+https://drive.google.com/open?id=1-rlecRSdN7lZUUWfDjSQ_RkfjMFeKjep
 
 
 ## Prerequisites:
@@ -67,26 +67,27 @@ GitHub (source control)
 ## Resources:
 
 https://texture.ninja/ (grass texture, wall texture)  
-http://spiralgraphics.biz (ice, wizard's balls)  
-http://game-icons.net/ (all ability icons)
-
+http://spiralgraphics.biz (ice texture, wizard's balls texture)  
+http://game-icons.net/ (all ability icons)  
+Individual creators from Game-icons:
+21 icon bases by Lorc, 3 by Delapouite, 1 by Carl Olsen, 1 by sbed, 1 by Skoll
 
 ## Known bugs:
 
-#### QApplicationCore unexpected null
+#### Picture freezing when not looking at any units
 
-Bug: run in debug -> during game -> game menu -> to title -> error in the console for every ice block  
-Reason: If I don't delete the ice blocks at the end of the game (causing memory leak) the warnings don't show. No idea why.  
-Priority: 4/10 (Mild annoyance but could be a symptom of a more serious problem)
+Bug: during game -> zoom and pan so that no units are in your view -> picture freezes (but not the application)  
+Reason: Signal QQuickWindow::beforeRendering() is not getting emitted
+Priority: 4/10 (weird but not game-breaking)
 
 #### Accidental game end in options menu
 
 Bug: during game -> game menu -> options -> fullscreen to windowed -> click in empty space -> jumps to main menu  
 Reason: Unknown  
-Priority: 3/10 (Game-breaking but rare and avoidable)
+Priority: 3/10 (game-breaking but avoidable)
 
 #### Macro redefinitions
 
 Bug: compile solution in MSVC -> macro redefinitions  
 Reason: Multiple sources (GPUEngine and Microsoft) set the same OpenGL macros  
-Priority: 1/10 (Mild annoyance)
+Priority: 1/10 (annoying)

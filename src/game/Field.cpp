@@ -35,17 +35,20 @@ vector<RenderingObject*> Field::GetRenderingObjects() const
     return objects;
 }
 
-void Field::SetFieldIceBlockObject(std::shared_ptr<fsg::RenderingObject> newIceBlock)
+void Field::SetFieldIceBlockObject(shared_ptr<RenderingObject> newIceBlock)
 {
     fieldIceBlock = newIceBlock;
     fieldIceBlock->SetInvisible();
 }
 
-void Field::SetFieldIceBlockUnit(std::shared_ptr<IceBlock> newIceBlock)
+void Field::SetFieldIceBlockUnit(shared_ptr<IceBlock> newIceBlock, bool provideRenderingObject)
 {
     iceBlockUnit = newIceBlock;
     iceBlockUnit->SetOccupiedField(this);
-    iceBlockUnit->SetIceBlockObject(fieldIceBlock.get());
+	if (provideRenderingObject)
+	{
+		iceBlockUnit->SetIceBlockObject(fieldIceBlock.get());
+	}
 }
 
 
@@ -72,6 +75,11 @@ Unit* Field::GetUnitOnField() const
         return iceBlockUnit.get();
     }
     return unitOnField;
+}
+
+Unit* Field::GetPlayerUnitOnField() const
+{
+	return unitOnField;
 }
 
 bool Field::IsFieldOccupied() const
@@ -109,26 +117,38 @@ void Field::MoveUnitToThisField(Unit* unit)
     }
     unitOnField = unit;
     unit->SetOccupiedField(this);
-    unit->UpdateRenderingObjectPosition();
 
-    fieldBorder->SetColors(
-        unit->GetRenderingObject()->GetNormalColor(),
-        unit->GetRenderingObject()->GetHalflightColor(),
-        unit->GetRenderingObject()->GetHighlightColor()
-    );
+	if (unit->GetRenderingObject() != nullptr)
+	{
+		unit->UpdateRenderingObjectPosition();
+		if (fieldBorder)
+		{
+			fieldBorder->SetColors(
+				unit->GetRenderingObject()->GetNormalColor(),
+				unit->GetRenderingObject()->GetHalflightColor(),
+				unit->GetRenderingObject()->GetHighlightColor()
+			);
+		}
+	}
 }
 
 void Field::UnitLeavesThisField()
 {
     unitOnField->SetOccupiedField(nullptr);
     unitOnField = nullptr;
-    fieldBorder->SetColors(BORDER_NORMAL_COLOR, BORDER_HALFLIGHT_COLOR, BORDER_HIGHLIGHT_COLOR);
+	if (fieldBorder)
+	{
+		fieldBorder->SetColors(BORDER_NORMAL_COLOR, BORDER_HALFLIGHT_COLOR, BORDER_HIGHLIGHT_COLOR);
+	}
 }
 
 void Field::FreezeField()
 {
     frozen = true;
-    fieldIceBlock->SetVisible();
+	if (fieldIceBlock)
+	{
+		fieldIceBlock->SetVisible();
+	}
     if (unitOnField != nullptr)
     {
         unitOnField->Stun(1);
@@ -138,7 +158,10 @@ void Field::FreezeField()
 void Field::IceBlockDestroyed()
 {
     frozen = false;
-    fieldIceBlock->SetInvisible();
+	if (fieldIceBlock)
+	{
+		fieldIceBlock->SetInvisible();
+	}
     if (unitOnField)
     {
         unitOnField->OnFreezeEnd();

@@ -7,14 +7,14 @@
 
 #pragma once
 #include <QString>
+#include "GameEnums.h"
 
 class Unit;
 
 class Buff
 {
 protected:
-    QString name = "";
-
+    BuffID id;
     int maxDuration = 1;
     int remainingDuration = 0;
     Unit* affectedUnit = nullptr;
@@ -23,19 +23,24 @@ protected:
     virtual void onEffectEnd() = 0;
 public:
     virtual ~Buff() = default;
+	explicit Buff(Unit* buffTarget);
 
-    void StartEffect(Unit* buffTarget);
+    void StartEffect();
     bool OnTurnStart();
 
-    QString GetName() const
+    BuffID GetID() const
     {
-        return name;
+        return id;
     }
 
     int GetRemainingDuration() const
     {
         return remainingDuration;
     }
+	void SetRemainingDuration(int newDuration)
+	{
+		remainingDuration = newDuration;
+	}
 
     int GetMaximumDuration() const
     {

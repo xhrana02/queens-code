@@ -16,5 +16,5 @@ class Blessing : public Buff
     static int const enRegenIncrease = 1;
     static int const armorIncrease = 1;
 public:
-    Blessing();
+	explicit Blessing(Unit* buffTarget);
 };

@@ -15,5 +15,5 @@ class DemonShield : public Buff
     void onEffectEnd() override;
     static int const armorIncrease = 6;
 public:
-    DemonShield();
+	explicit DemonShield(Unit* buffTarget);
 };

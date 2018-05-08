@@ -11,10 +11,13 @@
 
 class SpecialDirtyTrick : public Ability
 {
+	static int const stunDuration = 2;
 public:
     SpecialDirtyTrick();
     bool Effect(Board* board, Unit* abilityUser, Field* target) override;
-    bool CanUse(Board* board, Unit* abilityUser, Field* target) override;
     void OnSelected(Board* board, Unit* abilityUser) override;
     void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField) override;
+
+protected:
+	void calculateViableTargets(Board* board, Unit* abilityUser) final;
 };

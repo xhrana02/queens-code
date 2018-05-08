@@ -10,6 +10,8 @@
 #include "../ApplicationControl.h"
 #include "Cursor.h"
 #include "AbilityAnimation.h"
+#include <thread>
+#include <future>
 
 using namespace fsg;
 using namespace std;
@@ -58,6 +60,19 @@ void Game::AddPlayer(shared_ptr<Player> newPlayer)
     default:
         throw exception("Game AddPlayer - Invalid player ID.");
     }
+}
+
+Player* Game::GetPlayerByID(PlayerID playerID) const
+{
+	switch (playerID)
+	{
+	case Player1:
+		return player1.get();
+	case Player2:
+		return player2.get();
+	default:
+		throw exception("Game GetPlayerByID - Invalid player ID.");
+	}
 }
 
 Player* Game::GetNextPlayer() const
@@ -116,15 +131,12 @@ void Game::PlayerVictory(Player* player)
         gameBoard->UnhalflightAllFields();
         ResetTheoryValues();
         locked = true;
+		finished = true;
         if(appControl != nullptr)
         {
             appControl->SetActivePlayer(player->GetName() + " is victorious!");
             appControl->OnGameOver();
         }
-    }
-    else
-    {
-        // TODO: Inform AI about player victory
     }
 }
 
@@ -256,6 +268,11 @@ void Game::HandleMouseClick(vec2 mouse, MouseButton button)
 
 void Game::HoverField(Field* newHoveredField)
 {
+	if (activePlayer->IsAI())
+	{
+		return;
+	}
+
     if (newHoveredField != hoveredField)
     {
         ResetTheoryValues();
@@ -281,6 +298,11 @@ void Game::HoverField(Field* newHoveredField)
 
 void Game::SelectField(Field* clickedField)
 {
+	if (activePlayer->IsAI())
+	{
+		return;
+	}
+
     Unit* newSelectedUnit = nullptr;
     if (clickedField != nullptr)
     {
@@ -295,6 +317,11 @@ void Game::SelectField(Field* clickedField)
 
 void Game::SelectUnit(Unit* newSelectedUnit)
 {
+	if (activePlayer->IsAI())
+	{
+		return;
+	}
+
     if (locked)
     {
         selectUnitAfterUnlock = newSelectedUnit;
@@ -322,8 +349,13 @@ void Game::UnselectUnit()
     }
 }
 
-void Game::UseAbility(Field* clickedField)
+void Game::UseAbility(Field* clickedField) const
 {
+	if (activePlayer->IsAI())
+	{
+		return;
+	}
+
     if (selectedUnit == nullptr)
     {
         return;
@@ -341,17 +373,16 @@ void Game::UseAbility(Field* clickedField)
             gameBoard->UnhalflightAllFields();
             ResetTheoryValues();
         }
-
-        activePlayer->OnAbilityUsed();
-        if (activePlayer->IsOutOfCommandPoints())
-        {
-            EndTurn();
-        }
     }
 }
 
 void Game::SelectAbility(int slot) const
 {
+	if (activePlayer->IsAI())
+	{
+		return;
+	}
+
     if (selectedUnit != nullptr)
     {
         selectedUnit->SelectAbility(slot);
@@ -371,7 +402,7 @@ void Game::OnAbilitySelected(int slot) const
     }
 }
 
-void Game::EndTurn()
+void Game::OnTurnEnd()
 {
     if (locked)
     {
@@ -379,7 +410,7 @@ void Game::EndTurn()
         return;
     }
 
-    GetActivePlayer()->EndTurn();
+	GetNextPlayer()->BeginTurn();
 }
 
 void Game::LockGame(AbilityAnimation* lockingAbility)
@@ -393,6 +424,11 @@ void Game::LockGame(AbilityAnimation* lockingAbility)
 
 void Game::UnlockGame()
 {
+	if (finished)
+	{
+		return;
+	}
+
     locked = false;
 
     if(selectUnitAfterUnlock)
@@ -400,15 +436,15 @@ void Game::UnlockGame()
         SelectUnit(selectUnitAfterUnlock);
         selectUnitAfterUnlock = nullptr;
     }
-    else
+    else if(selectedUnit)
     {
-        selectedUnit->SelectAbility(1);
+		selectedUnit->SelectAbility(1);
     }
 
     if(endTurnAfterUnlock)
     {
-        EndTurn();
-        endTurnAfterUnlock = false;
+		endTurnAfterUnlock = false;
+        OnTurnEnd();
     }
 }
 
@@ -462,6 +498,11 @@ void Game::IterationEvents()
     {
         cursor->Update(cursorPosition.x, cursorPosition.y, highlightFluctuationPhase);
     }
+
+	if (activePlayer->IsAI())
+	{
+		ProcessAiTurn();
+	}
 }
 
 void Game::ResetTheoryValues() const
@@ -474,4 +515,58 @@ void Game::ResetTheoryValues() const
     {
         unit->ResetTheory();
     }
+}
+
+void Game::ProcessAiTurn()
+{
+	// Give the human player a second or two to realize what happenned
+	if (aiMoveLockoutDuration > 0)
+	{
+		aiMoveLockoutDuration--;
+		return;
+	}
+
+	// Ask for new moves
+	if (aiMoves.empty() && !aiThinking)
+	{
+		isRealGame = false;
+		aiThinking = true;
+		if (appControl)
+		{
+			appControl->IsAiThinking(true);
+		}
+
+		aiMovesFuture = async(launch::async, &Player::GetAiMoves, activePlayer);
+	}
+
+	// Check if new moves are ready
+	if (aiThinking)
+	{
+		if (aiMovesFuture.wait_for(chrono::seconds(0)) == future_status::ready)
+		{
+			isRealGame = true;
+			aiThinking = false;
+			if (appControl)
+			{
+				appControl->IsAiThinking(false);
+			}
+
+			aiMoves = aiMovesFuture.get();
+		}
+	}
+
+	// Apply the new moves
+	if (!aiMoves.empty() && !locked)
+	{
+		if(aiMoves.front()->UseThisMove(this))
+		{
+			aiMoveLockoutDuration = 120;
+			aiMoves.pop_front();
+		}
+		else
+		{
+			// AI move was invalid
+			activePlayer->EndTurn();
+		}
+	}
 }

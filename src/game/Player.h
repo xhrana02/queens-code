@@ -10,7 +10,8 @@
 #include "GameEnums.h"
 #include "Unit.h"
 #include <QObject>
-#include <set>
+#include "AiControl.h"
+#include <unordered_set>
 
 #define PLAYER1_NORMAL_COLOR glm::vec4(0.19f, 0.21f, 0.85f, 1.0f)
 #define PLAYER1_HALFLIGHT_COLOR glm::vec4(0.21f, 0.85f, 0.85f, 1.0f)
@@ -35,10 +36,11 @@ protected:
 
     QString name;
     PlayerID id;
-    int playerType;
-    int aiType;
-    std::set<Unit*> units = std::set<Unit*>();
-    std::set<Unit*> deadUnits = std::set<Unit*>();
+    AiType aiType;
+	std::unique_ptr<AiControl> aiControl;
+
+    std::unordered_set<Unit*> units = std::unordered_set<Unit*>();
+    std::unordered_set<Unit*> deadUnits = std::unordered_set<Unit*>();
 
     glm::vec4 normalColor;
     glm::vec4 halflightColor;
@@ -48,10 +50,11 @@ protected:
 
 public:
     virtual ~Player();
-    Player(Game* inGame, PlayerID inID, QString inName, int inCode) : Player(nullptr, game, inID, inName, inCode){}
-    Player(ApplicationControl* inAppControl, Game* inGame, PlayerID inID, QString inName, int inCode);
+	Player(Game* inGame, PlayerID inID, AiType inAiType) : Player(inGame, inID, "", inAiType) {}
+    Player(Game* inGame, PlayerID inID, QString inName, AiType inAiType) : Player(nullptr, inGame, inID, inName, inAiType) {}
+    Player(ApplicationControl* inAppControl, Game* inGame, PlayerID inID, QString inName, AiType inAiType);
 
-    void DecodePlayerType(int code);
+    static AiType DecodeAiType(int code);
 
     void GamePopup(QString message) const;
 
@@ -63,21 +66,37 @@ public:
     {
         return id;
     }
+	AiType GetAiType() const
+    {
+		return aiType;
+    }
+	bool IsAI() const;
 
-    virtual Player* GetEnemyPlayer();
-    virtual std::vector<Player*> GetAllEnemyPlayers();
+    Player* GetEnemyPlayer();
+    std::vector<Player*> GetAllEnemyPlayers();
 
-    virtual std::set<Unit*> GetUnits() const
+    std::unordered_set<Unit*> GetUnits() const
     {
         return units;
     }
 
     void AddNewUnit(Unit* newUnit);
-    virtual void AddNewUnitAndCreateUI(Unit* newUnit, QQmlEngine* engine, QQuickItem* guiRoot);
-    virtual void OnUnitDeath(Unit* dyingUnit);
+    void AddNewUnitAndCreateUI(Unit* newUnit, QQmlEngine* engine, QQuickItem* guiRoot);
+    void OnUnitDeath(Unit* dyingUnit);
 
     void BeginTurn();
     void OnAbilityUsed();
     bool IsOutOfCommandPoints() const;
     void EndTurn();
+
+	int GetCommandPoints() const
+	{
+		return commandPoints;
+	}
+	void SetCommandPoints(int newValue)
+	{
+		commandPoints = newValue;
+	}
+
+	std::list<std::shared_ptr<AiMove>> GetAiMoves() const;
 };

@@ -16,11 +16,15 @@ using namespace glm;
 
 SpecialHealingCircle::SpecialHealingCircle()
 {
-    costEN = 7;
+    costEN = 6;
     name = "HealingCircle";
     iconPath = "icons/SpecialHealingCircle.png";
-    description = "<b><u>HealingCircle</u> ( 7 EN )</b><br><br>"
+    description = "<b><u>HealingCircle</u> ( 6 EN )</b><br><br>"
         "Every allied unit in the range of 2 (excluding the priest) regains 4 HP and 4 EN.<br>";
+	aiTargetValue = 15;
+	aiTargetMissingHpMod = 0.6f;
+	aiTargetMissingEnMod = 0.4f;
+	aiTargetRelativeEnMod = 0.0f;
 }
 
 bool SpecialHealingCircle::Effect(Board* board, Unit* abilityUser, Field* target)
@@ -29,14 +33,14 @@ bool SpecialHealingCircle::Effect(Board* board, Unit* abilityUser, Field* target
     {
         abilityUser->ReduceEN(costEN);
 
-        for (auto aoeTarget : areaOfEffectTargets)
+        for (auto aoeTarget : viableTargets)
         {
             aoeTarget->GetUnitOnField()->Heal(healHP, healEN);
 
             if(game->IsRealGame())
             {
                 // ReSharper disable once CppNonReclaimedResourceAcquisition
-                new Flash(game, aoeTarget->GetUnitOnField(), vec4(0.0f, 1.0f, 0.0f, 0.5f), 3 + healHP + healEN);
+                new Flash(game, aoeTarget->GetUnitOnField(), vec4(0.0f, 1.0f, 0.0f, 0.5f), 3 + 1.5*healHP + healEN);
             }
         }
         PanCameraToTarget(abilityUser->GetOccupiedField());
@@ -45,53 +49,32 @@ bool SpecialHealingCircle::Effect(Board* board, Unit* abilityUser, Field* target
     return false;
 }
 
-bool SpecialHealingCircle::CanUse(Board* board, Unit* abilityUser, Field* target)
-{
-    if (target == nullptr)
-    {
-        return false;
-    }
-
-    CalculateAreaOfEffect(board, abilityUser);
-    for (auto viableTarget : areaOfEffectTargets)
-    {
-        if (target == viableTarget)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 void SpecialHealingCircle::OnSelected(Board* board, Unit* abilityUser)
 {
-    CalculateAreaOfEffect(board, abilityUser);
-    board->HalflightFields(areaOfEffectCandidates);
+    board->HalflightFields(Targetfinding::GetIndirectAllyTargets(board, abilityUser, aoeRangeMin, aoeRangeMax, true));
 }
 
 void SpecialHealingCircle::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
 {
     if(CanUse(board, abilityUser, hoveredField))
     {
-        board->HighlightFields(areaOfEffectTargets);
+        board->HighlightFields(viableTargets);
         abilityUser->ReduceTheoreticalEN(costEN);
-        for (auto aoeTarget : areaOfEffectTargets)
+        for (auto aoeTarget : viableTargets)
         {
             aoeTarget->GetUnitOnField()->TheoreticalHeal(healHP, healEN);
         }
     }
 }
 
-void SpecialHealingCircle::CalculateAreaOfEffect(Board* board, Unit* abilityUser)
+void SpecialHealingCircle::calculateViableTargets(Board* board, Unit* abilityUser)
 {
-    areaOfEffectCandidates.clear();
-    areaOfEffectCandidates = Targetfinding::GetIndirectAllyTargets(board, abilityUser, aoeRangeMin, aoeRangeMax);
-    areaOfEffectTargets.clear();
-    for (auto field : areaOfEffectCandidates)
-    {
-        if (field->GetUnitOnField() && !field->IsFieldFrozen())
-        {
-            areaOfEffectTargets.push_back(field);
-        }
-    }
+	viableTargets.clear();
+	for (auto field : Targetfinding::GetIndirectAllyTargets(board, abilityUser, aoeRangeMin, aoeRangeMax))
+	{
+		if (!field->IsFieldFrozen())
+		{
+			viableTargets.push_back(field);
+		}
+	}
 }

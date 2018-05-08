@@ -12,6 +12,7 @@
 
 class Movement : public Ability
 {
+protected:
     std::forward_list<Field*> calculatedPath;
     int calculatedCost = 0;
 public:
@@ -20,4 +21,8 @@ public:
     bool CanUse(Board* board, Unit* abilityUser, Field* target) override;
     void OnSelected(Board* board, Unit* abilityUser) override;
     void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField) override;
+
+protected:
+	void calculateViableTargets(Board* board, Unit* abilityUser) final;
+	virtual void calculateCost();
 };

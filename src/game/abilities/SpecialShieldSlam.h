@@ -12,10 +12,13 @@
 class SpecialShieldSlam : public Ability
 {
     static int const damageEN = 5;
+	static int const stunDuration = 1;
 public:
     SpecialShieldSlam();
     bool Effect(Board* board, Unit* abilityUser, Field* target) override;
-    bool CanUse(Board* board, Unit* abilityUser, Field* target) override;
     void OnSelected(Board* board, Unit* abilityUser) override;
     void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField) override;
+
+protected:
+	void calculateViableTargets(Board* board, Unit* abilityUser) final;
 };

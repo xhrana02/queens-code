@@ -39,24 +39,6 @@ bool AttackLine::Effect(Board* board, Unit* abilityUser, Field* target)
     return false;
 }
 
-bool AttackLine::CanUse(Board* board, Unit* abilityUser, Field* target)
-{
-    if (target == nullptr)
-    {
-        return false;
-    }
-
-    auto viableTargets = Targetfinding::GetLineEnemyTargets(board, abilityUser, rangeMin, rangeMax);
-    for (auto viableTarget : viableTargets)
-    {
-        if (target == viableTarget)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 void AttackLine::OnSelected(Board* board, Unit* abilityUser)
 {
     board->HalflightFields(Targetfinding::GetLineEnemyTargets(board, abilityUser, rangeMin, rangeMax, true));
@@ -70,4 +52,9 @@ void AttackLine::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, 
         abilityUser->ReduceTheoreticalEN(costEN);
         hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Line, damageNormal, damageHP, damageEN);
     }
+}
+
+void AttackLine::calculateViableTargets(Board* board, Unit* abilityUser)
+{
+	viableTargets = Targetfinding::GetLineEnemyTargets(board, abilityUser, rangeMin, rangeMax);;
 }

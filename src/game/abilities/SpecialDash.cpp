@@ -18,7 +18,7 @@ SpecialDash::SpecialDash()
     costEN = 1;
     name = "Dash";
     iconPath = "icons/SpecialDash.png";
-    description = "<b><u>Dash</u> ( 1 EN ) Indirect 1-3</b><br><br>"
+    description = "<b><u>Dash</u> ( 1 EN ) Indirect 1-4</b><br><br>"
         "Jump to an empty tile.<br>";
 }
 
@@ -40,27 +40,10 @@ bool SpecialDash::Effect(Board* board, Unit* abilityUser, Field* target)
     return false;
 }
 
-bool SpecialDash::CanUse(Board* board, Unit* abilityUser, Field* target)
-{
-    if (target == nullptr)
-    {
-        return false;
-    }
-
-    auto viableTargets = Targetfinding::GetIndirectEmptyTargets(board, abilityUser->GetOccupiedField(), rangeMin, rangeMax);
-    for (auto viableTarget : viableTargets)
-    {
-        if (target == viableTarget)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 void SpecialDash::OnSelected(Board* board, Unit* abilityUser)
 {
-    board->HalflightFields(Targetfinding::GetIndirectEmptyTargets(board, abilityUser->GetOccupiedField(), rangeMin, rangeMax));
+	calculateViableTargets(board, abilityUser);
+    board->HalflightFields(viableTargets);
 }
 
 void SpecialDash::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
@@ -70,4 +53,9 @@ void SpecialDash::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser,
     {
         abilityUser->ReduceTheoreticalEN(costEN);
     }
+}
+
+void SpecialDash::calculateViableTargets(Board* board, Unit* abilityUser)
+{
+	viableTargets = Targetfinding::GetIndirectEmptyTargets(board, abilityUser->GetOccupiedField(), rangeMin, rangeMax);
 }

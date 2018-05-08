@@ -17,13 +17,17 @@ using namespace glm;
 
 SpecialDemonShield::SpecialDemonShield()
 {
-    costHP = 3;
+    costHP = 1;
     costEN = 3;
     name = "Demon Shield";
     iconPath = "icons/SpecialDemonShield.png";
-    description = "<b><u>Demon Shield</u> ( 3 HP, 3 EN ) Indirect 0-3</b><br><br>"
+    description = "<b><u>Demon Shield</u> ( 1 HP, 3 EN ) Indirect 0-3</b><br><br>"
         "The targeted ally gains 6 Armor for the next 3 turns.<br>"
         ARMOR_TOOLTIP;
+	aiTargetValue = 8;
+	aiTargetMissingHpMod = 0.7f;
+	aiTargetMissingEnMod = 0.3f;
+	aiTargetRelativeEnMod = 0.0f;
 }
 
 bool SpecialDemonShield::Effect(Board* board, Unit* abilityUser, Field* target)
@@ -32,7 +36,8 @@ bool SpecialDemonShield::Effect(Board* board, Unit* abilityUser, Field* target)
     {
         abilityUser->ReduceEN(costEN);
         abilityUser->ReduceHP(costHP);
-        target->GetUnitOnField()->ApplyBuff(new DemonShield());
+		auto targetUnit = target->GetUnitOnField();
+        targetUnit->ApplyBuff(new DemonShield(targetUnit));
 
         if(game->IsRealGame())
         {
@@ -41,24 +46,6 @@ bool SpecialDemonShield::Effect(Board* board, Unit* abilityUser, Field* target)
             new Flash(game, target->GetUnitOnField(), vec4(0.5f, 0.2f, 0.1f, 0.9f), 20, 15);
         }
         return true;
-    }
-    return false;
-}
-
-bool SpecialDemonShield::CanUse(Board* board, Unit* abilityUser, Field* target)
-{
-    if (target == nullptr)
-    {
-        return false;
-    }
-
-    auto viableTargets = Targetfinding::GetIndirectAllyTargets(board, abilityUser, rangeMin, rangeMax);
-    for (auto viableTarget : viableTargets)
-    {
-        if (target == viableTarget)
-        {
-            return true;
-        }
     }
     return false;
 }
@@ -76,4 +63,9 @@ void SpecialDemonShield::SelectedAbilityOnFieldHovered(Board* board, Unit* abili
         abilityUser->ReduceTheoreticalEN(costEN);
         abilityUser->ReduceTheoreticalHP(costHP);
     }
+}
+
+void SpecialDemonShield::calculateViableTargets(Board* board, Unit* abilityUser)
+{
+	viableTargets = Targetfinding::GetIndirectAllyTargets(board, abilityUser, rangeMin, rangeMax);
 }

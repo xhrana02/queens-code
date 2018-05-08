@@ -20,10 +20,11 @@ SpecialIceBlock::SpecialIceBlock()
     costEN = 4;
     name = "Ice Block";
     iconPath = "icons/SpecialIceBlock.png";
-    description = "<b><u>Ice Block</u> ( 4 EN ) Indirect 0-3</b><br><br>"
-        "Freezes a tile until any damage is dealt to it. Units cought in the ice block "
+    description = "<b><u>Ice Block</u> ( 4 EN ) Indirect 0-4</b><br><br>"
+        "Freezes a tile until any damage is dealt to it. Units caught in the ice block "
         "are stunned but can't take any damage.<br>"
         STUN_TOOLTIP;
+	aiTargetValue = 1;
 }
 
 bool SpecialIceBlock::Effect(Board* board, Unit* abilityUser, Field* target)
@@ -44,28 +45,6 @@ bool SpecialIceBlock::Effect(Board* board, Unit* abilityUser, Field* target)
     return false;
 }
 
-bool SpecialIceBlock::CanUse(Board* board, Unit* abilityUser, Field* target)
-{
-    if (target == nullptr)
-    {
-        return false;
-    }
-    if (target->IsFieldFrozen())
-    {
-        return false;
-    }
-
-    auto viableTargets = Targetfinding::GetIndirectAllTargets(board, abilityUser->GetOccupiedField(), rangeMin, rangeMax);
-    for (auto viableTarget : viableTargets)
-    {
-        if (target == viableTarget)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 void SpecialIceBlock::OnSelected(Board* board, Unit* abilityUser)
 {
     board->HalflightFields(Targetfinding::GetIndirectAllTargets(board, abilityUser->GetOccupiedField(), rangeMin, rangeMax));
@@ -78,4 +57,17 @@ void SpecialIceBlock::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityU
     {
         abilityUser->ReduceTheoreticalEN(costEN);
     }
+}
+
+void SpecialIceBlock::calculateViableTargets(Board* board, Unit* abilityUser)
+{
+	auto candidates = Targetfinding::GetIndirectAllTargets(board, abilityUser->GetOccupiedField(), rangeMin, rangeMax);
+	viableTargets.clear();
+	for (auto candidate : candidates)
+	{
+		if (!candidate->IsFieldFrozen())
+		{
+			viableTargets.push_back(candidate);
+		}
+	}
 }

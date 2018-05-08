@@ -20,8 +20,9 @@ SpecialDirtyTrick::SpecialDirtyTrick()
     name = "Dirty Trick";
     iconPath = "icons/SpecialDirtyTrick.png";
     description = "<b><u>Dirty Trick</u> ( 1 EN ) Melee</b><br><br>"
-        "The target is stunned for 1 turn.<br>"
+        "The target is stunned for 2 turns.<br>"
         STUN_TOOLTIP;
+	aiTargetValue = 20;
 }
 
 bool SpecialDirtyTrick::Effect(Board* board, Unit* abilityUser, Field* target)
@@ -30,7 +31,7 @@ bool SpecialDirtyTrick::Effect(Board* board, Unit* abilityUser, Field* target)
     {
         abilityUser->ReduceEN(costEN);
         auto targetUnit = target->GetUnitOnField();
-        targetUnit->Stun(1);
+        targetUnit->Stun(stunDuration);
 
         if(game->IsRealGame())
         {
@@ -39,24 +40,6 @@ bool SpecialDirtyTrick::Effect(Board* board, Unit* abilityUser, Field* target)
             new Flash(game, target->GetUnitOnField(), vec4(1.0f, 1.0f, 0.0f, 1.0f), 5);
         }
         return true;
-    }
-    return false;
-}
-
-bool SpecialDirtyTrick::CanUse(Board* board, Unit* abilityUser, Field* target)
-{
-    if (target == nullptr)
-    {
-        return false;
-    }
-
-    auto viableTargets = Targetfinding::GetMeleeEnemyTargets(board, abilityUser);
-    for (auto viableTarget : viableTargets)
-    {
-        if (target == viableTarget && !target->IsFieldFrozen())
-        {
-            return true;
-        }
     }
     return false;
 }
@@ -73,4 +56,17 @@ void SpecialDirtyTrick::SelectedAbilityOnFieldHovered(Board* board, Unit* abilit
     {
         abilityUser->ReduceTheoreticalEN(costEN);
     }
+}
+
+void SpecialDirtyTrick::calculateViableTargets(Board* board, Unit* abilityUser)
+{
+	auto candidates = Targetfinding::GetMeleeEnemyTargets(board, abilityUser);
+	viableTargets.clear();
+	for (auto candidate : candidates)
+	{
+		if (!candidate->IsFieldFrozen())
+		{
+			viableTargets.push_back(candidate);
+		}
+	}
 }

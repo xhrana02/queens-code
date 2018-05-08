@@ -8,16 +8,16 @@
 #include "Pathfinding.h"
 #include "Board.h"
 #include "Field.h"
-#include <set>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 
 using namespace std;
 
 forward_list<Field*> Pathfinding::FindPath(Board* board, Field* origin, Field* target)
 {
-    auto closedSet = set<Field*>();
-    auto openSet = set<Field*>({ origin });
+    auto closedSet = unordered_set<Field*>();
+    auto openSet = unordered_set<Field*>({ origin });
     auto cameFrom = unordered_map<Field*, Field*>();
 
     auto allEmptyFields = board->GetAllEmptyFields();
@@ -106,19 +106,18 @@ forward_list<Field*> Pathfinding::ReconstructPath(unordered_map<Field*, Field*> 
     return path;
 }
 
-double Pathfinding::HeuristicCostEstimate(Field* origin, Field* target)
+float Pathfinding::HeuristicCostEstimate(Field* origin, Field* target)
 {
     auto deltaX = abs(origin->GetX() - target->GetX());
     auto deltaY = abs(origin->GetY() - target->GetY());
-    return sqrt(pow(deltaX, 2) + pow(deltaY, 2));
+	return 0.8f * sqrt(float(pow(deltaX, 2) + pow(deltaY, 2)));
 }
-
 
 
 vector<Field*> Pathfinding::GetAllPossibleTargets(Board* board, Field* origin, int maxLength)
 {
-    auto closedSet = set<Field*>();
-    auto openSet = set<Field*>({ origin });
+    auto closedSet = unordered_set<Field*>();
+    auto openSet = unordered_set<Field*>({ origin });
 
     auto allEmptyFields = board->GetAllEmptyFields();
 
@@ -171,7 +170,6 @@ vector<Field*> Pathfinding::GetAllPossibleTargets(Board* board, Field* origin, i
                 openSet.insert(neighbor);
             }
 
-            auto DEBUGgsc = gScore[current];
             auto new_gScore = gScore[current] + 1;
             if (new_gScore >= gScore[neighbor])
             {
@@ -190,7 +188,7 @@ vector<Field*> Pathfinding::GetAllPossibleTargets(Board* board, Field* origin, i
     return ConvertSetToVector(closedSet);
 }
 
-vector<Field*> Pathfinding::ConvertSetToVector(set<Field*> convertingSet)
+vector<Field*> Pathfinding::ConvertSetToVector(unordered_set<Field*> convertingSet)
 {
     auto returnVector = vector<Field*>();
     for (auto field : convertingSet)

@@ -12,10 +12,12 @@
 
 class Board
 {
+protected:
     Field*** fields;
     int playfieldHeight;
     int playfieldWidth;
 
+	Field* throneField = nullptr;
     std::vector<Field*> highlightedFields = std::vector<Field*>();
 public:
     ~Board();
@@ -39,25 +41,10 @@ public:
         return playfieldWidth + 2;
     }
 
-    Field* GetField(int x, int y) const
-    {
-        if (x < 0 || x >= ActualWidth() ||
-            y < 0 || y >= ActualHeight())
-        {
-            return nullptr;
-        }
-        return fields[x][y];
-    }
-
-    Field* GetPlayField(int x, int y) const
-    {
-        if (x < 1 || x > PlayableWidth() ||
-            y < 1 || y > PlayableHeight())
-        {
-            return nullptr;
-        }
-        return fields[x][y];
-    }
+	Field* GetField(int x, int y) const;
+	Field* GetPlayField(int x, int y) const;
+	Field* GetThroneField() const;
+	void SetThroneField(int x, int y);
 
     Field* GetFieldFromMouse(glm::vec2 mouse) const;
     Field* GetPlayFieldFromMouse(glm::vec2 mouse) const;

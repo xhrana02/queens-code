@@ -91,9 +91,10 @@ public:
     void SetActivePlayer(const QString playerName) const;
     void OnUnitSelected(const QString unitName) const;
     void OnUnitUnselected() const;
-    void OnTurnBegin(int turnNumber) const;
+    void OnTurnBegin(int turnNumber, bool isAi) const;
     void OnAbilityUsed() const;
     void OnGameOver() const;
+	void IsAiThinking(bool isThinking) const;
 
     Q_INVOKABLE void LoadSettings();
 

@@ -16,13 +16,16 @@ using namespace glm;
 
 SpecialFireball::SpecialFireball()
 {
-    costHP = 3;
-    costEN = 3;
+    costEN = 4;
     name = "Fireball";
     iconPath = "icons/SpecialFireball.png";
-    description = "<b><u>Fireball</u> ( 3 HP, 3 EN ) Line 1-6</b><br><br>"
-        "Deals 6 damage to the target. Deals 4 damage to tiles in range of 2 around the target. Can target empty tiles.<br>"
+    description = "<b><u>Fireball</u> ( 4 EN ) Line 1-6</b><br><br>"
+        "Deals 7 normal damage to the target. Deals 4 normal damage to tiles in range of 2 around the target. Can target empty tiles.<br>"
         NORMAL_DAMAGE_TOOLTIP;
+	aiTargetValue = 1;
+	aiTargetMissingHpMod = 0.5f;
+	aiTargetMissingEnMod = 1.0f;
+	aiTargetRelativeEnMod = 0.0f;
 }
 
 bool SpecialFireball::Effect(Board* board, Unit* abilityUser, Field* target)
@@ -64,27 +67,10 @@ bool SpecialFireball::Effect(Board* board, Unit* abilityUser, Field* target)
     return false;
 }
 
-bool SpecialFireball::CanUse(Board* board, Unit* abilityUser, Field* target)
-{
-    if (target == nullptr)
-    {
-        return false;
-    }
-
-    auto viableTargets = Targetfinding::GetLineEnemyTargets(board, abilityUser, rangeMin, rangeMax, true);
-    for (auto viableTarget : viableTargets)
-    {
-        if (target == viableTarget)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 void SpecialFireball::OnSelected(Board* board, Unit* abilityUser)
 {
-    board->HalflightFields(Targetfinding::GetLineEnemyTargets(board, abilityUser, rangeMin, rangeMax, true));
+	calculateViableTargets(board, abilityUser);
+    board->HalflightFields(viableTargets);
 }
 
 void SpecialFireball::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField)
@@ -104,6 +90,11 @@ void SpecialFireball::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityU
             }
         }
     }
+}
+
+void SpecialFireball::calculateViableTargets(Board* board, Unit* abilityUser)
+{
+	viableTargets = Targetfinding::GetLineEnemyTargets(board, abilityUser, rangeMin, rangeMax, true);
 }
 
 void SpecialFireball::CalculateAreaOfEffect(Board* board, Field* center)

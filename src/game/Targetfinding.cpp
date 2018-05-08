@@ -207,9 +207,9 @@ bool Targetfinding::IsInRange(Field* origin, Field* target, int rangeMin, int ra
 {
     auto deltaX = origin->GetX() - target->GetX();
     auto deltaY = origin->GetY() - target->GetY();
-    auto range = sqrt(pow(deltaX, 2) + pow(deltaY, 2));
+    auto range = sqrt(float(pow(deltaX, 2) + pow(deltaY, 2)));
 
-    if (range < rangeMin - 0.00001 || range > rangeMax + 0.00001)
+    if (range < rangeMin - 0.0001 || range > rangeMax + 0.0001)
     {
         return false;
     }

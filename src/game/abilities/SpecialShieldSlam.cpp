@@ -16,13 +16,14 @@ using namespace glm;
 
 SpecialShieldSlam::SpecialShieldSlam()
 {
-    costEN = 3;
+    costEN = 2;
     name = "Shield Slam";
     iconPath = "icons/SpecialShieldSlam.png";
-    description = "<b><u>Shield Slam</u> ( 3 EN ) Melee</b><br><br>"
-        "The target takes 4 EN damage and is stunned for 1 turn.<br>"
+    description = "<b><u>Shield Slam</u> ( 2 EN ) Melee</b><br><br>"
+        "The target takes 5 EN damage and is stunned for 1 turn.<br>"
         STUN_TOOLTIP
         EN_DAMAGE_TOOLTIP;
+	aiTargetValue = 15;
 }
 
 bool SpecialShieldSlam::Effect(Board* board, Unit* abilityUser, Field* target)
@@ -31,7 +32,7 @@ bool SpecialShieldSlam::Effect(Board* board, Unit* abilityUser, Field* target)
     {
         abilityUser->ReduceEN(costEN);
         auto targetUnit = target->GetUnitOnField();
-        targetUnit->Stun(1);
+        targetUnit->Stun(stunDuration);
         targetUnit->TakeDamage(Melee, 0, 0, damageEN);
 
         if (!targetUnit->IsUnitAlive())
@@ -52,24 +53,6 @@ bool SpecialShieldSlam::Effect(Board* board, Unit* abilityUser, Field* target)
     return false;
 }
 
-bool SpecialShieldSlam::CanUse(Board* board, Unit* abilityUser, Field* target)
-{
-    if (target == nullptr)
-    {
-        return false;
-    }
-
-    auto viableTargets = Targetfinding::GetMeleeEnemyTargets(board, abilityUser);
-    for (auto viableTarget : viableTargets)
-    {
-        if (target == viableTarget)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 void SpecialShieldSlam::OnSelected(Board* board, Unit* abilityUser)
 {
     board->HalflightFields(Targetfinding::GetMeleeEnemyTargets(board, abilityUser, true));
@@ -83,4 +66,9 @@ void SpecialShieldSlam::SelectedAbilityOnFieldHovered(Board* board, Unit* abilit
         abilityUser->ReduceTheoreticalEN(costEN);
         hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Melee, 0, 0, damageEN);
     }
+}
+
+void SpecialShieldSlam::calculateViableTargets(Board* board, Unit* abilityUser)
+{
+	viableTargets = Targetfinding::GetMeleeEnemyTargets(board, abilityUser);
 }

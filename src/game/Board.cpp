@@ -57,6 +57,41 @@ Board::Board(int width, int height)
     }
 }
 
+Field* Board::GetField(int x, int y) const
+{
+	if (x < 0 || x >= ActualWidth() ||
+		y < 0 || y >= ActualHeight())
+	{
+		return nullptr;
+	}
+	return fields[x][y];
+}
+
+Field* Board::GetPlayField(int x, int y) const
+{
+	if (x < 1 || x > PlayableWidth() ||
+		y < 1 || y > PlayableHeight())
+	{
+		return nullptr;
+	}
+	return fields[x][y];
+}
+
+Field* Board::GetThroneField() const
+{
+	return throneField;
+}
+
+void Board::SetThroneField(int x, int y)
+{
+	if (throneField != nullptr)
+	{
+		throw exception("Board::SetThroneField - Only one throne is allowed.");
+	}
+	throneField = GetField(x, y);
+	throneField->SetTerrainType(Throne);
+}
+
 Field* Board::GetFieldFromMouse(vec2 mouse) const
 {
     auto fieldX = int(round(mouse.x + ActualWidth() / 2.f));

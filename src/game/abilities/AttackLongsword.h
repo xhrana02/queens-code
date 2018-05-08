@@ -15,12 +15,16 @@ class AttackLongsword : public AttackMelee
 public:
     AttackLongsword()
     {
-        costEN = 4;
+        costEN = 3;
         damageNormal = 9;
         name = "Longsword Attack";
         iconPath = "icons/AttackLongsword.png";
-        description = "<b><u>Longsword Attack</u> ( 4 EN ) Melee</b><br><br>"
+        description = "<b><u>Longsword Attack</u> ( 3 EN ) Melee</b><br><br>"
             "Deals 9 normal damage to the target.<br>"
             NORMAL_DAMAGE_TOOLTIP;
+		aiTargetValue = 15;
+		aiTargetMissingHpMod = 0.2f;
+		aiTargetMissingEnMod = 0.8f;
+		aiTargetRelativeEnMod = 0.0f;
     }
 };

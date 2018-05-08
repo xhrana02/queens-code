@@ -15,8 +15,10 @@ protected:
     static int const damageHP = 6;
 public:
     SpecialSoulSteal();
-    bool Effect(Board* board, Unit* abilityUser, Field* target) final;
-    bool CanUse(Board* board, Unit* abilityUser, Field* target) final;
-    void OnSelected(Board* board, Unit* abilityUser) final;
-    void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField) final;
+    bool Effect(Board* board, Unit* abilityUser, Field* target) override;
+    void OnSelected(Board* board, Unit* abilityUser) override;
+    void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField) override;
+
+protected:
+	void calculateViableTargets(Board* board, Unit* abilityUser) final;
 };

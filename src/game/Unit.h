@@ -18,6 +18,7 @@ class QQmlEngine;
 class Field;
 class ApplicationControl;
 class Player;
+class AiMove;
 
 class Unit
 {
@@ -37,9 +38,9 @@ protected:
     int armor = 0;
     float damageModifierLine = 1.0f;
     int regenerationHP = 0;
-    int regenerationEN = 3;
-    int restHP = 1;
-    int restEN = 3;
+    int regenerationEN = 4;
+    int restHP = 2;
+    int restEN = 2;
 
     void regenerate();
     void rest();
@@ -67,12 +68,14 @@ protected:
 
 public:
     virtual ~Unit();
+	// UI COOMUNICATION
     void SetAppControl(ApplicationControl* inAppControl)
     {
         appControl = inAppControl;
     }
     void GamePopup(QString message) const;
 
+	// RENDERING
     float GetRenderingPosX() const;
     float GetRenderingPosZ() const;
     virtual fsg::RenderingObject* GetRenderingObject() const
@@ -119,6 +122,8 @@ public:
     void OnAbilitySelected(int slot);
     void RefreshAbilityHalflight();
     bool UseSelectedAbility(Field* target);
+	bool UseAbilityBySlot(Field* target, int slot);
+	Ability* GetAbilityBySlot(int slot);
     bool IsEnemy(Unit* unit) const;
 
     int GetCurrentHitPoints()
@@ -138,6 +143,42 @@ public:
     int GetMaximumEnergy() const
     {
         return maximumEN;
+    }
+	int GetRegenerationHP() const
+    {
+		return regenerationHP;
+    }
+	int GetRegenerationEN() const
+    {
+		return regenerationEN;
+    }
+	int GetRestHP() const
+    {
+		return restHP;
+    }
+	int GetRestEN() const
+    {
+		return restEN;
+    }
+	int GetArmor() const
+    {
+		return armor;
+    }
+	float GetDamageModifierLine() const
+    {
+		return damageModifierLine;
+    }
+	int GetStunDuration() const
+    {
+		return stunDuration;
+    }
+	int GetRestlessDuration() const
+    {
+		return restlessDuration;
+    }
+	bool MovedThisTurn() const
+    {
+		return movedThisTurn;
     }
 
     int ReduceHP(int amount);
@@ -247,4 +288,31 @@ public:
     bool IsRoyalty = false;
     bool HasOpportunityAttack = false;
     int DamageOpportunityAttack = 0;
+
+	// AI VIRTUALS
+	virtual std::vector<std::shared_ptr<AiMove>> GetAllPossibleMoves()
+	{
+		// This is a real unit, it won't communicate with ai theories
+		return std::vector<std::shared_ptr<AiMove>>();
+	}
+	virtual bool CanUnitMove() const
+	{
+		// This is a real unit, it won't communicate with ai theories
+		return false;
+	}
+	virtual float GetMissingHP()
+	{
+		// This is a real unit, it won't communicate with ai theories
+		return 0.0f;
+	}
+	virtual float GetMissingEN()
+	{
+		// This is a real unit, it won't communicate with ai theories
+		return 0.0f;
+	}
+	virtual float GetRelativeEN()
+	{
+		// This is a real unit, it won't communicate with ai theories
+		return 0.0f;
+	}
 };

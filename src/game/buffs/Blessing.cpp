@@ -9,10 +9,11 @@
 #include "Unit.h"
 
 
-Blessing::Blessing()
+Blessing::Blessing(Unit* buffTarget)
+	: Buff(buffTarget)
 {
-    name = "Blessing";
-    maxDuration = 3;
+    id = blessing;
+    maxDuration = 5;
 }
 
 void Blessing::onEffectStart()

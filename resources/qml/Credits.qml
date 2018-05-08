@@ -118,7 +118,13 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             color: credits.textColor
             font.pixelSize: credits.textSize
-            text: "https://freesound.org/ (all sound effects)"
+            text: "Individual creators from Game-icons:"
+        }
+        Text {
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: credits.textColor
+            font.pixelSize: credits.textSize
+            text: "21 icon bases by Lorc, 3 by Delapouite, 1 by Carl Olsen, 1 by sbed, 1 by Skoll"
         }
     }
 }

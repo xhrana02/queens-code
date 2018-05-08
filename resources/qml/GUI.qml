@@ -267,8 +267,8 @@ Item {
         loaderGameOverlay.item.onUnitUnselected()
     }
 
-    function onTurnBegin(turnNumber) {
-        loaderGameOverlay.item.onTurnBegin(turnNumber)
+    function onTurnBegin(turnNumber, isAi) {
+        loaderGameOverlay.item.onTurnBegin(turnNumber, isAi)
     }
 
     function onAbilityUsed() {
@@ -281,6 +281,10 @@ Item {
 
     function onGameOver() {
         loaderGameOverlay.item.onGameOver()
+    }
+
+    function isAiThinking(isThinking) {
+        loaderGameOverlay.item.isAiThinking(isThinking)
     }
 
 

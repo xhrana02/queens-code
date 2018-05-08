@@ -14,12 +14,14 @@ Item {
     width: 60
     height: 60
 
+    property int slot
     property string name
     property string iconSource
     property string description
     property bool selectable: false
     property bool selected: false
-    property int slot
+    property int costHP
+    property int costEN
 
     property var borderColor: "#5F581A"
     property var borderSelectedColor: "#FFFF99"
@@ -110,7 +112,51 @@ Item {
             text: abilityRoot.description
         }
     }
-    
+
+    Text {
+        id: abilityCostEnText
+
+        anchors.right: abilityIconContainer.right
+        anchors.rightMargin: 2
+        anchors.bottom: abilityIconContainer.bottom
+        anchors.bottomMargin: 2
+
+        visible: abilityRoot.costEN > 0 ? true : false
+
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+
+        font.pixelSize: 14
+        font.bold: true
+        style: Text.Outline
+        styleColor: "#CC000000"
+        color: "#E6E000"
+
+        text: abilityRoot.slot == 1 ? abilityRoot.costEN + "■" : abilityRoot.costEN 
+    }
+
+    Text {
+        id: abilityCostHpText
+
+        anchors.right: abilityCostEnText.left
+        anchors.rightMargin: 2
+        anchors.bottom: abilityIconContainer.bottom
+        anchors.bottomMargin: 2
+
+        visible: abilityRoot.costHP > 0 ? true : false
+
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+
+        font.pixelSize: 14
+        font.bold: true
+        style: Text.Outline
+        styleColor: "#CC000000"
+        color: "#FF0000"
+
+        text: abilityRoot.costHP 
+    }
+
     MouseArea {
         id: mouseCatcher
 

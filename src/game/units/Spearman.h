@@ -10,7 +10,7 @@
 #include "Movement.h"
 #include "AttackSpear.h"
 #include "SpecialShieldSlam.h"
-#include "PassiveOpportunityAttack.h"
+#include "PassiveSpartan.h"
 
 class Spearman : public Unit
 {
@@ -24,6 +24,6 @@ public:
         abilities.push_back(std::make_shared<Movement>());
         abilities.push_back(std::make_shared<AttackSpear>());
         abilities.push_back(std::make_shared<SpecialShieldSlam>());
-        abilities.push_back(std::make_shared<PassiveOpportunityAttack>(this));
+        abilities.push_back(std::make_shared<PassiveSpartan>(this));
     }
 };

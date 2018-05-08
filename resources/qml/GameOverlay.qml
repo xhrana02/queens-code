@@ -163,6 +163,28 @@ Item {
             }
         }
 
+        Text {
+            id: isAiThinkingText
+
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 30
+
+            visible: false
+
+            color: gameOverlay.textColor
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+            font.pixelSize: 32
+            font.letterSpacing: 4
+            font.bold: true
+            font.family: menuFont.name
+            style: Text.Raised
+            styleColor: "#CC000000"
+
+            text: "AI is thinking..."
+        }
+
         // RIGHT SIDE
         Column {
             id: gameUI_topRight
@@ -257,11 +279,12 @@ Item {
         selectedUnitIndicator.text = ""
     }
 
-    function onTurnBegin(turnNumber) {
+    function onTurnBegin(turnNumber, isAi) {
         commandPointIndicator1.used = false
         commandPointIndicator2.used = false
         commandPointIndicator3.used = false
         turnCounter.turnNumber = turnNumber
+        gameUI_topRight.visible = !isAi
     }
 
     function onAbilityUsed() {
@@ -284,6 +307,10 @@ Item {
     function onGameOver() {
         gameOverScreen.visible = true
         activePlayerName.font.pixelSize = 40
+    }
+    
+    function isAiThinking(isThinking) {
+        isAiThinkingText.visible = isThinking
     }
 
     function cleanUI() {

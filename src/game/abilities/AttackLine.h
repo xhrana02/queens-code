@@ -19,7 +19,9 @@ protected:
     int rangeMax = 0;
 public:
     bool Effect(Board* board, Unit* abilityUser, Field* target) final;
-    bool CanUse(Board* board, Unit* abilityUser, Field* target) final;
     void OnSelected(Board* board, Unit* abilityUser) final;
     void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField) final;
+
+protected:
+	void calculateViableTargets(Board* board, Unit* abilityUser) final;
 };
