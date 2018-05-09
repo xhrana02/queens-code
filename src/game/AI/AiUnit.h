@@ -15,7 +15,7 @@ public:
 	explicit AiUnit(Unit* source);
 
 	std::vector<std::shared_ptr<AiMove>> GetAllPossibleMoves() override;
-	bool CanUnitMove() const override;
+	int NumberOfEmptyNeighbors() const override;
 	float GetMissingHP() override;
 	float GetMissingEN() override;
 	float GetRelativeEN() override;

@@ -20,6 +20,7 @@ public:
 
 	explicit AiBestMovesManager(int inMaxSize);
 
-	void AddNewMove(std::shared_ptr<AiGameState> newMove);
+	void AddNewMove(std::shared_ptr<AiGameState> newMove, bool counterMove = false);
 	std::shared_ptr<AiGameState> GetBestMove();
+	std::shared_ptr<AiGameState> GetWorstMove();
 };

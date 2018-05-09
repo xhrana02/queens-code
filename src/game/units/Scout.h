@@ -17,7 +17,7 @@ public:
     Scout()
     {
         name = "Scout";
-        this->maximumHP = 14;
+        this->maximumHP = 12;
         currentHP = maximumHP;
         currentEN = maximumEN;
         abilities.push_back(std::make_shared<MovementEnhanced>());

@@ -13,7 +13,10 @@
 AiBoard::AiBoard(Board* source, AiGame* aiGame)
 	: Board(source->PlayableWidth(), source->PlayableHeight())
 {
-	SetThroneField(source->GetThroneField()->GetX(), source->GetThroneField()->GetY());
+	if (source->GetThroneField())
+	{
+		SetThroneField(source->GetThroneField()->GetX(), source->GetThroneField()->GetY());
+	}
 	for (auto x = 1; x <= PlayableWidth(); x++)
 	{
 		for (auto y = 1; y <= PlayableHeight(); y++)

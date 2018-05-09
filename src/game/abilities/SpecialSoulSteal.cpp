@@ -16,14 +16,15 @@ using namespace glm;
 
 SpecialSoulSteal::SpecialSoulSteal()
 {
-    costHP = 2;
-    costEN = 2;
+    costHP = 1;
+	costEN = 3;
     name = "Soul Steal";
     iconPath = "icons/SpecialSoulSteal.png";
-    description = "<b><u>Soul Steal</u> ( 2 HP, 2 EN ) Melee</b><br><br>"
+    description = "<b><u>Soul Steal</u> ( 1 HP, 3 EN ) Melee</b><br><br>"
         "Deals 6 HP damage to the target. Regains HP equal to the damage dealt.<br>"
         HP_DAMAGE_TOOLTIP;
-	aiTargetValue = 12;
+	aiTargetValue = 20;
+	aiCanHurt = true;
 	aiTargetMissingHpMod = 0.3f;
 	aiTargetMissingEnMod = 0.0f;
 	aiTargetRelativeEnMod = 0.0f;

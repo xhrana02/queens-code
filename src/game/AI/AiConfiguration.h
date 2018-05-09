@@ -19,23 +19,26 @@ public:
 	int gen1MaxMoves;
 	int gen2MaxMoves;
 
-	// Positive values
+	// Rewards
 	long victoryVal;
 	long unitVal;
 	long enVal;
 	long hpVal;
-	long buffVal;
 
-	// Negative values
-	long stunnedVal;
-	long restlessVal;
-	long throneProximityVal;
-	long claustrophobiaVal;
+	// Penalties
+	long stunnedPen;
+	long restlessPen;
+	long dangerPen;
+	long throneDistancePen;
+	long claustrophobiaPen;
+	long lonelinessPen;
 
 	// Multipliers
 	float royaltyMul;
 	float agressivityMul;
 	float multipleTargetsMul;
+	float threatCanHurtMul;
+	float threatCantHurtMul;
 
 
 	explicit AiConfiguration(AiType type);

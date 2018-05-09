@@ -38,8 +38,8 @@ protected:
     int armor = 0;
     float damageModifierLine = 1.0f;
     int regenerationHP = 0;
-    int regenerationEN = 4;
-    int restHP = 2;
+    int regenerationEN = 2;
+    int restHP = 1;
     int restEN = 2;
 
     void regenerate();
@@ -116,10 +116,10 @@ public:
     void UpdateInfoBar(glm::mat4 perspective, glm::mat4 view, int winWidth, int winHeight, float fluctuation) const;
     void CreateAbilitiesBar(QQmlEngine* engine, QQuickItem* guiRoot);
 
-    void Select(bool isEnemy = false) const;
+    void Select() const;
     void Unselect() const;
     void SelectAbility(int slot) const;
-    void OnAbilitySelected(int slot);
+    void OnAbilitySelected(int slot, bool isEnemy = false);
     void RefreshAbilityHalflight();
     bool UseSelectedAbility(Field* target);
 	bool UseAbilityBySlot(Field* target, int slot);
@@ -290,12 +290,13 @@ public:
     int DamageOpportunityAttack = 0;
 
 	// AI VIRTUALS
+	float DangerFactor = 0;
 	virtual std::vector<std::shared_ptr<AiMove>> GetAllPossibleMoves()
 	{
 		// This is a real unit, it won't communicate with ai theories
 		return std::vector<std::shared_ptr<AiMove>>();
 	}
-	virtual bool CanUnitMove() const
+	virtual int NumberOfEmptyNeighbors() const
 	{
 		// This is a real unit, it won't communicate with ai theories
 		return false;

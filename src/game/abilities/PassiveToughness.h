@@ -19,7 +19,7 @@ public:
         name = "Toughness";
         iconPath = "icons/PassiveToughness.png";
         description = "<b><u>Toughness</u> ( passive )</b><br><br>"
-            "Regains bonus 2 HP when regenerating (2 HP and 4 EN total).<br>"
+            "Regains bonus 2 HP when regenerating (2 HP and 2 EN total).<br>"
             REGENERATION_TOOLTIP;
         unit->IncreaseRegenerationHP(2);
     }

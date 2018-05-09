@@ -18,7 +18,7 @@ public:
     Wizard()
     {
         name = "Wizard";
-        this->maximumHP = 12;
+        this->maximumHP = 10;
         currentHP = maximumHP;
         currentEN = maximumEN;
         abilities.push_back(std::make_shared<Movement>());

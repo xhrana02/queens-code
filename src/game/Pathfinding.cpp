@@ -121,12 +121,11 @@ vector<Field*> Pathfinding::GetAllPossibleTargets(Board* board, Field* origin, i
 
     auto allEmptyFields = board->GetAllEmptyFields();
 
-    auto gScore = unordered_map<Field*, int>();
     for (auto field : allEmptyFields)
     {
-        gScore[field] = 9999;
+        field->CostToGetHere = 9999;
     }
-    gScore[origin] = 0;
+    origin->CostToGetHere = 0;
 
     while (!openSet.empty())
     {
@@ -139,14 +138,14 @@ vector<Field*> Pathfinding::GetAllPossibleTargets(Board* board, Field* origin, i
             }
             else
             {
-                if (gScore[field] < gScore[current])
+                if (field->CostToGetHere < current->CostToGetHere)
                 {
                     current = field;
                 }
             }
         }
 
-        if (gScore[current] > maxLength)
+        if (current->CostToGetHere > maxLength)
         {
             // If all viable targets were searched, convert closedSet to vector and return it
             // Origin field isn't a valid target so it has to be removed first
@@ -170,15 +169,15 @@ vector<Field*> Pathfinding::GetAllPossibleTargets(Board* board, Field* origin, i
                 openSet.insert(neighbor);
             }
 
-            auto new_gScore = gScore[current] + 1;
-            if (new_gScore >= gScore[neighbor])
+            auto new_gScore = current->CostToGetHere + 1;
+            if (new_gScore >= neighbor->CostToGetHere)
             {
                 // this is not a better path
                 continue;
             }
 
             // record the new best path
-            gScore[neighbor] = new_gScore;
+			neighbor->CostToGetHere = new_gScore;
         }
     }
 

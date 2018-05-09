@@ -17,15 +17,16 @@ using namespace glm;
 
 SpecialCharge::SpecialCharge()
 {
-    costEN = 8;
+    costEN = 7;
     name = "Charge";
     iconPath = "icons/SpecialCharge.png";
-    description = "<b><u>Charge</u> ( 8 EN ) Line 2-4</b><br><br>"
+    description = "<b><u>Charge</u> ( 7 EN ) Line 2-4</b><br><br>"
         "Deals 3 HP damage to the target, pushes it 1 tile away and takes its place. If the tile behind the target is"
         "occupied, instead of pushing, the target takes 3 more HP damage and is stunned for 1 turn.<br>"
         STUN_TOOLTIP
         HP_DAMAGE_TOOLTIP;
-	aiTargetValue = 15;
+	aiTargetValue = 20;
+	aiCanHurt = true;
 	aiTargetMissingHpMod = 0.3f;
 	aiTargetMissingEnMod = 0.0f;
 	aiTargetRelativeEnMod = 0.0f;
@@ -83,31 +84,6 @@ bool SpecialCharge::Effect(Board* board, Unit* abilityUser, Field* target)
         }
         PanCameraToTarget(target);
         return true;
-    }
-    return false;
-}
-
-bool SpecialCharge::CanUse(Board* board, Unit* abilityUser, Field* target)
-{
-    if (target == nullptr)
-    {
-        return false;
-    }
-
-    auto candidates = Targetfinding::GetLineEnemyTargets(board, abilityUser, rangeMin, rangeMax);
-    for (auto candidate : candidates)
-    {
-        if (candidate == target)
-        {
-            if (!IsTargetPushable(board, abilityUser, candidate->GetUnitOnField()))
-            {
-                if (fieldInFront->IsFieldOccupied())
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
     }
     return false;
 }

@@ -14,13 +14,13 @@ AiBestMovesManager::AiBestMovesManager(int inMaxSize)
 	bestMoves = std::set<std::shared_ptr<AiGameState>, AiGameStateComparator>();
 }
 
-void AiBestMovesManager::AddNewMove(std::shared_ptr<AiGameState> newMove)
+void AiBestMovesManager::AddNewMove(std::shared_ptr<AiGameState> newMove, bool counterMove)
 {
 	for (auto move : bestMoves)
 	{
 		if (newMove->evaluation == move->evaluation)
 		{
-			// don't accept duplicit moves
+			// don't accept duplicit game states
 			return;
 		}
 	}
@@ -31,10 +31,21 @@ void AiBestMovesManager::AddNewMove(std::shared_ptr<AiGameState> newMove)
 	}
 	else
 	{
-		if (newMove->evaluation > (*bestMoves.begin())->evaluation)
+		if (!counterMove)
 		{
-			bestMoves.erase(bestMoves.begin());
-			bestMoves.insert(newMove);
+			if (newMove->evaluation > (*bestMoves.begin())->evaluation)
+			{
+				bestMoves.erase(bestMoves.begin());
+				bestMoves.insert(newMove);
+			}
+		}
+		else
+		{
+			if (newMove->evaluation < (*bestMoves.rbegin())->evaluation)
+			{
+				bestMoves.erase(prev(bestMoves.end()));
+				bestMoves.insert(newMove);
+			}
 		}
 	}
 }
@@ -47,4 +58,14 @@ std::shared_ptr<AiGameState> AiBestMovesManager::GetBestMove()
 	}
 
 	return *bestMoves.rbegin();
+}
+
+std::shared_ptr<AiGameState> AiBestMovesManager::GetWorstMove()
+{
+	if (bestMoves.size() < 1)
+	{
+		throw std::exception("AiBestMovesManager::GetWorstMove - Best moves container was empty.");
+	}
+
+	return *bestMoves.begin();
 }

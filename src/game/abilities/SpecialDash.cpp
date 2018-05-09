@@ -15,10 +15,10 @@ using namespace glm;
 
 SpecialDash::SpecialDash()
 {
-    costEN = 1;
+    costEN = 3;
     name = "Dash";
     iconPath = "icons/SpecialDash.png";
-    description = "<b><u>Dash</u> ( 1 EN ) Indirect 1-4</b><br><br>"
+    description = "<b><u>Dash</u> ( 3 EN ) Indirect 1-4</b><br><br>"
         "Jump to an empty tile.<br>";
 }
 

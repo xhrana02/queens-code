@@ -18,7 +18,7 @@ public:
     Brute()
     {
         name = "Brute";
-        this->maximumHP = 20;
+        this->maximumHP = 16;
         currentHP = maximumHP;
         currentEN = maximumEN;
         abilities.push_back(std::make_shared<Movement>());

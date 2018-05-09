@@ -19,10 +19,10 @@ using namespace glm;
 
 Movement::Movement()
 {
-    costEN = 1;
+    costEN = 2;
     name = "Movement";
     iconPath = "icons/Movement.png";
-    description = "<b><u>Movement</u> ( 1 EN per tile )</b><br><br>"
+    description = "<b><u>Movement</u> ( 2 EN per tile )</b><br><br>"
         "Move to a different tile.<br>"
         MOVEMENT_TOOLTIP;
 }
@@ -80,13 +80,16 @@ bool Movement::CanUse(Board* board, Unit* abilityUser, Field* target)
         return false;
     }
 
-    calculatedPath = Pathfinding::FindPath(board, abilityUser->GetOccupiedField(), target);
-    if (calculatedPath.empty())
-    {
-        return false;
-    }
+	if (game->IsRealGame())
+	{
+		calculatedPath = Pathfinding::FindPath(board, abilityUser->GetOccupiedField(), target);
+		if (calculatedPath.empty())
+		{
+			return false;
+		}
+		calculatedCost = (int(std::distance(calculatedPath.begin(), calculatedPath.end())) - 1) * costEN;
+	}
 
-	calculateCost();
     if (calculatedCost > abilityUser->GetCurrentEnergy())
     {
         return false;
@@ -124,12 +127,10 @@ void Movement::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Fi
 void Movement::calculateViableTargets(Board* board, Unit* abilityUser)
 {
 	viableTargets = Pathfinding::GetAllPossibleTargets(board, abilityUser->GetOccupiedField(), abilityUser->GetCurrentEnergy() / costEN);
+	for (auto target : viableTargets)
+	{
+		target->CostToGetHere *= costEN;
+	}
 }
-
-void Movement::calculateCost()
-{
-	calculatedCost = (int(std::distance(calculatedPath.begin(), calculatedPath.end())) - 1) * costEN;
-}
-
 
 

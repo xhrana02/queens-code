@@ -18,7 +18,7 @@ public:
     Agent()
     {
         name = "Agent";
-        this->maximumHP = 12;
+        this->maximumHP = 10;
         currentHP = maximumHP;
         currentEN = maximumEN;
         abilities.push_back(std::make_shared<Movement>());

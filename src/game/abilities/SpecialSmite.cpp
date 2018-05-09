@@ -16,14 +16,15 @@ using namespace glm;
 
 SpecialSmite::SpecialSmite()
 {
-    costEN = 4;
+    costEN = 5;
     name = "Smite";
     iconPath = "icons/SpecialSmite.png";
-    description = "<b><u>Smite</u> ( 4 EN ) Indirect 1-5</b><br><br>"
-        "The target takes 4 normal damage and is Stunned for 1 turn.<br>"
+    description = "<b><u>Smite</u> ( 5 EN ) Indirect 1-4</b><br><br>"
+        "The target takes 5 normal damage and is Stunned for 1 turn.<br>"
         STUN_TOOLTIP
         EN_DAMAGE_TOOLTIP;
-	aiTargetValue = 9;
+	aiTargetValue = 10;
+	aiCanHurt = true;
 	aiTargetMissingHpMod = 0.1f;
 	aiTargetMissingEnMod = 0.3f;
 	aiTargetRelativeEnMod = 0.0f;

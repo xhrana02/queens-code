@@ -10,8 +10,6 @@
 #include "../ApplicationControl.h"
 #include "Cursor.h"
 #include "AbilityAnimation.h"
-#include <thread>
-#include <future>
 
 using namespace fsg;
 using namespace std;
@@ -334,8 +332,7 @@ void Game::SelectUnit(Unit* newSelectedUnit)
 
     if (newSelectedUnit != nullptr)
     {
-        auto isEnemy = newSelectedUnit->GetOwnerID() != activePlayer->GetID();
-        newSelectedUnit->Select(isEnemy);
+        newSelectedUnit->Select();
     }
 }
 
@@ -393,7 +390,8 @@ void Game::OnAbilitySelected(int slot) const
 {
     if (selectedUnit != nullptr)
     {
-        selectedUnit->OnAbilitySelected(slot);
+		auto isEnemy = selectedUnit->GetOwnerID() != activePlayer->GetID();
+        selectedUnit->OnAbilitySelected(slot, isEnemy);
         if (hoveredField != nullptr)
         {
             ResetTheoryValues();

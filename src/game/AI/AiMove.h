@@ -21,6 +21,7 @@ public:
 	int targetX = 0;
 	int targetY = 0;
 	int abilitySlot = 0;
+	int costToGetHere = 0;
 
 	virtual ~AiMove() = default;
 	AiMove(){}

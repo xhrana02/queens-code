@@ -22,7 +22,12 @@ public:
     void OnSelected(Board* board, Unit* abilityUser) override;
     void SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser, Field* hoveredField) override;
 
+	// AI performance optimalization
+	void SetAiCalculatedCost(int newCost) override
+	{
+		calculatedCost = newCost;
+	}
+
 protected:
 	void calculateViableTargets(Board* board, Unit* abilityUser) final;
-	virtual void calculateCost();
 };

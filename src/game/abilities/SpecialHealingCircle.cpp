@@ -10,18 +10,17 @@
 #include "Field.h"
 #include "Flash.h"
 #include "Targetfinding.h"
-#include "CommonTooltips.h"
 
 using namespace glm;
 
 SpecialHealingCircle::SpecialHealingCircle()
 {
-    costEN = 6;
+    costEN = 8;
     name = "HealingCircle";
     iconPath = "icons/SpecialHealingCircle.png";
-    description = "<b><u>HealingCircle</u> ( 6 EN )</b><br><br>"
+    description = "<b><u>HealingCircle</u> ( 8 EN )</b><br><br>"
         "Every allied unit in the range of 2 (excluding the priest) regains 4 HP and 4 EN.<br>";
-	aiTargetValue = 15;
+	aiTargetValue = 40;
 	aiTargetMissingHpMod = 0.6f;
 	aiTargetMissingEnMod = 0.4f;
 	aiTargetRelativeEnMod = 0.0f;

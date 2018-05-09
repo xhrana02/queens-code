@@ -11,10 +11,10 @@
 
 class SpecialSmite : public Ability
 {
-    static int const damageNormal = 4;
+    static int const damageNormal = 5;
 	static int const stunDuration = 1;
     static int const rangeMin = 1;
-    static int const rangeMax = 5;
+    static int const rangeMax = 4;
 public:
     SpecialSmite();
     bool Effect(Board* board, Unit* abilityUser, Field* target) override;

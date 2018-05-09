@@ -17,14 +17,14 @@ using namespace glm;
 
 SpecialDemonShield::SpecialDemonShield()
 {
-    costHP = 1;
-    costEN = 3;
+    costHP = 2;
+    costEN = 2;
     name = "Demon Shield";
     iconPath = "icons/SpecialDemonShield.png";
-    description = "<b><u>Demon Shield</u> ( 1 HP, 3 EN ) Indirect 0-3</b><br><br>"
-        "The targeted ally gains 6 Armor for the next 3 turns.<br>"
+    description = "<b><u>Demon Shield</u> ( 2 HP, 2 EN ) Indirect 0-3</b><br><br>"
+        "The targeted ally gains 6 Armor for the next 2 turns.<br>"
         ARMOR_TOOLTIP;
-	aiTargetValue = 8;
+	aiTargetValue = 15;
 	aiTargetMissingHpMod = 0.7f;
 	aiTargetMissingEnMod = 0.3f;
 	aiTargetRelativeEnMod = 0.0f;

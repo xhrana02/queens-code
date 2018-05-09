@@ -215,15 +215,12 @@ void Unit::CreateAbilitiesBar(QQmlEngine* engine, QQuickItem* guiRoot)
     }
 }
 
-void Unit::Select(bool isEnemy) const
+void Unit::Select() const
 {
     renderingObject->Select();
-    if (!isEnemy)
-    {
-        QVariant returnedValue;
-        QMetaObject::invokeMethod(abilitiesBar, "show",
-            Q_RETURN_ARG(QVariant, returnedValue));
-    }
+    QVariant returnedValue;
+    QMetaObject::invokeMethod(abilitiesBar, "show",
+        Q_RETURN_ARG(QVariant, returnedValue));
 
     if (appControl != nullptr)
     {
@@ -252,36 +249,28 @@ void Unit::SelectAbility(int slot) const
         Q_ARG(QVariant, slot));
 }
 
-void Unit::OnAbilitySelected(int slot)
+void Unit::OnAbilitySelected(int slot, bool isEnemy)
 {
     auto newSelectedAbility = abilities[slot - 1].get();
 
-    if(newSelectedAbility->CanAfford(this) && !stunned)
+    if(slot != selectedAbilitySlot)
     {
-        if(slot != selectedAbilitySlot)
-        {
-            selectedAbilitySlot = slot;
-            selectedAbility = newSelectedAbility;
-        }
-        RefreshAbilityHalflight();
+        selectedAbilitySlot = slot;
+        selectedAbility = newSelectedAbility;
     }
-    else
-    {
-        selectedAbilitySlot = 0;
-        selectedAbility = nullptr;
-        GetBoard()->UnhalflightAllFields();
-        QVariant returnedValue;
-        QMetaObject::invokeMethod(abilitiesBar, "unselectAll",
-            Q_RETURN_ARG(QVariant, returnedValue));
-        if (stunned)
-        {
-            GamePopup("This unit is Stunned and cannot take any action");
-        }
-        else
-        {
-            GamePopup("Not enough Energy (EN) or Hit Points (HP) to use " + newSelectedAbility->GetName());
-        }
-    }
+    RefreshAbilityHalflight();
+
+	if (!isEnemy)
+	{
+		if (stunned)
+		{
+			GamePopup("This unit is Stunned and cannot take any action");
+		}
+		else if(!newSelectedAbility->CanAfford(this))
+		{
+			GamePopup("Not enough Energy (EN) or Hit Points (HP) to use " + newSelectedAbility->GetName());
+		}
+	}
 }
 
 void Unit::RefreshAbilityHalflight()

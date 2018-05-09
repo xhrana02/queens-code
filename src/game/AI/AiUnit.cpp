@@ -78,20 +78,33 @@ std::vector<std::shared_ptr<AiMove>> AiUnit::GetAllPossibleMoves()
 		}
 		ability->CalculateViableTargets(GetBoard(), this);
 		auto targets = ability->GetViableTargets();
-		for (auto target : targets)
+		if (slot == 1)
 		{
-			moves.push_back(std::make_shared<AiMove>(this, target, slot));
+			for (auto target : targets)
+			{
+				auto newMove = std::make_shared<AiMove>(this, target, slot);
+				newMove->type = MovementMove;
+				newMove->costToGetHere = target->CostToGetHere;
+				moves.push_back(newMove);
+			}
+		}
+		else
+		{
+			for (auto target : targets)
+			{
+				moves.push_back(std::make_shared<AiMove>(this, target, slot));
+			}
 		}
 		slot++;
 	}
 	return moves;
 }
 
-bool AiUnit::CanUnitMove() const
+int AiUnit::NumberOfEmptyNeighbors() const
 {
 	if (aiHasDash)
 	{
-		return true;
+		return 4;
 	}
 
 	auto meleeFieldsFree = 0;
@@ -102,11 +115,7 @@ bool AiUnit::CanUnitMove() const
 			meleeFieldsFree++;
 		}
 	}
-	if (meleeFieldsFree == 0)
-	{
-		return false;
-	}
-	return true;
+	return meleeFieldsFree;
 }
 
 float AiUnit::GetMissingHP()

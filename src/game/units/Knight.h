@@ -18,7 +18,7 @@ public:
     Knight()
     {
         name = "Knight";
-        this->maximumHP = 18;
+        this->maximumHP = 16;
         currentHP = maximumHP;
         currentEN = maximumEN;
         abilities.push_back(std::make_shared<Movement>());

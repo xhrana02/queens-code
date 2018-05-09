@@ -29,6 +29,7 @@ protected:
 	Game* game = nullptr;
 
 	int aiTargetValue = 0;
+	bool aiCanHurt = false;
 	float aiTargetMissingHpMod = 0.0f;
 	float aiTargetMissingEnMod = 0.0f;
 	float aiTargetRelativeEnMod = 0.0f;
@@ -88,6 +89,10 @@ public:
 	{
 		return aiTargetValue;
 	}
+	bool GetAiCanHurt() const
+	{
+		return aiCanHurt;
+	}
 	float GetAiTargetMissingHpMod() const
 	{
 		return aiTargetMissingHpMod;
@@ -99,6 +104,10 @@ public:
 	float GetAiTargetRelativeEnMod() const
 	{
 		return aiTargetRelativeEnMod;
+	}
+	virtual void SetAiCalculatedCost(int newCost)
+	{
+		// do nothing
 	}
 
 };

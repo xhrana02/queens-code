@@ -17,15 +17,15 @@ using namespace glm;
 
 SpecialBlessing::SpecialBlessing()
 {
-    costEN = 4;
+    costEN = 6;
     name = "Blessing";
     iconPath = "icons/SpecialBlessing.png";
-    description = "<b><u>Blessing</u> ( 4 EN )</b><br><br>"
+    description = "<b><u>Blessing</u> ( 6 EN )</b><br><br>"
         "Every allied unit in the range of 2 (including the priest) regains bonus 1 EN "
         "when regenerating and gains 1 Armor for the next 5 turns.<br>"
         ARMOR_TOOLTIP
         REGENERATION_TOOLTIP;
-	aiTargetValue = 15;
+	aiTargetValue = 40;
 	aiTargetMissingHpMod = 0.3f;
 	aiTargetMissingEnMod = 0.2f;
 	aiTargetRelativeEnMod = 0.5f;

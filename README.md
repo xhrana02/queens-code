@@ -6,7 +6,7 @@ Author: **Pavel Hranáč (xhrana02)**
 
 ## Prebuilt Windows 64x Release with windeployqt
 
-https://drive.google.com/open?id=1-rlecRSdN7lZUUWfDjSQ_RkfjMFeKjep
+https://drive.google.com/open?id=1BrrsdpRRj6GllRinzz3Sv6xcb-BaRTe6
 
 
 ## Prerequisites:

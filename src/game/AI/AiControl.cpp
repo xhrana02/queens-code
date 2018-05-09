@@ -31,7 +31,7 @@ std::list<std::shared_ptr<AiMove>> AiControl::GetNextMoves(Game* originGame)
 	// GENERATION 2
 	auto gen1BestMoves = gen1->bestMoves;
 	gen1.reset();
-	gen1 = std::make_unique<AiBestMovesManager>(1);
+	gen1 = std::make_unique<AiBestMovesManager>(evaluator->config->gen1MaxMoves);
 	for (auto gen1State : gen1BestMoves)
 	{
 		if (gen1State->moves.back()->type == EndTurnMove)
@@ -64,7 +64,31 @@ std::list<std::shared_ptr<AiMove>> AiControl::GetNextMoves(Game* originGame)
 		gen1->AddNewMove(gen2->GetBestMove());
 	}
 
+	auto bestFinalStates = gen1->bestMoves;
+	gen1.reset();
+	gen1 = std::make_unique<AiBestMovesManager>(1);
+	for (auto state :  bestFinalStates)
+	{
+		auto genCounter = std::make_unique<AiBestMovesManager>(1);
+		auto enemyID = Player1;
+		if (aiPlayerID == Player1) { enemyID = Player2; }
+		auto counterMoves = state->game->GetAllPlayerMoves(enemyID);
+		for (auto move : counterMoves)
+		{
+			auto newGameState = state->MakeCopy();
+			if (newGameState->AddMove(move))
+			{
+				newGameState->Evaluate(evaluator.get());
+				// true setting makes the manager store the worst moves instead of the best ones
+				genCounter->AddNewMove(newGameState, true);
+			}
+		}
+
+		gen1->AddNewMove(genCounter->GetWorstMove());
+	}
+
 	auto bestMoveSequence = gen1->GetBestMove()->moves;
+	bestMoveSequence.erase(std::prev(bestMoveSequence.end()));
 	auto aiMovesList = std::list<std::shared_ptr<AiMove>>();
 	std::copy( bestMoveSequence.begin(), bestMoveSequence.end(), back_inserter(aiMovesList));
 	return aiMovesList;

@@ -13,7 +13,7 @@ DemonShield::DemonShield(Unit* buffTarget)
 	: Buff(buffTarget)
 {
     id = demonshield;
-    maxDuration = 3;
+    maxDuration = 2;
 }
 
 void DemonShield::onEffectStart()

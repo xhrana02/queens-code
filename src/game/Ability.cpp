@@ -51,6 +51,11 @@ bool Ability::CanUse(Board* board, Unit* abilityUser, Field* target)
 		return false;
 	}
 
+	if (!CanAfford(abilityUser))
+	{
+		return false;
+	}
+
 	calculateViableTargets(board, abilityUser);
 
 	for (auto viableTarget : viableTargets)

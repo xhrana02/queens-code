@@ -27,6 +27,12 @@ bool AiMove::UseThisMove(Game* game) const
 	auto user = board->GetField(userX, userY)->GetUnitOnField();
 	auto target = board->GetField(targetX, targetY);
 
+	if (type == MovementMove)
+	{
+		auto movementAbility = user->GetAbilityBySlot(abilitySlot);
+		movementAbility->SetAiCalculatedCost(costToGetHere);
+	}
+
 	if (user->UseAbilityBySlot(target, abilitySlot))
 	{
 		return true;

@@ -18,7 +18,7 @@ public:
     Ranger()
     {
         name = "Ranger";
-        this->maximumHP = 16;
+        this->maximumHP = 14;
         currentHP = maximumHP;
         currentEN = maximumEN;
         abilities.push_back(std::make_shared<Movement>());

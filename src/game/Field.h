@@ -101,4 +101,7 @@ public:
     void HalflightField() const;
     void UnhalflightField() const;
 
+	// AI optimalization
+	int CostToGetHere = 0;
+
 };
