@@ -23,7 +23,7 @@ SpecialSoulSteal::SpecialSoulSteal()
     description = "<b><u>Soul Steal</u> ( 1 HP, 3 EN ) Melee</b><br><br>"
         "Deals 6 HP damage to the target. Regains HP equal to the damage dealt.<br>"
         HP_DAMAGE_TOOLTIP;
-	aiTargetValue = 20;
+	aiTargetValue = 40;
 	aiCanHurt = true;
 	aiTargetMissingHpMod = 0.3f;
 	aiTargetMissingEnMod = 0.0f;

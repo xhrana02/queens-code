@@ -20,9 +20,9 @@ public:
         name = "Dagger Attack";
         iconPath = "icons/AttackDagger.png";
         description = "<b><u>Dagger Attack</u> ( 2 EN ) Melee</b><br><br>"
-            "Deals 6 HP damage to the target.<br>"
+            "Deals 7 HP damage to the target.<br>"
             HP_DAMAGE_TOOLTIP;
-		aiTargetValue = 30;
+		aiTargetValue = 50;
 		aiCanHurt = true;
 		aiTargetMissingHpMod = 0.5f;
 		aiTargetMissingEnMod = 0.0f;

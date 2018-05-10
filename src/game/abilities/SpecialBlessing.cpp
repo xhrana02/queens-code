@@ -25,7 +25,7 @@ SpecialBlessing::SpecialBlessing()
         "when regenerating and gains 1 Armor for the next 5 turns.<br>"
         ARMOR_TOOLTIP
         REGENERATION_TOOLTIP;
-	aiTargetValue = 40;
+	aiTargetValue = 50;
 	aiTargetMissingHpMod = 0.3f;
 	aiTargetMissingEnMod = 0.2f;
 	aiTargetRelativeEnMod = 0.5f;

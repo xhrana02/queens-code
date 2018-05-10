@@ -16,13 +16,13 @@ public:
     AttackLongsword()
     {
         costEN = 4;
-        damageNormal = 10;
+        damageNormal = 12;
         name = "Longsword Attack";
         iconPath = "icons/AttackLongsword.png";
         description = "<b><u>Longsword Attack</u> ( 4 EN ) Melee</b><br><br>"
-            "Deals 10 normal damage to the target.<br>"
+            "Deals 12 normal damage to the target.<br>"
             NORMAL_DAMAGE_TOOLTIP;
-		aiTargetValue = 25;
+		aiTargetValue = 50;
 		aiCanHurt = true;
 		aiTargetMissingHpMod = 0.2f;
 		aiTargetMissingEnMod = 0.8f;

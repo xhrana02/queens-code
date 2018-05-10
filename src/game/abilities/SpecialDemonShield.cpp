@@ -24,7 +24,7 @@ SpecialDemonShield::SpecialDemonShield()
     description = "<b><u>Demon Shield</u> ( 2 HP, 2 EN ) Indirect 0-3</b><br><br>"
         "The targeted ally gains 6 Armor for the next 2 turns.<br>"
         ARMOR_TOOLTIP;
-	aiTargetValue = 15;
+	aiTargetValue = 20;
 	aiTargetMissingHpMod = 0.7f;
 	aiTargetMissingEnMod = 0.3f;
 	aiTargetRelativeEnMod = 0.0f;

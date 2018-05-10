@@ -20,10 +20,10 @@ SpecialShieldSlam::SpecialShieldSlam()
     name = "Shield Slam";
     iconPath = "icons/SpecialShieldSlam.png";
     description = "<b><u>Shield Slam</u> ( 3 EN ) Melee</b><br><br>"
-        "The target takes 6 EN damage and is stunned for 1 turn.<br>"
+        "The target takes 8 EN damage and is stunned for 1 turn.<br>"
         STUN_TOOLTIP
         EN_DAMAGE_TOOLTIP;
-	aiTargetValue = 25;
+	aiTargetValue = 35;
 }
 
 bool SpecialShieldSlam::Effect(Board* board, Unit* abilityUser, Field* target)

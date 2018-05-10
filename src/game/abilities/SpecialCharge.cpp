@@ -25,7 +25,7 @@ SpecialCharge::SpecialCharge()
         "occupied, instead of pushing, the target takes 3 more HP damage and is stunned for 1 turn.<br>"
         STUN_TOOLTIP
         HP_DAMAGE_TOOLTIP;
-	aiTargetValue = 20;
+	aiTargetValue = 35;
 	aiCanHurt = true;
 	aiTargetMissingHpMod = 0.3f;
 	aiTargetMissingEnMod = 0.0f;

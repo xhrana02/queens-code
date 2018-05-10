@@ -15,14 +15,14 @@ class AttackShortSword : public AttackMelee
 public:
     AttackShortSword()
     {
-        costEN = 2;
-        damageNormal = 8;
+        costEN = 3;
+        damageNormal = 9;
         name = "Short Sword Attack";
         iconPath = "icons/AttackShortSword.png";
-        description = "<b><u>Short Sword Attack</u> ( 2 EN ) Melee</b><br><br>"
-            "Deals 8 normal damage to the target.<br>"
+        description = "<b><u>Short Sword Attack</u> ( 3 EN ) Melee</b><br><br>"
+            "Deals 9 normal damage to the target.<br>"
             NORMAL_DAMAGE_TOOLTIP;
-		aiTargetValue = 20;
+		aiTargetValue = 30;
 		aiCanHurt = true;
 		aiTargetMissingHpMod = 0.2f;
 		aiTargetMissingEnMod = 0.8f;

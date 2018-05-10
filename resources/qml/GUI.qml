@@ -45,14 +45,6 @@ Item {
     }
 
     Loader {
-        id: loaderCredits
-        anchors.fill: parent
-        source: "Credits.qml"
-        visible: false
-        z: 5
-    }
-
-    Loader {
         id: loaderPlayMenu
         anchors.fill: parent
         source: "PlayMenu.qml"
@@ -61,9 +53,25 @@ Item {
     }
 
     Loader {
+        id: loaderRules
+        anchors.fill: parent
+        source: "Rules.qml"
+        visible: false
+        z: 5
+    }
+
+    Loader {
         id: loaderOptionsMenu
         anchors.fill: parent
         source: "OptionsMenu.qml"
+        visible: false
+        z: 5
+    }
+
+    Loader {
+        id: loaderCredits
+        anchors.fill: parent
+        source: "Credits.qml"
         visible: false
         z: 5
     }
@@ -186,6 +194,7 @@ Item {
         loaderMainMenu.visible      = false
         loaderCredits.visible       = false
         loaderPlayMenu.visible      = false
+        loaderRules.visible         = false
         loaderOptionsMenu.visible   = false
         loaderLoadingScreen.visible = false
         loaderGameOverlay.visible   = false
@@ -212,6 +221,10 @@ Item {
         cleanUI()
         loaderPlayMenu.visible      = true
         menuBackground.visible      = true
+    }
+    function showRules() {
+        cleanUI()
+        loaderRules.visible      = true
     }
 
     function showOptionsMenu() {

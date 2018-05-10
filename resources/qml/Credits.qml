@@ -42,6 +42,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             color: credits.textColor
             font.pixelSize: credits.textSize
+            font.bold: true
             text: "Made by Pavel Hranac (xhrana02)"
         }
         Item {
@@ -53,6 +54,7 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             color: credits.textColor
             font.pixelSize: credits.textSize
+            font.underline: true
             text: "Software"
         }
         Text {
@@ -79,12 +81,6 @@ Rectangle {
             font.pixelSize: credits.textSize
             text: "Blender (modeling)"
         }
-        Text {
-            anchors.horizontalCenter: parent.horizontalCenter
-            color: credits.textColor
-            font.pixelSize: credits.textSize
-            text: "GitHub (source control)"
-        }
         Item {
             // force double space
             width: 1
@@ -94,31 +90,38 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             color: credits.textColor
             font.pixelSize: credits.textSize
+            font.underline: true
             text: "Resources"
         }
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
             color: credits.textColor
             font.pixelSize: credits.textSize
-            text: "https://texture.ninja/ (grass texture, wall texture)"
+            text: "Natanael Gama (Cinzel Decorative Font) www.fontsquirrel.com/license/cinzel-decorative"
         }
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
             color: credits.textColor
             font.pixelSize: credits.textSize
-            text: "http://spiralgraphics.biz (ice texture, wizard's balls texture)"
+            text: "texture.ninja (grass texture, wall texture)"
         }
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
             color: credits.textColor
             font.pixelSize: credits.textSize
-            text: "http://game-icons.net/ (all ability icons made with this site's icon creator)"
+            text: "spiralgraphics.biz (ice texture, wizard's balls texture)"
         }
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
             color: credits.textColor
             font.pixelSize: credits.textSize
-            text: "Individual creators from Game-icons:"
+            text: "game-icons.net (all ability icons made with this site's icon creator)"
+        }
+        Text {
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: credits.textColor
+            font.pixelSize: credits.textSize
+            text: "Individual creators from Game-icons (CC3 license):"
         }
         Text {
             anchors.horizontalCenter: parent.horizontalCenter

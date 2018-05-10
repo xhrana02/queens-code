@@ -19,8 +19,8 @@ public:
         name = "Meditation";
         iconPath = "icons/PassiveMeditation.png";
         description = "<b><u>Meditation</u> ( passive )</b><br><br>"
-            "Regains bonus 3 EN when resting (1 HP and 5 EN total).<br>"
+            "Regains bonus 2 EN when resting (1 HP and 4 EN total).<br>"
             REST_TOOLTIP;
-        unit->IncreaseRestEN(3);
+        unit->IncreaseRestEN(2);
     }
 };

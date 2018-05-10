@@ -56,6 +56,18 @@ Item {
         }
 
         MenuButton {
+            id: mainButtonRules
+            
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            styledText: "Rules"
+
+            onClicked: {
+                guiRoot.showRules()
+            }
+        }
+
+        MenuButton {
             id: mainButtonOptions
             
             anchors.horizontalCenter: parent.horizontalCenter
@@ -65,12 +77,6 @@ Item {
             onClicked: {
                 guiRoot.showOptionsMenu()
             }
-        }
-        
-        Item {
-            // force double space
-            width: 1
-            height: 1
         }
 
         MenuButton {

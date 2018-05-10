@@ -16,13 +16,13 @@ using namespace glm;
 
 SpecialDirtyTrick::SpecialDirtyTrick()
 {
-    costEN = 3;
+    costEN = 2;
     name = "Dirty Trick";
     iconPath = "icons/SpecialDirtyTrick.png";
-    description = "<b><u>Dirty Trick</u> ( 3 EN ) Melee</b><br><br>"
+    description = "<b><u>Dirty Trick</u> ( 2 EN ) Melee</b><br><br>"
         "The target is stunned for 2 turns.<br>"
         STUN_TOOLTIP;
-	aiTargetValue = 25;
+	aiTargetValue = 35;
 }
 
 bool SpecialDirtyTrick::Effect(Board* board, Unit* abilityUser, Field* target)

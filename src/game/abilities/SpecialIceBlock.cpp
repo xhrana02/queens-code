@@ -24,7 +24,6 @@ SpecialIceBlock::SpecialIceBlock()
         "Freezes a tile until any damage is dealt to it. Units caught in the ice block "
         "are stunned but can't take any damage.<br>"
         STUN_TOOLTIP;
-	aiTargetValue = 1;
 }
 
 bool SpecialIceBlock::Effect(Board* board, Unit* abilityUser, Field* target)
