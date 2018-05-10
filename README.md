@@ -66,9 +66,9 @@ Blender (modeling)
 ## Resources:
 
 Natanael Gama (Cinzel Decorative Font) www.fontsquirrel.com/license/cinzel-decorative  
-texture.ninja (grass texture, wall texture)  
-spiralgraphics.biz (ice texture, wizard's balls texture)  
-game-icons.net (all ability icons)  
+https://texture.ninja (grass texture, wall texture)  
+http://spiralgraphics.biz (ice texture, wizard's balls texture)  
+http://game-icons.net (all ability icons)  
 Individual creators from Game-icons:
 21 icon bases by Lorc, 3 by Delapouite, 1 by Carl Olsen, 1 by sbed, 1 by Skoll
 
