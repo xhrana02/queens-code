@@ -19,9 +19,9 @@ Item {
 
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        anchors.topMargin: (guiRoot.height / 3 - 100)
+        anchors.topMargin: (guiRoot.height / 5 - 90)
 
-        spacing: (guiRoot.height / 30)
+        spacing: (guiRoot.height / 50 + 5)
 
         Text {
             id: titleText
@@ -55,15 +55,33 @@ Item {
             }
         }
 
+        Item {
+            // force double space
+            width: 1
+            height: 1
+        }
+
         MenuButton {
             id: mainButtonRules
             
             anchors.horizontalCenter: parent.horizontalCenter
 
-            styledText: "Rules"
+            styledText: "Game rules"
 
             onClicked: {
                 guiRoot.showRules()
+            }
+        }
+
+        MenuButton {
+            id: mainButtonControls
+            
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            styledText: "Controls"
+
+            onClicked: {
+                guiRoot.showControls()
             }
         }
 
@@ -77,6 +95,12 @@ Item {
             onClicked: {
                 guiRoot.showOptionsMenu()
             }
+        }
+
+        Item {
+            // force double space
+            width: 1
+            height: 1
         }
 
         MenuButton {

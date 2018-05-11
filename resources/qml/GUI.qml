@@ -61,6 +61,14 @@ Item {
     }
 
     Loader {
+        id: loaderControls
+        anchors.fill: parent
+        source: "Controls.qml"
+        visible: false
+        z: 5
+    }
+
+    Loader {
         id: loaderOptionsMenu
         anchors.fill: parent
         source: "OptionsMenu.qml"
@@ -195,6 +203,7 @@ Item {
         loaderCredits.visible       = false
         loaderPlayMenu.visible      = false
         loaderRules.visible         = false
+        loaderControls.visible      = false
         loaderOptionsMenu.visible   = false
         loaderLoadingScreen.visible = false
         loaderGameOverlay.visible   = false
@@ -222,9 +231,15 @@ Item {
         loaderPlayMenu.visible      = true
         menuBackground.visible      = true
     }
+
     function showRules() {
         cleanUI()
         loaderRules.visible      = true
+    }
+
+    function showControls() {
+        cleanUI()
+        loaderControls.visible      = true
     }
 
     function showOptionsMenu() {
