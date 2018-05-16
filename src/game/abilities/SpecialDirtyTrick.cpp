@@ -16,13 +16,13 @@ using namespace glm;
 
 SpecialDirtyTrick::SpecialDirtyTrick()
 {
-    costEN = 2;
+    costEN = 4;
     name = "Dirty Trick";
     iconPath = "icons/SpecialDirtyTrick.png";
-    description = "<b><u>Dirty Trick</u> ( 2 EN ) Melee</b><br><br>"
-        "The target is stunned for 2 turns.<br>"
+    description = "<b><u>Dirty Trick</u> ( 4 EN ) Melee</b><br><br>"
+        "The target takes 3 EN damage and is stunned for 2 turns.<br>"
         STUN_TOOLTIP;
-	aiTargetValue = 35;
+	aiTargetValue = 40;
 }
 
 bool SpecialDirtyTrick::Effect(Board* board, Unit* abilityUser, Field* target)
@@ -32,13 +32,18 @@ bool SpecialDirtyTrick::Effect(Board* board, Unit* abilityUser, Field* target)
         abilityUser->ReduceEN(costEN);
         auto targetUnit = target->GetUnitOnField();
         targetUnit->Stun(stunDuration);
+		targetUnit->TakeDamage(Melee, 0, 0, damageEN);
 
-        if(game->IsRealGame())
+		if (!targetUnit->IsUnitAlive())
+		{
+			targetUnit->OnUnitDeath();
+		}
+		else if(game->IsRealGame())
         {
-            game->PanCameraToField(target);
             // ReSharper disable once CppNonReclaimedResourceAcquisition
-            new Flash(game, target->GetUnitOnField(), vec4(1.0f, 1.0f, 0.0f, 1.0f), 5);
+            new Flash(game, target->GetUnitOnField(), vec4(1.0f, 1.0f, 0.0f, 1.0f), 5 + 0.75*damageEN);
         }
+		PanCameraToTarget(target);
         return true;
     }
     return false;

@@ -25,7 +25,7 @@ public:
             HP_DAMAGE_TOOLTIP
             NORMAL_DAMAGE_TOOLTIP
             COMBINED_DAMAGE_TOOLTIP;
-		aiTargetValue = 55;
+		aiTargetValue = 65;
 		aiCanHurt = true;
 		aiTargetMissingHpMod = 0.4f;
 		aiTargetMissingEnMod = 0.5f;

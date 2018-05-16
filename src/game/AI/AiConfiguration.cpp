@@ -13,17 +13,15 @@ void AiConfiguration::setCommonValues()
 {
 	// Rewards
 	victoryVal = 1000000;
-	unitVal = 3000;
+	unitVal = 4000;
 	enVal = 700;
 	hpVal = 1000;
 
 	// Penalties
 	stunnedPen = -250;
 	restlessPen = -150;
-	dangerPen = -15;
 	throneDistancePen = -10;
 	claustrophobiaPen = -30;
-	lonelinessPen = -5;
 
 	// Multipliers
 	multipleTargetsMul = 0.2f;
@@ -35,34 +33,46 @@ void AiConfiguration::setCommonValues()
 void AiConfiguration::setEasyValues()
 {
 	// Moves manager values
-	gen1MaxMoves = 5;
-	gen2MaxMoves = 2;
+	gen1MaxMoves = 3;
+	gen2MaxMoves = 1;
+
+	// Penalties
+	dangerPen = -11;
+	lonelinessPen = -3;
 
 	// Multipliers
-	royaltyMul = 10.0f;
-	agressivityMul = 1.2f;
+	royaltyMul = 15.0f;
+	agressivityMul = 1.75f;
 }
 
 void AiConfiguration::setNormalValues()
 {
 	// Moves manager values
-	gen1MaxMoves = 7;
+	gen1MaxMoves = 4;
 	gen2MaxMoves = 2;
 
+	// Penalties
+	dangerPen = -13;
+	lonelinessPen = -4;
+
 	// Multipliers
-	royaltyMul = 15.0f;
-	agressivityMul = 1.4f;
+	royaltyMul = 20.0f;
+	agressivityMul = 1.5f;
 }
 
 void AiConfiguration::setHardValues()
 {
 	// Moves manager values
-	gen1MaxMoves = 10;
-	gen2MaxMoves = 2;
+	gen1MaxMoves = 5;
+	gen2MaxMoves = 3;
+
+	// Penalties
+	dangerPen = -15;
+	lonelinessPen = -5;
 
 	// Multipliers
-	royaltyMul = 20.0f;
-	agressivityMul = 1.6f;
+	royaltyMul = 25.0f;
+	agressivityMul = 1.25f;
 }
 
 AiConfiguration::AiConfiguration(AiType type)

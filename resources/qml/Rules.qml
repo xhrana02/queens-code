@@ -54,17 +54,17 @@ Rectangle {
         Text {
             color: rules.textColor
             font.pixelSize: rules.textSize
-            text: "1. Each player has 10 different units and each unit has different abilities."
+            text: "1. The goal is to kill the enemy Queen (or kill every other unit)."
         }
         Text {
             color: rules.textColor
             font.pixelSize: rules.textSize
-            text: "- These units could be divided into 4 categories: Royalty, Fighters, Specialists, Spellcasters."
+            text: "2. Besides their Queen each player has 9 other unique units and each of these units has different abilities."
         }
         Text {
             color: rules.textColor
             font.pixelSize: rules.textSize
-            text: "  - Royalty is only the Queen. She can't attack or defend herself and must be protected by others at all times."
+            text: "- These units are divided into 3 categories: Fighters, Specialists, Spellcasters."
         }
         Text {
             color: rules.textColor
@@ -99,11 +99,6 @@ Rectangle {
         Text {
             color: rules.textColor
             font.pixelSize: rules.textSize
-            text: "2. The goal is to kill the enemy Queen (or kill every other unit)."
-        }
-        Text {
-            color: rules.textColor
-            font.pixelSize: rules.textSize
             text: "3. The players take turns consisting of up to 3 moves (ability uses)."
         }
         Text {
@@ -119,7 +114,7 @@ Rectangle {
         Text {
             color: rules.textColor
             font.pixelSize: rules.textSize
-            text: "5b. And if it hasn't moved during the turn, it also regains some HP and EN at the end of the turn."
+            text: "5b. And if it hasn't moved during the turn and isn't Restless, it also regains some HP and EN at the end of the turn."
         }
         Text {
             color: rules.textColor
@@ -134,12 +129,27 @@ Rectangle {
         Text {
             color: rules.textColor
             font.pixelSize: rules.textSize
-            text: "  - Line attacks can only use perpendicular and diagonal lines and are blocked by obstacles (ally units don't count as an obstacle)."
+            text: "  - Line attacks can only use perpendicular and diagonal lines and are blocked by obstacles."
+        }
+        Text {
+            color: rules.textColor
+            font.pixelSize: rules.textSize
+            text: "    - Obstacles can be walls, enemy units and ice blocks. Units can shoot trough their allies."
         }
         Text {
             color: rules.textColor
             font.pixelSize: rules.textSize
             text: "  - Indirect attacks can be used on anything in range and ignore obstacles."
+        }
+        Text {
+            color: rules.textColor
+            font.pixelSize: rules.textSize
+            text: "  - Range of line and indirect attacks is calculated as the actual distance, not a~number of squares."
+        }
+        Text {
+            color: rules.textColor
+            font.pixelSize: rules.textSize
+            text: "7. The center field contains the throne. The Queen can claim this throne by standing on it, making all enemy units Restless."
         }
         Item {
             // force double space
@@ -150,7 +160,7 @@ Rectangle {
             color: rules.textColor
             font.pixelSize: rules.textSize
             font.italic: true
-            text: "Read ability tooltips for more information on game mechanics like types of damage, armor, status effects, and more."
+            text: "Read tooltips of abilities for more information on game mechanics like types of damage, armor, status effects, and more."
         }
 
         

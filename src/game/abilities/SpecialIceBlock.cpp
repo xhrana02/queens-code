@@ -17,10 +17,10 @@ using namespace glm;
 
 SpecialIceBlock::SpecialIceBlock()
 {
-    costEN = 5;
+    costEN = 7;
     name = "Ice Block";
     iconPath = "icons/SpecialIceBlock.png";
-    description = "<b><u>Ice Block</u> ( 5 EN ) Indirect 0-4</b><br><br>"
+    description = "<b><u>Ice Block</u> ( 7 EN ) Indirect 0-4</b><br><br>"
         "Freezes a tile until any damage is dealt to it. Units caught in the ice block "
         "are stunned but can't take any damage.<br>"
         STUN_TOOLTIP;

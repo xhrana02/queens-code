@@ -20,7 +20,7 @@ SpecialSmite::SpecialSmite()
     name = "Smite";
     iconPath = "icons/SpecialSmite.png";
     description = "<b><u>Smite</u> ( 5 EN ) Indirect 1-4</b><br><br>"
-        "The target takes 5 normal damage and is Stunned for 1 turn.<br>"
+        "The target takes 5 EN and 1 normal damage and is Stunned for 1 turn.<br>"
         STUN_TOOLTIP
         EN_DAMAGE_TOOLTIP;
 	aiTargetValue = 10;
@@ -37,7 +37,7 @@ bool SpecialSmite::Effect(Board* board, Unit* abilityUser, Field* target)
         abilityUser->ReduceEN(costEN);
         auto targetUnit = target->GetUnitOnField();
         targetUnit->Stun(stunDuration);
-        targetUnit->TakeDamage(Melee, damageNormal);
+        targetUnit->TakeDamage(Melee, damageNormal, 0, damageEN);
 
         if (!targetUnit->IsUnitAlive())
         {
@@ -48,7 +48,7 @@ bool SpecialSmite::Effect(Board* board, Unit* abilityUser, Field* target)
             if(game->IsRealGame())
             {
                 // ReSharper disable once CppNonReclaimedResourceAcquisition
-                new Flash(game, target->GetUnitOnField(), vec4(1.0f, 1.0f, 0.5f, 0.5f), 5 + damageNormal);
+                new Flash(game, target->GetUnitOnField(), vec4(1.0f, 1.0f, 0.5f, 0.5f), 5 + damageNormal + 0.75*damageEN);
             }
         }
         PanCameraToTarget(target);
@@ -68,7 +68,7 @@ void SpecialSmite::SelectedAbilityOnFieldHovered(Board* board, Unit* abilityUser
     if(CanUse(board, abilityUser, hoveredField))
     {
         abilityUser->ReduceTheoreticalEN(costEN);
-        hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Melee, damageNormal);
+        hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Melee, damageNormal, 0, damageEN);
     }
 }
 

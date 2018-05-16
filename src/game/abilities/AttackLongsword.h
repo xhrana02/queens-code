@@ -22,7 +22,7 @@ public:
         description = "<b><u>Longsword Attack</u> ( 4 EN ) Melee</b><br><br>"
             "Deals 12 normal damage to the target.<br>"
             NORMAL_DAMAGE_TOOLTIP;
-		aiTargetValue = 50;
+		aiTargetValue = 60;
 		aiCanHurt = true;
 		aiTargetMissingHpMod = 0.2f;
 		aiTargetMissingEnMod = 0.8f;

@@ -156,13 +156,11 @@ void CameraControl::UpdateCamera() const
     auto correction = cosf(radians(rotationY));
 
     camera->EyePosition.x = positionX +
-        distance * correction *
-        cosf(radians(rotationX));
+        distance * correction * cosf(radians(rotationX));
     camera->EyePosition.y = positionY +
         distance * sinf(radians(rotationY));
     camera->EyePosition.z = positionZ +
-        distance * correction *
-        sinf(radians(rotationX));
+        distance * correction * sinf(radians(rotationX));
 }
 
 vec2 CameraControl::CalculateMousePosition(float x, float y, Simple_geSGRenderer* renderer) const

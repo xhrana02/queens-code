@@ -176,7 +176,7 @@ long AiGameStateEvaluator::EvaluateUnitActiveValue(Unit* unit) const
 				float danger = targetScore;
 				if (ability->GetAiCanHurt())
 				{
-					danger -= targetUnit->GetArmor();
+					danger -= targetUnit->GetArmor() * 5;
 					danger *= config->threatCanHurtMul;
 				}
 				else

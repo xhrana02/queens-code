@@ -36,6 +36,10 @@ Item {
 
     property var currentHP: 1
     property var currentEN: 1
+    property var theoryHP: 1
+    property var theoryEN: 1
+    property var indentHP: " "
+    property var indentEN: " "
     property var currentArmor: 0
     property var deltaHP: 0
     property var deltaEN: 0
@@ -65,7 +69,7 @@ Item {
     Rectangle {
         id: hpBarTheory
 
-        width: barWidth
+        width: infoBar.barWidth * infoBar.theoryHP / infoBar.maxValue
         height: barHeight
 
         anchors.top: parent.top
@@ -104,7 +108,7 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
 
-        text: infoBar.currentHP + "/" + infoBar.maxValue
+        text: infoBar.indentHP + infoBar.theoryHP + "/" + infoBar.maxValue
         color: textColor
         font.pixelSize: fontSize
         font.letterSpacing: infoBar.textLetterSpacing
@@ -190,7 +194,7 @@ Item {
     Rectangle {
         id: enBarTheory
 
-        width: barWidth
+        width: infoBar.barWidth * infoBar.theoryEN / infoBar.maxValue
         height: barHeight
 
         anchors.bottom: parent.bottom
@@ -229,7 +233,7 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
 
-        text: infoBar.currentEN + "/" + infoBar.maxValue
+        text: infoBar.indentEN + infoBar.theoryEN + "/" + infoBar.maxValue
         color: textColor
         font.pixelSize: fontSize
         font.letterSpacing: infoBar.textLetterSpacing
@@ -477,10 +481,12 @@ Item {
     }
     
     function updateTheoryValues(hpTheory, enTheory, fluctuation) {
-        hpBarTheory.width = infoBar.barWidth * hpTheory / infoBar.maxValue
-        enBarTheory.width = infoBar.barWidth * enTheory / infoBar.maxValue
+        infoBar.theoryHP = hpTheory
+        infoBar.theoryEN = enTheory
         hpBar.opacity = 0.45 + 0.4 * fluctuation;
         enBar.opacity = 0.25 + 0.6 * fluctuation;
+        infoBar.indentHP = (hpTheory < 10 ?  " " : "")
+        infoBar.indentEN = (enTheory < 10 ?  " " : "")
     }
 
     function updateStatus(stunned, restless, blessed, shielded){

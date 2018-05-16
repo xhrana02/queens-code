@@ -12,14 +12,6 @@
 #include <memory>
 #include <vector>
 
-#define BORDER_NORMAL_COLOR glm::vec4(0.93f, 0.88f, 0.36f, 0.9f)
-#define BORDER_HALFLIGHT_COLOR glm::vec4(0.40f, 0.95f, 0.30f, 0.9f)
-#define BORDER_HIGHLIGHT_COLOR glm::vec4(0.98f, 0.97f, 0.90f, 0.9f)
-
-#define ICE_BLOCK_NORMAL_COLOR glm::vec4(0.88f,0.88f,0.88f, 0.7f)
-#define ICE_BLOCK_HALFLIGHT_COLOR glm::vec4(1.0f, 0.3f, 0.3f, 0.7f)
-#define ICE_BLOCK_HIGHLIGHT_COLOR glm::vec4(1.0f, 1.0f, 1.0f, 0.3f)
-
 class IceBlock;
 class Board;
 

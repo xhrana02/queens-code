@@ -10,7 +10,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd ThroneTexture_Gold_512.jpg
+map_Kd ThroneTexture_Gold_256.jpg
 
 newmtl RedMaterial
 Ns 96.078431
@@ -21,4 +21,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd ThroneTexture_Samet_512.jpg
+map_Kd ThroneTexture_Samet_256.jpg

@@ -11,6 +11,7 @@
 
 class SpecialDirtyTrick : public Ability
 {
+	static int const damageEN = 3;
 	static int const stunDuration = 2;
 public:
     SpecialDirtyTrick();

@@ -18,7 +18,7 @@ SpecialHealingCircle::SpecialHealingCircle()
     costEN = 8;
     name = "HealingCircle";
     iconPath = "icons/SpecialHealingCircle.png";
-    description = "<b><u>HealingCircle</u> ( 8 EN )</b><br><br>"
+    description = "<b><u>Healing Circle</u> ( 8 EN )</b><br><br>"
         "Every allied unit in the range of 2 (excluding the priest) regains 4 HP and 4 EN.<br>";
 	aiTargetValue = 50;
 	aiTargetMissingHpMod = 0.6f;

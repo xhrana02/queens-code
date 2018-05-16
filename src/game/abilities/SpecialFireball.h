@@ -13,7 +13,7 @@
 class SpecialFireball : public Ability
 {
     static int const damageNormal0 = 6;
-    static int const damageNormal2 = 3;
+    static int const damageNormal2 = 4;
     static int const rangeMin = 1;
     static int const rangeMax = 6;
     std::vector<Field*> areaOfEffectCandidates = std::vector<Field*>();

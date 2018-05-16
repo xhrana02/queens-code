@@ -11,7 +11,8 @@
 
 class SpecialShieldSlam : public Ability
 {
-    static int const damageEN = 8;
+    static int const damageEN = 3;
+	static int const damageNormal = 3;
 	static int const stunDuration = 1;
 public:
     SpecialShieldSlam();

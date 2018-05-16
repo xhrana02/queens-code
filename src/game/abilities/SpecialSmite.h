@@ -11,7 +11,8 @@
 
 class SpecialSmite : public Ability
 {
-    static int const damageNormal = 5;
+    static int const damageNormal = 1;
+	static int const damageEN = 5;
 	static int const stunDuration = 1;
     static int const rangeMin = 1;
     static int const rangeMax = 4;

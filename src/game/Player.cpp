@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Game.h"
 #include "../ApplicationControl.h"
+#include "GameColors.h"
 
 using namespace std;
 using namespace fsg;
@@ -163,7 +164,6 @@ void Player::BeginTurn()
         game->UnselectUnit();
         game->SelectUnit(*units.begin());
         appControl->OnTurnBegin(game->GetTurnNumber(), IsAI());
-        GamePopup(name + "'s turn");
         appControl->SetActivePlayer(name);
     }
 }

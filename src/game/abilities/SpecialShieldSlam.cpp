@@ -16,14 +16,18 @@ using namespace glm;
 
 SpecialShieldSlam::SpecialShieldSlam()
 {
-    costEN = 3;
+    costEN = 4;
     name = "Shield Slam";
     iconPath = "icons/SpecialShieldSlam.png";
-    description = "<b><u>Shield Slam</u> ( 3 EN ) Melee</b><br><br>"
-        "The target takes 8 EN damage and is stunned for 1 turn.<br>"
+    description = "<b><u>Shield Slam</u> ( 4 EN ) Melee</b><br><br>"
+        "The target takes 3 EN and 3 normal damage and is stunned for 1 turn.<br>"
         STUN_TOOLTIP
         EN_DAMAGE_TOOLTIP;
-	aiTargetValue = 35;
+	aiTargetValue = 45;
+	aiCanHurt = true;
+	aiTargetMissingHpMod = 0.1f;
+	aiTargetMissingEnMod = 0.2f;
+	aiTargetRelativeEnMod = 0.0f;
 }
 
 bool SpecialShieldSlam::Effect(Board* board, Unit* abilityUser, Field* target)
@@ -33,19 +37,16 @@ bool SpecialShieldSlam::Effect(Board* board, Unit* abilityUser, Field* target)
         abilityUser->ReduceEN(costEN);
         auto targetUnit = target->GetUnitOnField();
         targetUnit->Stun(stunDuration);
-        targetUnit->TakeDamage(Melee, 0, 0, damageEN);
+        targetUnit->TakeDamage(Melee, damageNormal, 0, damageEN);
 
         if (!targetUnit->IsUnitAlive())
         {
             targetUnit->OnUnitDeath();
         }
-        else
+        else if(game->IsRealGame())
         {
-            if(game->IsRealGame())
-            {
-                // ReSharper disable once CppNonReclaimedResourceAcquisition
-                new Flash(game, target->GetUnitOnField(), vec4(1.0f, 1.0f, 0.0f, 1.0f), 5 + 0.75 * damageEN);
-            }
+            // ReSharper disable once CppNonReclaimedResourceAcquisition
+            new Flash(game, target->GetUnitOnField(), vec4(1.0f, 1.0f, 0.0f, 1.0f), 5 + damageNormal + 0.75 * damageEN);
         }
         PanCameraToTarget(target);
         return true;
@@ -64,7 +65,7 @@ void SpecialShieldSlam::SelectedAbilityOnFieldHovered(Board* board, Unit* abilit
     if(CanUse(board, abilityUser, hoveredField))
     {
         abilityUser->ReduceTheoreticalEN(costEN);
-        hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Melee, 0, 0, damageEN);
+        hoveredField->GetUnitOnField()->TakeTheoreticalDamage(Melee, damageNormal, 0, damageEN);
     }
 }
 

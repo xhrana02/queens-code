@@ -304,7 +304,7 @@ void Game::SelectField(Field* clickedField)
     Unit* newSelectedUnit = nullptr;
     if (clickedField != nullptr)
     {
-        newSelectedUnit = clickedField->GetUnitOnField();
+        newSelectedUnit = clickedField->GetPlayerUnitOnField();
     }
 
     if (newSelectedUnit != selectedUnit)
@@ -558,7 +558,8 @@ void Game::ProcessAiTurn()
 	{
 		if(aiMoves.front()->UseThisMove(this))
 		{
-			aiMoveLockoutDuration = 120;
+			// 2.5 seconds lockout
+			aiMoveLockoutDuration = 150;
 			aiMoves.pop_front();
 		}
 		else

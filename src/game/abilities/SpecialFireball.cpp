@@ -20,7 +20,7 @@ SpecialFireball::SpecialFireball()
     name = "Fireball";
     iconPath = "icons/SpecialFireball.png";
     description = "<b><u>Fireball</u> ( 6 EN ) Line 1-6</b><br><br>"
-        "Deals 6 normal damage to the target. Deals 3 normal damage to tiles in range of 2 around the target. Can target empty tiles.<br>"
+        "Deals 6 normal damage to the target. Deals 4 normal damage to tiles in range of 2 around the target. Can target empty tiles.<br>"
         NORMAL_DAMAGE_TOOLTIP;
 	aiTargetValue = 1;
 	aiCanHurt = true;

@@ -8,6 +8,7 @@
 #include "Field.h"
 #include "Board.h"
 #include "IceBlock.h"
+#include "GameColors.h"
 
 using namespace fsg;
 using namespace std;

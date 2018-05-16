@@ -49,10 +49,20 @@ void Simple_geSGRenderer::beforeRendering()
     VT->program->set4fv("lightCol", value_ptr(vec4(1.0f, 1.0f, 0.9f, 1.0f)));
 
     VT->program->use();
+	auto transparentObjects = vector<RenderingObject*>();
     for (auto object : renderingObjects)
     {
+		if (object->GetColor().w < 1.0f)
+		{
+			transparentObjects.push_back(object);
+			continue;
+		}
         VT->draw(object);
     }
+	for (auto object : transparentObjects)
+	{
+		VT->draw(object);
+	}
 
     _qqw->resetOpenGLState();
 }

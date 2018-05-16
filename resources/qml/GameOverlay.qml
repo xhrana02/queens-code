@@ -131,7 +131,7 @@ Item {
             color: gameOverlay.textColor
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 24
+            font.pixelSize: 30
             font.bold: true
             textFormat: Text.StyledText
             style: Text.Outline
@@ -199,6 +199,8 @@ Item {
             MenuButtonSmall {
                 id: endTurnButton
 
+                anchors.right: parent.right
+
                 styledText: "<b>end turn</b>"
 
                 onClicked: {
@@ -209,7 +211,7 @@ Item {
             Row {
                 id: commandPointIndicators
 
-                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.horizontalCenter: endTurnButton.horizontalCenter
 
                 spacing: 15
 
@@ -224,6 +226,25 @@ Item {
                 PlayerCommandPointIndicator {
                     id: commandPointIndicator3
                 }
+            }
+
+            Text {
+                id: commandPointsLeftText
+
+                anchors.right: parent.right
+
+                property int pointsLeft: 0
+
+                color: gameOverlay.textColor
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                font.pixelSize: 18
+                font.bold: true
+                font.family: menuFont.name
+                style: Text.Raised
+                styleColor: "#CC000000"
+
+                text: pointsLeft + " commands left"
             }
         }
     }
@@ -283,6 +304,7 @@ Item {
         commandPointIndicator1.used = false
         commandPointIndicator2.used = false
         commandPointIndicator3.used = false
+        commandPointsLeftText.pointsLeft = 3
         turnCounter.turnNumber = turnNumber
         gameUI_topRight.visible = !isAi
     }
@@ -290,12 +312,15 @@ Item {
     function onAbilityUsed() {
         if (!commandPointIndicator1.used) {
             commandPointIndicator1.used = true
+            commandPointsLeftText.pointsLeft = 2
         }
         else if (!commandPointIndicator2.used) {
             commandPointIndicator2.used = true
+            commandPointsLeftText.pointsLeft = 1
         }
         else {
             commandPointIndicator3.used = true
+            commandPointsLeftText.pointsLeft = 0
         }
     }
 
