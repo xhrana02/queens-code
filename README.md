@@ -6,13 +6,13 @@ Author: **Pavel Hranáč (xhrana02)**
 
 ## Prebuilt Windows 64x Release
 
-Current version:
-v1.0.1b: https://drive.google.com/open?id=1I4NPe7MKxsmYwVNHzukmwcxWzJo4NiEY
+Current version:  
+v1.0.1b: https://drive.google.com/open?id=1I4NPe7MKxsmYwVNHzukmwcxWzJo4NiEY  
 
-Old versions:
-v1.0.1:  https://drive.google.com/open?id=1Rejjyf3ShblBjmYV85-cF-hmM2Pya3mI
-v1.0.0b: https://drive.google.com/open?id=14lZ-29a04Pz50SuJ53PC8i44sPfTvrb9
-v1.0.0:  https://drive.google.com/open?id=1Tg9468uuAGI6b7Jw58n-4CdimDXT7Wyg
+Old versions:  
+v1.0.1:  https://drive.google.com/open?id=1Rejjyf3ShblBjmYV85-cF-hmM2Pya3mI  
+v1.0.0b: https://drive.google.com/open?id=14lZ-29a04Pz50SuJ53PC8i44sPfTvrb9  
+v1.0.0:  https://drive.google.com/open?id=1Tg9468uuAGI6b7Jw58n-4CdimDXT7Wyg  
 
 ## Prerequisites:
 
