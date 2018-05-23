@@ -16,7 +16,7 @@ public:
     AttackDagger()
     {
         costEN = 2;
-        damageHP = 6;
+        damageHP = 7;
         name = "Dagger Attack";
         iconPath = "icons/AttackDagger.png";
         description = "<b><u>Dagger Attack</u> ( 2 EN ) Melee</b><br><br>"
